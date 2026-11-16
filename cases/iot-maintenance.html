@@ -314,7 +314,59 @@
     .monitoring-piece img { display: block; inset: 0; width: 100%; height: 100%; }
     .monitoring-machine { aspect-ratio: 1607 / 950; }
     .monitoring-node { aspect-ratio: 169 / 273; z-index: 3; }
-    .monitoring-online, .monitoring-offline { transition: opacity 240ms ease; }
+    .monitoring-online, .monitoring-offline { transition: opacity 800ms ease; }
+    .monitoring-signal {
+      position: absolute;
+      z-index: 4;
+      left: var(--signal-x, 46%);
+      top: var(--signal-y, 47%);
+      width: 12%;
+      aspect-ratio: 1.7;
+      transform: translate(-50%, -50%);
+      color: #5770c8;
+      pointer-events: none;
+      transition: color 700ms ease;
+    }
+    .monitoring-node .monitoring-signal { width: 150%; }
+    .monitoring-signal::before, .monitoring-signal::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      filter: blur(.45px);
+      opacity: 0;
+      animation: monitoring-signal 6s ease-out infinite;
+      animation-delay: var(--signal-delay, 0s);
+      animation-play-state: paused;
+    }
+    .monitoring-signal::after { animation-delay: calc(var(--signal-delay, 0s) - 3s); }
+    .monitoring-visual[data-visible="true"] .monitoring-signal::before,
+    .monitoring-visual[data-visible="true"] .monitoring-signal::after { animation-play-state: running; }
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost { color: #ba795f; }
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost::before,
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost::after {
+      animation-name: monitoring-signal-loss;
+      animation-duration: 2.8s;
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards;
+      animation-delay: 0s;
+    }
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost::after { animation-delay: .45s; }
+    @keyframes monitoring-signal {
+      0% { transform: scale(.25); opacity: 0; }
+      16% { opacity: .14; }
+      78%, 100% { transform: scale(1.75); opacity: 0; }
+    }
+    @keyframes monitoring-signal-loss {
+      0% { transform: scale(.35); opacity: 0; }
+      22% { opacity: .17; }
+      100% { transform: scale(1.9); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .monitoring-signal::before, .monitoring-signal::after { animation: none !important; opacity: 0; }
+    }
+
     .monitoring-offline, .monitoring-visual[data-state="offline"] .monitoring-piece:has(.monitoring-offline) .monitoring-online { opacity: 0; }
     .monitoring-visual[data-state="offline"] .monitoring-offline { opacity: 1; }
     @media (max-width: 760px) {
@@ -674,11 +726,11 @@
   </article>
   <figure class="monitoring-visual" id="monitoring-visual" data-state="online" aria-label="Machines with sensors and connectivity nodes online">
   <div class="monitoring-art" aria-hidden="true">
-<div class="monitoring-piece monitoring-node monitoring-node--left"><img class="monitoring-online" src="../assets/iot-maintenance/4f1e7f40558d020b9712.png" alt=""></div>
-<div class="monitoring-piece monitoring-node monitoring-node--right"><img class="monitoring-online" src="../assets/iot-maintenance/4f1e7f40558d020b9712.png" alt=""><img class="monitoring-offline" src="../assets/iot-maintenance/4c8ada49146d4e8fa74d.png" alt=""></div>
-<div class="monitoring-piece monitoring-machine monitoring-machine--left"><img class="monitoring-online" src="../assets/iot-maintenance/c398374c3d2621648110.png" alt=""></div>
-<div class="monitoring-piece monitoring-machine monitoring-machine--right"><img class="monitoring-online" src="../assets/iot-maintenance/c398374c3d2621648110.png" alt=""><img class="monitoring-offline" src="../assets/iot-maintenance/2e55b8aa80c6b3642e80.png" alt=""></div>
-<div class="monitoring-piece monitoring-machine monitoring-machine--front"><img class="monitoring-online" src="../assets/iot-maintenance/c398374c3d2621648110.png" alt=""><img class="monitoring-offline" src="../assets/iot-maintenance/3af824c43c9cd5cbe375.png" alt=""></div>
+<div class="monitoring-piece monitoring-node monitoring-node--left"><img class="monitoring-online" src="../assets/iot-maintenance/4f1e7f40558d020b9712.png" alt=""><span class="monitoring-signal" style="--signal-delay: -1s"></span></div>
+<div class="monitoring-piece monitoring-node monitoring-node--right"><img class="monitoring-online" src="../assets/iot-maintenance/4f1e7f40558d020b9712.png" alt=""><img class="monitoring-offline" src="../assets/iot-maintenance/4c8ada49146d4e8fa74d.png" alt=""><span class="monitoring-signal monitoring-signal--lost" style="--signal-delay: -4s"></span></div>
+<div class="monitoring-piece monitoring-machine monitoring-machine--left"><img class="monitoring-online" src="../assets/iot-maintenance/c398374c3d2621648110.png" alt=""><span class="monitoring-signal" style="--signal-x: 35.3%; --signal-y: 31.2%; --signal-delay: -1.4s"></span><span class="monitoring-signal" style="--signal-x: 46.2%; --signal-y: 38.6%; --signal-delay: -2.1s"></span><span class="monitoring-signal" style="--signal-x: 47%; --signal-y: 44.5%; --signal-delay: -2.8s"></span><span class="monitoring-signal" style="--signal-x: 52.7%; --signal-y: 32.4%; --signal-delay: -3.5s"></span><span class="monitoring-signal" style="--signal-x: 55.2%; --signal-y: 19.6%; --signal-delay: -4.2s"></span><span class="monitoring-signal" style="--signal-x: 64%; --signal-y: 9.5%; --signal-delay: -4.9s"></span></div>
+<div class="monitoring-piece monitoring-machine monitoring-machine--right"><img class="monitoring-online" src="../assets/iot-maintenance/c398374c3d2621648110.png" alt=""><img class="monitoring-offline" src="../assets/iot-maintenance/2e55b8aa80c6b3642e80.png" alt=""><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 35.3%; --signal-y: 31.2%; --signal-delay: -1.4s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 46.2%; --signal-y: 38.6%; --signal-delay: -2.1s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 47%; --signal-y: 44.5%; --signal-delay: -2.8s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 52.7%; --signal-y: 32.4%; --signal-delay: -3.5s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 55.2%; --signal-y: 19.6%; --signal-delay: -4.2s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 64%; --signal-y: 9.5%; --signal-delay: -4.9s"></span></div>
+<div class="monitoring-piece monitoring-machine monitoring-machine--front"><img class="monitoring-online" src="../assets/iot-maintenance/c398374c3d2621648110.png" alt=""><img class="monitoring-offline" src="../assets/iot-maintenance/3af824c43c9cd5cbe375.png" alt=""><span class="monitoring-signal" style="--signal-x: 35.3%; --signal-y: 31.2%; --signal-delay: -1.4s"></span><span class="monitoring-signal" style="--signal-x: 46.2%; --signal-y: 38.6%; --signal-delay: -2.1s"></span><span class="monitoring-signal" style="--signal-x: 47%; --signal-y: 44.5%; --signal-delay: -2.8s"></span><span class="monitoring-signal" style="--signal-x: 52.7%; --signal-y: 32.4%; --signal-delay: -3.5s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 55.2%; --signal-y: 19.6%; --signal-delay: -4.2s"></span><span class="monitoring-signal" style="--signal-x: 64%; --signal-y: 9.5%; --signal-delay: -4.9s"></span></div>
   </div>
 </figure>
 </div>
@@ -927,6 +979,8 @@
 
       function updateMonitoringScene() {
         const visual = monitoringVisual.getBoundingClientRect();
+        const visible = String(visual.bottom > 0 && visual.top < innerHeight);
+        if (monitoringVisual.dataset.visible !== visible) monitoringVisual.dataset.visible = visible;
         const compact = matchMedia('(max-width: 760px)').matches;
         const focusLine = Math.min(innerHeight * .72, visual.top + (compact ? -12 : visual.height * .52));
         const state = monitoringProblem.getBoundingClientRect().top <= focusLine ? 'offline' : 'online';
