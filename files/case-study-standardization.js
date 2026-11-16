@@ -1,4 +1,4 @@
-import { createCaseStudyProcessController } from './case-study-cohesion.js?v=preview-refine-20261024';
+import { createCaseStudyProcessController } from './case-study-cohesion.js?v=point-transitions-20261116';
 import { getStandardizationMotionTime } from './case-study-standardization-state.js?v=standardization-perf2-20261116';
 import { createVisual, scenes } from './case-study-standardization-visuals.js?v=standardization-perf2-20261116';
 

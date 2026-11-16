@@ -29,8 +29,10 @@ class FieldLanguageTest(unittest.TestCase):
 
     def test_collage_preserves_original_asset_and_loads_existing_images(self):
         collage = self.html.split('<div class="cf-collage reveal"', 1)[1].split('</section>', 1)[0]
+        self.assertNotIn('figcaption', collage)
+        self.assertNotIn('field-form.png', collage)
         images = Page(collage).images
-        self.assertEqual(len(images), 3)
+        self.assertEqual(len(images), 2)
         self.assertIn('../files/hero-ui.png', [image['src'] for image in images])
         for image in images:
             self.assertTrue((ROOT / 'cases' / image['src']).is_file())
@@ -42,8 +44,8 @@ class FieldLanguageTest(unittest.TestCase):
             content = self.html.split(f'id="{section}"', 1)[1].split('</header>', 1)[0]
             self.assertNotIn('class="cf-field-example"', content)
             self.assertNotIn('class="cf-definition"', content)
-        self.assertEqual(self.html.count('class="cf-definition"'), 3)
-        self.assertEqual(self.html.count('class="cf-value"'), 1)
+        self.assertEqual(self.html.count('class="cf-definition"'), 7)
+        self.assertEqual(self.html.count('class="cf-value"'), 4)
 
     def test_navigation_ids_are_unique(self):
         self.assertEqual(len(self.page.ids), len(set(self.page.ids)))

@@ -10,25 +10,39 @@ const createElement = (tag, className, html = '') => {
   return element;
 };
 
-function createMotionPlayer(visual) {
+export function createMotionPlayer(visual, duration = 0) {
   let rendered = 0;
   let target = 0;
   let scene = 0;
   let frame = 0;
   let previousTimestamp = 0;
+  let startedAt = null;
+  let from = 0;
+  let transitionDuration = duration;
 
   function render(timestamp) {
     frame = 0;
     const elapsed = previousTimestamp ? Math.min(64, timestamp - previousTimestamp) : 16;
     previousTimestamp = timestamp;
-    rendered += (target - rendered) * (1 - Math.exp(-elapsed / 65));
-    if (Math.abs(target - rendered) < .0005) rendered = target;
+    if (duration > 0) {
+      if (startedAt === null) startedAt = timestamp;
+      const progress = Math.min(1, (timestamp - startedAt) / transitionDuration);
+      const eased = progress * progress * (3 - 2 * progress);
+      rendered = progress === 1 ? target : from + (target - from) * eased;
+    } else {
+      rendered += (target - rendered) * (1 - Math.exp(-elapsed / 65));
+      if (Math.abs(target - rendered) < .0005) rendered = target;
+    }
     visual.paint(rendered, scene);
     if (rendered !== target) frame = requestAnimationFrame(render);
   }
 
   return {
     seek(time, index, immediate = false) {
+      if (!immediate && time === target && index === scene) return;
+      from = rendered;
+      startedAt = null;
+      transitionDuration = duration * Math.max(1, Math.abs(index - scene));
       target = time;
       scene = index;
       if (immediate) {
@@ -80,7 +94,7 @@ export function createCaseStudyProcessController(frame, onNavigationChange, {
   frame.classList.add('co-frame');
   const overview = createElement('div', 'co-overview');
   const preview = createVisual({ horizontalBleedLimit: 48 });
-  const previewPlayer = createMotionPlayer(preview);
+  const previewPlayer = createMotionPlayer(preview, 800);
   overview.append(preview.element);
   const overviewGrid = frame.querySelector('.goal-overview-grid');
   overviewGrid.querySelector('.goal-overview-visual').remove();
@@ -157,8 +171,10 @@ export function createCaseStudyProcessController(frame, onNavigationChange, {
       overview.style.transform = `translateY(${getStickyEntryOffset(gridTop - top, centeredOffset)}px)`;
     }
     const { index, progress } = playback;
-    const time = index === 0 && progress <= 0 ? 0 : motionTime(index, progress, reducedMotion.matches);
-    previewPlayer.seek(time, index, true);
+    const time = index === 0 && progress <= 0 ? 0 : motionTime(index, 1, true);
+    const bounds = overviewGrid.getBoundingClientRect();
+    const offscreen = bounds.bottom <= 0 || bounds.top >= window.innerHeight;
+    previewPlayer.seek(time, index, reducedMotion.matches || offscreen);
   }
 
   function measure() {

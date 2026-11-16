@@ -1,4 +1,4 @@
-import { createCaseStudyProcessController } from './case-study-cohesion.js?v=mobile-reading-area-20261116';
+import { createCaseStudyProcessController } from './case-study-cohesion.js?v=point-transitions-20261116';
 import { createVisual, scenes } from './case-study-governance-visuals.js?v=governance-mobile-20261116';
 import { getGovernanceMotionTime } from './case-study-governance-state.js?v=governance-polish-20261114b';
 
