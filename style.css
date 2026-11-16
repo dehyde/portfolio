@@ -79,3 +79,6 @@
 .book,.book:hover,.book.selected,.book:focus-visible{transform-origin:center;transform:translate(var(--dx,0px),var(--dy,0px)) rotate(var(--angle,0rad))}
 
 #reset-books{font:inherit;color:inherit;border:0;border-bottom:1px solid currentColor;background:none;padding:0;margin-left:6px;cursor:pointer}.shelf-wrap,.books{overflow:visible}.book{will-change:transform}
+
+/* Workplan: three distinct, legible source screenshots. */
+.workplan-preview .timeline-page{height:auto}.workplan-preview .timeline-page>img{width:100%;height:auto}.workplan-preview .create-detail{height:auto}.workplan-preview .create-detail>img{position:static;width:100%;height:auto}.workplan-preview .duration-detail{height:auto}.workplan-preview .duration-detail>img{position:static;width:100%;height:auto}
