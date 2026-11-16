@@ -82,3 +82,39 @@
 
 /* Workplan: three distinct, legible source screenshots. */
 .workplan-preview .timeline-page{height:auto}.workplan-preview .timeline-page>img{width:100%;height:auto}.workplan-preview .create-detail{height:auto}.workplan-preview .create-detail>img{position:static;width:100%;height:auto}.workplan-preview .duration-detail{height:auto}.workplan-preview .duration-detail>img{position:static;width:100%;height:auto}
+
+/* Title marker and outward-facing screenshot motion. */
+.project h3 .title-highlight{
+  -webkit-box-decoration-break:clone;box-decoration-break:clone;
+  background-image:linear-gradient(transparent 48%,#f6e99f 48%,#f6e99f 91%,transparent 91%);
+  background-repeat:no-repeat;background-position:0 0;background-size:100% 100%;
+  transition:background-size .55s cubic-bezier(.18,.7,.2,1);
+}
+@media(hover:hover){
+  .card:hover .title-highlight,.card:focus-visible .title-highlight{
+    background-image:linear-gradient(transparent 31%,#f5e482 31%,#f5e482 94%,transparent 94%);
+    animation:marker-sweep .58s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes marker-sweep{from{background-size:0% 100%}to{background-size:100% 100%}}
+  .card:hover .custom-preview{background:#667d4d}
+  .card:hover .workplan-preview{background:#ecd15c}
+  .card:hover .augury-preview{background:#376cb1}
+  .card{overflow:visible}
+  .preview{clip-path:inset(-72px 0 0 -80px);overflow:visible}
+  .workplan .preview{clip-path:inset(-72px -80px 0 0)}
+  .card:hover .account-page,.card:hover .health-page{transform:translate(-7%,-7%) scale(1.08)}
+  .card:hover .parameter-detail,.card:hover .router-pop{transform:translate(-12%,-4%) scale(1.07)}
+  .card:hover .battery-pop{transform:translate(-14%,-5%) scale(1.07)}
+  .workplan .card:hover .timeline-page{transform:translate(7%,-7%) scale(1.08) rotate(1deg)}
+  .workplan .card:hover .create-detail{transform:translate(17%,-5%) scale(1.07) rotate(2deg)}
+  .workplan .card:hover .duration-detail{transform:translate(8%,-5%) scale(1.07) rotate(-1deg)}
+  @media(max-width:760px){
+    .workplan .preview{clip-path:inset(-72px 0 0 -80px)}
+    .workplan .card:hover .timeline-page{transform:translate(-7%,-7%) scale(1.08) rotate(-1deg)}
+    .workplan .card:hover .create-detail{transform:translate(-10%,-5%) scale(1.07) rotate(2deg)}
+    .workplan .card:hover .duration-detail{transform:translate(-8%,-5%) scale(1.07) rotate(-1deg)}
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .card:hover .title-highlight,.card:focus-visible .title-highlight{animation:none}
+}
