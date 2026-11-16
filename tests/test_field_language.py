@@ -38,8 +38,8 @@ class FieldLanguageTest(unittest.TestCase):
             self.assertTrue(int(image['width']) > 0 and int(image['height']) > 0)
 
     def test_field_examples_appear_in_relevant_sections(self):
-        for section in ('use-aec-data-components', 'keep-module-controls', 'find-existing-definitions'):
-            content = self.html.split(f'id="{section}"', 1)[1].split('</section>', 1)[0]
+        for section in ('project-flexibility', 'reuse-before-creation'):
+            content = self.html.split(f'id="{section}"', 1)[1].split('</header>', 1)[0]
             self.assertIn('class="cf-field-example"', content)
             self.assertIn('class="cf-definition"', content)
         self.assertEqual(self.html.count('class="cf-definition"'), 8)

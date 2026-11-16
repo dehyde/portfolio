@@ -1039,6 +1039,20 @@
             <figure class="goal-overview-visual"><img src="../files/components-map.png" alt="Map of shared AEC Data components and their Construction Cloud uses" /></figure>
           </div>
           <p class="goal-section-outcome">Reusing Platform Data components inside familiar Construction Cloud flows kept the shared definition model consistent across products while preserving the navigation and controls project teams expected.</p>
+                  <div class="cf-field-examples">
+              <figure class="cf-field-example" aria-label="Illustrative shared Fire rating definition across Revit and Construction Cloud">
+                <figcaption class="type-caption">One definition across products</figcaption>
+                <div class="cf-field-path">
+                  <div class="cf-field-stop"><span class="type-caption">Revit / AEC Data</span><span class="cf-definition">Fire rating</span></div>
+                  <span class="cf-field-link" aria-hidden="true"></span>
+                  <div class="cf-field-stop"><span class="type-caption">ACC / Submittals</span><span class="cf-definition">Fire rating</span></div>
+                </div>
+              </figure>
+              <figure class="cf-field-example" aria-label="Illustrative Finish definition with a saved Painted value">
+                <figcaption class="type-caption">A definition and its saved value</figcaption>
+                <span class="cf-definition">Finish<span class="cf-value">Painted</span></span>
+              </figure>
+          </div>
         </header>
 
         <article class="goal-takeover" data-goal-takeover aria-hidden="true">
@@ -1049,14 +1063,6 @@
             <p class="subsection-summary type-body-reading">AEC Data already provided components to browse, create, and edit reusable data definitions.</p>
             <div class="subsection-evidence">
               <p class="type-body-reading">The existing platform model gave Construction Cloud a shared foundation for data definitions. Reusing it avoided a separate model for Submittals, while leaving room to adapt the surrounding interface for project workflows.</p>
-              <figure class="cf-field-example" aria-label="Illustrative shared Fire rating definition across Revit and Construction Cloud">
-                <figcaption class="type-caption">One definition across products</figcaption>
-                <div class="cf-field-path">
-                  <div class="cf-field-stop"><span class="type-caption">Revit / AEC Data</span><span class="cf-definition">Fire rating</span></div>
-                  <span class="cf-field-link" aria-hidden="true"></span>
-                  <div class="cf-field-stop"><span class="type-caption">ACC / Submittals</span><span class="cf-definition">Fire rating</span></div>
-                </div>
-              </figure>
               <figure class="case-figure">
                 <img src="../files/components-map.png" alt="Map of shared AEC Data components and their Construction Cloud uses" />
                 <figcaption class="type-caption">Shared components provide one data-definition foundation without requiring identical product interfaces.</figcaption>
@@ -1095,10 +1101,6 @@
             <p class="subsection-summary type-body-reading">A shared definition can be used differently in each Construction Cloud module.</p>
             <div class="subsection-evidence">
               <p class="type-body-reading">A field can be required, optional, pre-populated, or organized by category for different reasons in different modules. The shared definition model carries common data, while each module keeps the controls that determine how its users work with that data.</p>
-              <figure class="cf-field-example" aria-label="Illustrative Finish definition with a saved Painted value">
-                <figcaption class="type-caption">A definition and its saved value</figcaption>
-                <span class="cf-definition">Finish<span class="cf-value">Painted</span></span>
-              </figure>
             </div>
           </div>
         </section>
@@ -1125,6 +1127,16 @@
             <figure class="goal-overview-visual"><img src="../files/selection-flow.png" alt="Workflow that presents existing data definitions before creating a new definition" /></figure>
           </div>
           <p class="goal-section-outcome">Showing existing definitions before creation made reuse the default path while preserving a way to create project-specific fields; a duplicate check within creation remained a proposal.</p>
+                  <div class="cf-field-examples">
+              <figure class="cf-field-example" aria-label="Illustrative existing Approved vendors definition selected for a module">
+                <figcaption class="type-caption">Reuse an existing definition</figcaption>
+                <div class="cf-field-path">
+                  <div class="cf-field-stop"><span class="type-caption">Account library</span><span class="cf-definition">Approved vendors</span></div>
+                  <span class="cf-field-link" aria-hidden="true"></span>
+                  <div class="cf-field-stop"><span class="type-caption">Module fields</span><span class="cf-definition">Approved vendors</span></div>
+                </div>
+              </figure>
+          </div>
         </header>
 
         <article class="goal-takeover" data-goal-takeover aria-hidden="true">
@@ -1135,14 +1147,6 @@
             <p class="subsection-summary type-body-reading">The add-field flow starts with existing definitions and search.</p>
             <div class="subsection-evidence">
               <p class="type-body-reading">When project users need a new property, they do not always know whether a suitable definition already exists. Showing the available set before creation makes reuse visible at the point of decision.</p>
-              <figure class="cf-field-example" aria-label="Illustrative existing Approved vendors definition selected for a module">
-                <figcaption class="type-caption">Reuse an existing definition</figcaption>
-                <div class="cf-field-path">
-                  <div class="cf-field-stop"><span class="type-caption">Account library</span><span class="cf-definition">Approved vendors</span></div>
-                  <span class="cf-field-link" aria-hidden="true"></span>
-                  <div class="cf-field-stop"><span class="type-caption">Module fields</span><span class="cf-definition">Approved vendors</span></div>
-                </div>
-              </figure>
               <figure class="case-figure">
                 <img src="../files/selection-flow.png" alt="Workflow that presents existing data definitions before creating a new definition" />
                 <figcaption class="type-caption">Existing definitions appear before the project-specific creation path, making reuse the normal first action.</figcaption>

@@ -48,7 +48,8 @@
 .cf-collage-form figcaption { margin-top: 10px; }
 .cf-collage-use { position: absolute; right: 3%; bottom: 0; z-index: 4; }
 .cf-collage-use .cf-collage-label { margin-bottom: 7px; }
-.cf-field-example { margin: 28px 0 0; }
+.cf-field-examples { display: flex; flex-wrap: wrap; gap: 32px 52px; margin-top: 28px; }
+.cf-field-example { margin: 0; min-width: 0; }
 .cf-field-example figcaption { margin-bottom: 12px; }
 .cf-field-path { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
 .cf-field-stop { display: grid; gap: 8px; justify-items: start; }
