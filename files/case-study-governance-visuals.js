@@ -6,57 +6,80 @@ export const scenes = [
   { title: 'Show removed values', note: 'The existing item displays the removed value with an explicit indicator, while it is unavailable for new selections.' },
 ];
 
+let visualId = 0;
+
 export function createVisual() {
+  const prefix = `gv-${++visualId}`;
   const element = document.createElement('div');
   element.className = 'co-visual gv-visual';
   element.setAttribute('role', 'img');
-  element.innerHTML = `<svg class="gv-art" viewBox="0 0 1200 900" aria-hidden="true">
-    <g class="gv-world">
-      <g class="gv-account">
-        <polygon class="gv-slab-side" points="128,200 360,320 360,340 128,220"/>
-        <polygon class="gv-slab-front" points="360,320 1072,220 1072,240 360,340"/>
-        <polygon class="gv-slab-top" points="128,200 840,100 1072,220 360,320"/>
-        <text class="gv-person-label" x="165" y="72">ACCOUNT ADMIN</text>
-        <text class="gv-action-label" x="165" y="105">Manages shared field definitions</text>
-        <g class="gv-shared-token">
-          <rect x="320" y="125" width="500" height="152" rx="3"/>
-          <text class="gv-token-kicker" x="346" y="157">ACCOUNT FIELD DEFINITION</text>
-          <g class="gv-definition gv-shared-definition"><rect x="346" y="165" width="254" height="36" rx="5"/><text class="gv-definition-label" x="358" y="190">MEP approval</text></g>
-          <text class="gv-token-detail" x="346" y="220">Available options</text>
-          <text class="gv-token-value" x="346" y="254">Electrical</text>
-          <g class="gv-option-token"><text class="gv-token-value" x="510" y="254">Plumbing</text><path class="gv-option-strike" d="M 506 246 L 636 246" pathLength="1"/></g>
-          <text class="gv-token-value" x="668" y="254">HVAC</text>
-        </g>
-        <text class="gv-account-action" x="840" y="175">Removes an available option</text>
+  element.innerHTML = `<svg class="gv-art" viewBox="0 0 800 850" aria-hidden="true">
+    <defs>
+      <g id="${prefix}-plane">
+        <path class="gv-plane-edge" d="M53.589838 260 400 460 746.410162 260 746.410162 264 400 464 53.589838 264Z"/>
+        <polygon class="gv-plane-face" points="400,60 746.410162,260 400,460 53.589838,260"/>
+        <path class="gv-plane-rim" d="M53.589838 260 400 460 746.410162 260"/>
       </g>
-      <path class="gv-connection" d="M 600 328 L 600 392"/>
+      <clipPath id="${prefix}-project-clip"><polygon points="400,400 746.410162,600 400,800 53.589838,600"/></clipPath>
+      <filter id="${prefix}-shadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="16"/></filter>
+      <!-- Lucide user-round (ISC), with a filled silhouette. -->
+      <g id="${prefix}-person" class="gv-person-icon"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></g>
+    </defs>
+    <g class="gv-world">
+      <use class="gv-plane" href="#${prefix}-plane" transform="translate(0 340)"/>
+      <g class="gv-shadow-layer" clip-path="url(#${prefix}-project-clip)">
+        <polygon class="gv-cast-shadow" points="430,300 776.410162,500 430,700 83.589838,500" filter="url(#${prefix}-shadow)"/>
+      </g>
+      <path class="gv-connection" d="M684 295V548"/>
+      <g class="gv-account">
+        <use class="gv-plane" href="#${prefix}-plane"/>
+        <text class="gv-scope-label" x="48" y="65">Account</text>
+        <text class="gv-action-label gv-scope-detail" x="48" y="92">Shared across projects</text>
+        <use href="#${prefix}-person" transform="translate(48 129)"/>
+        <text class="gv-person-label" x="82" y="149">Account admin</text>
+        <text class="gv-action-label" x="82" y="178">Manages shared definitions</text>
+        <g class="gv-shared-token">
+          <g class="gv-definition gv-shared-definition"><rect x="330" y="191" width="194" height="40" rx="5"/><text class="gv-definition-label" x="342" y="219">MEP approval</text></g>
+          <text class="gv-token-value" x="330" y="268">Electrical</text>
+          <g class="gv-option-token"><text class="gv-token-value" x="432" y="268">Plumbing</text><path class="gv-option-strike" d="M430 261H510" pathLength="1"/></g>
+          <text class="gv-token-value" x="540" y="268">HVAC</text>
+          <text class="gv-account-action" x="330" y="304">Plumbing removed from the choices</text>
+        </g>
+      </g>
       <g class="gv-projects">
-        <polygon class="gv-slab-side" points="128,750 360,860 360,880 128,770"/>
-        <polygon class="gv-slab-front" points="360,860 1072,760 1072,780 360,880"/>
-        <polygon class="gv-slab-top" points="128,750 840,650 1072,760 360,860"/>
-        <text class="gv-project-label" x="145" y="410">PROJECT A</text>
-        <text class="gv-person-label" x="165" y="458">PROJECT ADMIN</text>
-        <text class="gv-action-label" x="165" y="489">Creates a project-only field</text>
-        <g class="gv-private-token"><rect x="585" y="410" width="365" height="90" rx="3"/><text class="gv-token-kicker" x="610" y="442">PROJECT-ONLY DEFINITION</text><g class="gv-definition gv-private-definition"><rect x="610" y="450" width="203" height="37" rx="5"/><text class="gv-definition-label" x="622" y="476">Local field</text></g></g>
-        <g class="gv-persona-engineer"><text class="gv-person-label" x="165" y="598">PROJECT ENGINEER</text><text class="gv-action-label" x="165" y="629">Uses the field on a project item</text></g>
-        <g class="gv-retained-token"><rect x="585" y="540" width="365" height="150" rx="3"/><text class="gv-token-kicker" x="610" y="572">EXISTING PROJECT ITEM</text><g class="gv-retained-definition"><rect class="gv-definition" x="610" y="588" width="326" height="44" rx="5"/><text class="gv-definition-label" x="622" y="617">MEP approval</text><rect class="gv-value-surface" x="806" y="593" width="125" height="34" rx="4"/><text class="gv-value-label" x="818" y="616">Plumbing</text></g><text class="gv-cues gv-removed-label" x="610" y="654">Removed from available options</text><text class="gv-token-detail" x="610" y="681">Previously saved on an item</text></g>
-        <g class="gv-cues"><text class="gv-clarity-label" x="585" y="735">Not available for new selections</text></g>
+        <text class="gv-scope-label" x="48" y="419">Project</text>
+        <text class="gv-action-label gv-scope-detail" x="48" y="446">Local definitions and saved data</text>
+        <use href="#${prefix}-person" transform="translate(48 488)"/>
+        <text class="gv-person-label" x="82" y="508">Project admin</text>
+        <text class="gv-action-label" x="82" y="537">Creates a project-only field</text>
+        <g class="gv-private-token">
+          <g class="gv-definition gv-private-definition"><rect x="330" y="514" width="236" height="40" rx="5"/><text class="gv-definition-label" x="342" y="542">Inspection zone</text></g>
+          <text class="gv-token-detail" x="330" y="584">Only in this project</text>
+        </g>
+        <g class="gv-persona-engineer">
+          <use href="#${prefix}-person" transform="translate(48 560)"/>
+          <text class="gv-person-label" x="82" y="580">Project engineer</text>
+          <text class="gv-action-label" x="82" y="609">Uses fields on project items</text>
+        </g>
+        <g class="gv-retained-token">
+          <g class="gv-retained-definition"><rect class="gv-definition" x="330" y="632" width="310" height="46" rx="5"/><text class="gv-definition-label" x="342" y="663">MEP approval</text><rect class="gv-value-surface" x="522" y="636" width="114" height="38" rx="3"/><text class="gv-value-label" x="534" y="661">Plumbing</text></g>
+          <text class="gv-retained-note" x="330" y="712">Previously saved value stays.</text>
+          <text class="gv-cues gv-removed-label" x="330" y="742">Removed from new selections</text>
+        </g>
       </g>
     </g>
   </svg>`;
   const find = (selector) => element.querySelector(selector);
   const nodes = {
-    world: find('.gv-world'), account: find('.gv-account'), private: find('.gv-private-token'),
-    strike: find('.gv-option-strike'), option: find('.gv-option-token'), retained: find('.gv-retained-token'),
-    engineer: find('.gv-persona-engineer'), cues: element.querySelectorAll('.gv-cues'), accountAction: find('.gv-account-action'),
+    private: find('.gv-private-token'), strike: find('.gv-option-strike'), option: find('.gv-option-token'),
+    retained: find('.gv-retained-token'), engineer: find('.gv-persona-engineer'),
+    cues: element.querySelectorAll('.gv-cues'), accountAction: find('.gv-account-action'),
   };
   function paint(time, scene = Math.min(2, Math.floor(time))) {
-    const pose = getGovernancePose(time, window.matchMedia('(max-width: 900px)').matches);
+    const pose = getGovernancePose(time);
     const safeScene = Number.isFinite(scene) ? Math.max(0, Math.min(2, Math.floor(scene))) : 0;
     element.dataset.scene = String(safeScene);
     element.setAttribute('aria-label', scenes[safeScene].note);
-    nodes.world.setAttribute('transform', '');
-    nodes.account.style.opacity = '1';
     nodes.private.style.opacity = pose.privateOpacity;
     nodes.private.setAttribute('transform', `translate(0 ${pose.privateShift})`);
     nodes.strike.style.opacity = pose.removalProgress;
@@ -65,7 +88,7 @@ export function createVisual() {
     nodes.retained.style.opacity = pose.retainedOpacity;
     nodes.engineer.style.opacity = pose.engineerOpacity;
     nodes.cues.forEach((node) => { node.style.opacity = pose.cuesOpacity; });
-    element.querySelectorAll('.gv-account-action').forEach((node) => { node.style.opacity = pose.removalProgress; });
+    nodes.accountAction.style.opacity = pose.removalProgress;
   }
   paint(0);
   return { element, paint };

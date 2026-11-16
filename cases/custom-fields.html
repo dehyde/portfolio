@@ -286,8 +286,9 @@
     .rough-ink::after { position: absolute; inset: 0; z-index: 1; content: attr(data-rough-ink); color: var(--surface-terminal); clip-path: inset(0 100% 0 0); pointer-events: none; white-space: nowrap; }
     .rough-ink.rough-ink-visible::after { animation: rough-ink-reveal 360ms ease-out forwards; }
     @keyframes rough-ink-reveal { to { clip-path: inset(0 0 0 0); } }
-    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 580ms ease, transform 700ms cubic-bezier(.2,.8,.2,1); }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal { opacity: 1; transform: none; transition: opacity 580ms ease, transform 700ms cubic-bezier(.2,.8,.2,1); }
+    .reveal.reveal-pending { opacity: 0; transform: translateY(22px); }
+    .reveal.reveal-pending.visible { opacity: 1; transform: translateY(0); }
 
     .hero {
       min-height: 90vh;
@@ -739,7 +740,7 @@
   </style>
   <link rel="stylesheet" href="../files/case-study-cohesion.css?v=preview-left-fade-20261115" />
   <link rel="stylesheet" href="../files/case-study-standardization.css?v=standardization-perf2-20261116" />
-  <link rel="stylesheet" href="../files/case-study-governance.css?v=governance-field-values-20261116" />
+  <link rel="stylesheet" href="../files/case-study-governance.css?v=governance-isometric-shadow-20261116" />
   <link rel="stylesheet" href="../files/case-study-field-language.css?v=collage-visible-fields-20261116" />
 <style>.copy-edit-panel{display:none!important}</style></head>
 <body><div class="case-loading" role="status" aria-live="polite"><div class="case-loading-inner"><div class="case-loading-mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="case-loading-title">Opening case study</div><div class="case-loading-note">Getting the details ready…</div></div></div><script>(()=>{const overlay=document.querySelector('.case-loading'),started=performance.now();let finished=false;function reveal(){if(finished)return;finished=true;const remaining=Math.max(0,400-(performance.now()-started));setTimeout(()=>{overlay.classList.add('is-ready');setTimeout(()=>overlay.remove(),350)},remaining)}setTimeout(reveal,5000);document.addEventListener('DOMContentLoaded',()=>{const visible=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.width&&r.height&&r.bottom>0&&r.top<innerHeight*1.1}).slice(0,8);const loadImage=img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})});Promise.all(visible.map(loadImage)).then(reveal,reveal)},{once:true})})();</script>
@@ -1454,7 +1455,7 @@
       import { buildCopyKey, collectCopyChanges, serializeCopyChanges } from '../files/case-study-copy-edit-state.js';
       import { createCohesionController } from '../files/case-study-cohesion.js?v=preview-light-shadow-20261115';
       import { createStandardizationController } from '../files/case-study-standardization.js?v=standardization-perf2-20261116';
-      import { createGovernanceController } from '../files/case-study-governance.js?v=governance-field-values-20261116';
+      import { createGovernanceController } from '../files/case-study-governance.js?v=governance-isometric-shadow-20261116';
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const revealObserver = new IntersectionObserver((entries) => {
@@ -1462,7 +1463,10 @@
     }, { threshold: .12 });
       document.querySelectorAll('.reveal').forEach((element) => {
         if (reduceMotion) element.classList.add('visible');
-        else revealObserver.observe(element);
+        else {
+          revealObserver.observe(element);
+          element.classList.add('reveal-pending');
+        }
       });
 
       const roughAnnotationElements = [...document.querySelectorAll('[data-rough-annotation]')];
