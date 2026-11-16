@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Custom data management across account and project levels — Tom Bar-Gal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&amp;family=Recursive:CASL,CRSV,MONO,slnt,wght@0..1,0..1,0..1,-15..0,300..900&amp;display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Typography primitives. */
+      --font-editorial: "Newsreader", Georgia, serif;
+      --font-system: "Recursive", Arial, sans-serif;
+      --font-system-formal: "CASL" .08, "CRSV" .5, "MONO" 0, "slnt" 0;
+
+      /* Semantic typography roles. Content structures consume these roles. */
+      --type-display-size: clamp(54px, 7vw, 110px);
+      --type-hero-size: clamp(52px, 6.4vw, 100px);
+      --type-proposition-size: clamp(38px, 4.8vw, 74px);
+      --type-section-size: clamp(36px, 4vw, 64px);
+      --type-summary-size: clamp(32px, 3.7vw, 58px);
+      --type-subsection-size: clamp(31px, 3.2vw, 52px);
+      --type-subsection-summary-size: clamp(27px, 2.15vw, 36px);
+      --type-detail-size: clamp(20px, 1.75vw, 28px);
+      --type-overview-title-size: clamp(21px, 1.55vw, 26px);
+      --type-reading-size: clamp(19px, 1.35vw, 22px);
+      --type-overview-body-size: clamp(18px, 1.1vw, 20px);
+      --type-support-size: clamp(17px, 1.12vw, 18px);
+      --type-label-size: 14px;
+      --type-caption-size: 13px;
+      --type-interface-size: 14px;
+
+      /* Temporary aliases for layout components still consuming family tokens. */
+      --serif: var(--font-editorial);
+      --sans: var(--font-system);
+
+      /* One tonal family; roles, rather than page-by-page choices. */
+      --surface-canvas: #202320;
+      --surface-chrome: #191c19;
+      --surface-terminal: #151815;
+      --surface-interactive: #242824;
+
+      --text-primary: #eff2ed;
+      --text-summary: #d3dad2;
+      --text-reading: #e2e7e1;
+      --text-support: #bcc4bc;
+      --text-secondary: #a7afa8;
+      --text-muted: #858e86;
+      --text-subtle: #7d867e;
+      --accent: #d4c451;
+      --hairline: rgba(239, 242, 237, .11);
+
+      --bar-h: 64px;
+      --rail-w: clamp(210px, 16vw, 240px);
+      --section-rail: clamp(210px, 20vw, 360px);
+      --section-gutter: clamp(28px, 6vw, 108px);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-x: clip; background: var(--surface-terminal); }
+    body { margin: 0; color: var(--text-primary); background: var(--surface-canvas); font-family: var(--font-system); font-variation-settings: var(--font-system-formal); }
+    button, a { color: inherit; font: inherit; }
+    button { border: 0; }
+    a { text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    ::selection { color: var(--surface-chrome); background: var(--accent); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 80;
+      min-height: var(--bar-h);
+      padding: 0 clamp(20px, 4vw, 68px);
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      border-bottom: 1px solid var(--hairline);
+      color: var(--text-primary);
+      background: var(--surface-chrome);
+      font: 480 var(--type-interface-size)/1.3 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+    }
+    .topbar-back { flex: 0 0 auto; color: var(--text-secondary); }
+    .case-name { min-width: 0; overflow: hidden; font-weight: 560; text-overflow: ellipsis; white-space: nowrap; }
+    .copy-edit-panel {
+      position: fixed;
+      right: clamp(16px, 2vw, 28px);
+      bottom: clamp(16px, 2vw, 28px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border: 1px solid var(--hairline);
+      background: color-mix(in srgb, var(--surface-chrome) 94%, transparent);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, .22);
+      backdrop-filter: blur(12px);
+    }
+    .copy-edit-panel button { min-height: 34px; padding: 0 11px; color: var(--text-secondary); background: transparent; cursor: pointer; }
+    .copy-edit-panel button:hover { color: var(--text-primary); }
+    .copy-edit-panel .copy-edit-toggle { color: var(--text-primary); background: var(--surface-interactive); }
+    .copy-edit-actions, .copy-edit-status { display: none; }
+    .copy-edit-panel[data-editing="true"] { gap: 6px; }
+    .copy-edit-panel[data-editing="true"] .copy-edit-actions { display: flex; align-items: center; gap: 2px; }
+    .copy-edit-panel[data-editing="true"] .copy-edit-status { display: block; max-width: 20ch; padding: 0 7px; color: var(--text-muted); }
+    html[data-copy-editing="true"] [data-copy-editable] {
+      outline: 1px dashed color-mix(in srgb, var(--accent) 68%, transparent);
+      outline-offset: 5px;
+      cursor: text;
+    }
+    html[data-copy-editing="true"] [data-copy-editable]:focus { outline-style: solid; background: color-mix(in srgb, var(--accent) 9%, transparent); }
+
+    .case-shell { display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr); }
+    .rail {
+      position: sticky;
+      top: var(--bar-h);
+      z-index: 30;
+      height: calc(100vh - var(--bar-h));
+      padding: 26px 20px 24px clamp(18px, 2.6vw, 38px);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      border-right: 1px solid var(--hairline);
+      background: var(--surface-chrome);
+      font-family: var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+    }
+    .progress { position: fixed; top: var(--bar-h); left: 0; right: 0; z-index: 90; height: 2px; background: var(--hairline); }
+    .progress span { display: block; width: var(--progress, 0%); height: 100%; background: var(--accent); transition: width 160ms linear; }
+    .rail-main { display: grid; gap: 4px; }
+    .rail-main > a { position: relative; padding: 8px 0 8px 16px; color: var(--text-subtle); font-size: 13px; line-height: 1.25; transition: color 180ms ease, padding 280ms cubic-bezier(.2,.8,.2,1); }
+    .rail-main > a::before { content: ""; position: absolute; left: 0; top: 50%; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .22; transform: translateY(-50%); }
+    .rail-main > a.read { color: #9ba49c; }
+    .rail-main > a.read::before { opacity: .72; background: var(--accent); }
+    .rail-main > a.active { max-width: 100%; overflow-wrap: anywhere; padding: 10px 0 12px; color: var(--text-primary); font: 470 clamp(25px, 2vw, 31px)/.98 var(--font-editorial); font-variation-settings: normal; letter-spacing: -.04em; }
+    .rail-main > a.active::before { display: none; }
+    .nested-rail {
+      margin: 2px 0 12px;
+      padding: 0 0 0 14px;
+      display: grid;
+      gap: 7px;
+      list-style: none;
+    }
+    .nested-rail a, .nested-rail button {
+      padding: 0;
+      display: grid;
+      grid-template-columns: 19px 1fr;
+      gap: 7px;
+      color: var(--text-muted);
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      font: 470 var(--type-caption-size)/1.4 var(--font-system);
+    }
+    .nested-rail a.active, .nested-rail button.active { color: var(--accent); }
+    .nested-rail .number { font-variant-numeric: tabular-nums; }
+    .nested-rail.goal-nested { display: none; }
+    .nested-rail.goal-nested.expanded { display: grid; }
+    .rail-group-label {
+      margin: 14px 0 4px;
+      color: var(--text-muted);
+      font: 540 11px/1.35 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .rail-foot { margin-top: auto; }
+
+    main { width: min(100%, 1880px); min-width: 0; margin-inline: auto; }
+    .chapter { scroll-margin-top: calc(var(--bar-h) + 24px); }
+    main > .chapter + .chapter { position: relative; }
+    main > .chapter + .chapter::before { content: ""; position: absolute; z-index: 20; top: 0; right: 0; left: 0; height: 1px; background: var(--hairline); pointer-events: none; }
+    .section-divider {
+      min-height: clamp(210px, 23vw, 340px);
+      padding: clamp(64px, 8vw, 112px) var(--section-gutter);
+      display: grid;
+      align-items: center;
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+      background: var(--surface-chrome);
+    }
+    .workshop-bridge {
+      padding: clamp(64px, 8vw, 112px) var(--section-gutter);
+      border-top: 1px solid var(--hairline);
+      border-bottom: 1px solid var(--hairline);
+      background: var(--surface-chrome);
+    }
+    .workshop-bridge-heading { margin-bottom: clamp(38px, 5vw, 72px); }
+    .workshop-bridge-heading .type-label { margin-bottom: 16px; }
+    .workshop-bridge-visual { width: min(100%, 1540px); max-width: 100%; margin: 0 auto; }
+    .workshop-bridge-visual img { width: 100%; max-height: min(58vw, 760px); object-fit: contain; background: var(--surface-interactive); }
+    .workshop-bridge-visual figcaption { max-width: 60em; margin-top: 14px; }
+    h2, h3, h4, p { margin: 0; }
+
+    .type-display {
+      max-width: 12ch;
+      font: 400 var(--type-display-size)/.94 var(--font-editorial);
+      font-variation-settings: normal;
+      letter-spacing: -.054em;
+    }
+    .type-proposition {
+      max-width: 15ch;
+      font: 400 var(--type-proposition-size)/.97 var(--font-editorial);
+      font-variation-settings: normal;
+      letter-spacing: -.052em;
+    }
+    .type-section {
+      max-width: 14ch;
+      font: 510 var(--type-section-size)/.98 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+      letter-spacing: -.045em;
+    }
+    .type-summary {
+      max-width: 22ch;
+      color: var(--text-summary);
+      font: 350 var(--type-summary-size)/1.08 var(--font-editorial);
+      font-variation-settings: normal;
+      letter-spacing: -.018em;
+    }
+    .type-subsection {
+      max-width: 18ch;
+      font: 510 var(--type-subsection-size)/1 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+      letter-spacing: -.035em;
+    }
+    .type-detail {
+      font: 500 var(--type-detail-size)/1.1 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+      letter-spacing: -.025em;
+    }
+    .type-body-reading {
+      max-width: 32em;
+      color: var(--text-reading);
+      font: 340 var(--type-reading-size)/1.72 var(--font-editorial);
+      font-variation-settings: normal;
+      font-optical-sizing: auto;
+      letter-spacing: .009em;
+    }
+    .type-body-summary {
+      max-width: 34ch;
+      color: var(--text-reading);
+      font: 340 var(--type-overview-body-size)/1.56 var(--font-editorial);
+      font-variation-settings: normal;
+      font-optical-sizing: auto;
+      letter-spacing: .012em;
+    }
+    .type-body-support {
+      max-width: 33em;
+      color: var(--text-support);
+      font: 440 var(--type-support-size)/1.58 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+      letter-spacing: .002em;
+    }
+    .type-label {
+      color: var(--accent);
+      font: 520 var(--type-label-size)/1.4 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+    }
+    .type-caption {
+      max-width: 60em;
+      color: var(--text-muted);
+      font: 440 var(--type-caption-size)/1.5 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+    }
+    .type-interface {
+      font: 480 var(--type-interface-size)/1.3 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+    }
+    .type-body-reading + .type-body-reading { margin-top: 1.2em; }
+    .editorial-aside { font: italic 470 var(--type-support-size)/1.5 var(--font-editorial); font-variation-settings: normal; }
+    .editorial-pull { font: italic 470 clamp(30px, 3vw, 48px)/1.08 var(--font-editorial); font-variation-settings: normal; }
+    .rough-ink { position: relative; display: inline-block; }
+    .rough-ink::after { position: absolute; inset: 0; z-index: 1; content: attr(data-rough-ink); color: var(--surface-terminal); clip-path: inset(0 100% 0 0); pointer-events: none; white-space: nowrap; }
+    .rough-ink.rough-ink-visible::after { animation: rough-ink-reveal 360ms ease-out forwards; }
+    @keyframes rough-ink-reveal { to { clip-path: inset(0 0 0 0); } }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 580ms ease, transform 700ms cubic-bezier(.2,.8,.2,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .hero {
+      min-height: 90vh;
+      padding: clamp(72px, 10vh, 126px) clamp(28px, 6vw, 96px) 0;
+      background: var(--surface-canvas);
+    }
+    .hero-copy { display: block; }
+    .hero h2 { margin-top: 26px; }
+    .hero .type-display { max-width: min(15ch, 1220px); font-size: var(--type-hero-size); }
+    .hero-aside { max-width: 40em; margin-top: clamp(40px, 5vw, 72px); padding-bottom: 8px; }
+    .hero-aside .type-body-reading { max-width: 36em; line-height: 1.58; }
+    .hero-aside em { display: block; margin-top: 30px; color: var(--accent); }
+    .hero-visual { min-height: min(72vh, 760px); margin-top: 76px; padding: clamp(26px, 4vw, 62px); display: grid; place-items: center; overflow: hidden; background: var(--surface-canvas); }
+    .hero-visual img { width: min(880px, 78%); max-height: 660px; object-fit: contain; }
+
+    .chapter-opener {
+      padding: clamp(74px, 9vw, 132px) var(--section-gutter) clamp(68px, 8vw, 118px);
+      background: var(--surface-canvas);
+    }
+    .chapter-heading .type-label { margin-bottom: 16px; }
+    .chapter-title { max-width: 29ch; }
+    .chapter-summary { max-width: 29ch; margin-top: clamp(34px, 5vw, 72px); }
+    .goal-overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr);
+      gap: clamp(32px, 5vw, 92px);
+      margin-top: clamp(48px, 7vw, 92px);
+      align-items: stretch;
+    }
+    .goal-overview-grid--text { grid-template-columns: minmax(0, 1fr); }
+    .goal-decision-overview {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-content: start;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      list-style: none;
+    }
+    .goal-decision-column { grid-column: 1; min-width: 0; }
+    .goal-section-outcome { width: 100%; margin: clamp(32px, 4vw, 52px) 0 clamp(40px, 5vw, 68px); color: var(--text-primary); font: 400 clamp(22px, 2.1vw, 31px)/1.35 var(--font-editorial); }
+    .goal-decision-card {
+      min-height: 0;
+      padding: 0;
+      background: transparent;
+    }
+    .goal-decision-card + .goal-decision-card { margin-top: clamp(42px, 4vw, 68px); }
+    .goal-decision-card a, .goal-decision-card button, .goal-decision-static {
+      width: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      background: transparent;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .goal-decision-card .type-label { padding-top: .12em; color: var(--accent); }
+    .goal-decision-copy { min-width: 0; display: grid; gap: clamp(18px, 1.7vw, 24px); }
+    .goal-decision-card .type-detail {
+      align-self: start;
+      justify-self: start;
+      width: fit-content;
+      max-width: 100%;
+      margin: 0;
+      font: 475 var(--type-overview-title-size)/1.16 var(--font-system);
+      font-variation-settings: var(--font-system-formal);
+      letter-spacing: -.018em;
+    }
+    .decision-outline { position: absolute; z-index: 1; overflow: visible; pointer-events: none; transform-origin: center; }
+    .decision-outline path { fill: none; stroke: var(--accent); stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: var(--outline-length); stroke-dashoffset: var(--outline-length); transition: none; }
+    .decision-outline[data-visible="true"] path { stroke-dashoffset: 0; transition: stroke-dashoffset 380ms ease-out; }
+    .goal-decision-summary { margin: 0; }
+    .goal-decision-static { cursor: default; }
+    .goal-decision-card a:focus-visible, .goal-decision-card button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    .goal-overview-visual {
+      min-height: clamp(280px, 27vw, 470px);
+      margin: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid var(--hairline);
+      background: var(--surface-interactive);
+    }
+    .goal-overview-visual img { width: 100%; height: 100%; object-fit: contain; }
+    .goal-decision { scroll-margin-top: calc(var(--bar-h) + 24px); }
+    .goal-frame {
+      --goal-summary-h: calc(100vh - var(--bar-h));
+      --goal-scroll-x: 0px;
+      position: relative;
+      min-height: var(--goal-summary-h);
+      overflow-x: auto;
+      overflow-y: clip;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: none;
+      background: var(--surface-canvas);
+      touch-action: pan-y;
+    }
+    .goal-frame::-webkit-scrollbar { display: none; }
+    .goal-scroll-range { width: 200%; height: 1px; position: absolute; top: 0; left: 0; pointer-events: none; }
+    .goal-summary {
+      min-height: var(--goal-summary-h);
+      position: sticky;
+      top: var(--bar-h);
+      z-index: 1;
+      transform: translate3d(var(--goal-scroll-x), 0, 0);
+    }
+    .goal-takeover {
+      --goal-offset: 100%;
+      position: relative;
+      z-index: 8;
+      min-height: var(--goal-summary-h);
+      max-height: var(--goal-summary-h);
+      margin-top: calc(var(--bar-h) - 100vh);
+      overflow: hidden;
+      visibility: hidden;
+      pointer-events: none;
+      background: var(--surface-canvas);
+      transform: translate3d(calc(var(--goal-offset) + var(--goal-scroll-x)), 0, 0);
+      will-change: transform;
+    }
+    .goal-frame[data-state="interacting"] .goal-takeover,
+    .goal-frame[data-state="closing"] .goal-takeover,
+    .goal-frame[data-state="open"] .goal-takeover { visibility: visible; pointer-events: auto; }
+    .goal-frame[data-expanded="true"] .goal-takeover {
+      max-height: none;
+      overflow: visible;
+    }
+    .goal-frame.settling .goal-takeover { transition: transform 520ms cubic-bezier(.16,.86,.26,1); }
+    .goal-frame.dragging, .goal-frame.dragging * { cursor: grabbing !important; user-select: none; }
+    .goal-return-wrap {
+      position: sticky;
+      top: calc(var(--bar-h) + 18px);
+      z-index: 12;
+      height: 0;
+      padding-left: var(--section-gutter);
+      pointer-events: none;
+    }
+    .goal-close {
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid var(--hairline);
+      color: var(--text-primary);
+      background: var(--surface-interactive);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .goal-close:hover { border-color: var(--accent); color: var(--accent); }
+    .goal-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .chapter-evidence { padding: 0 var(--section-gutter) clamp(100px, 13vw, 190px); background: var(--surface-canvas); }
+    .chapter-evidence > * { max-width: 650px; margin-left: min(24vw, 360px); }
+    .chapter-evidence .type-caption { margin-top: 22px; }
+    .subsection-grid {
+      padding: clamp(82px, 10vw, 150px) var(--section-gutter);
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(14px, 2vw, 34px);
+      row-gap: clamp(26px, 3.5vw, 52px);
+      background: var(--surface-canvas);
+    }
+    .subsection-title {
+      grid-column: 1 / span 3;
+      grid-row: 1;
+      align-self: start;
+    }
+    .subsection-content {
+      grid-column: 5 / -1;
+      grid-row: 1;
+      min-width: 0;
+      display: grid;
+      align-content: start;
+      gap: clamp(78px, 7.5vw, 132px);
+    }
+    .subsection-summary {
+      max-width: 26ch;
+      color: var(--text-summary);
+      font: 400 var(--type-subsection-summary-size)/1.2 var(--font-editorial);
+      font-variation-settings: normal;
+      letter-spacing: -.004em;
+    }
+    .subsection-evidence { min-width: 0; }
+    .subsection-evidence .type-body-reading + .type-body-reading { margin-top: 1.2em; }
+    .subsection-evidence .pull { margin: 68px 0 0; max-width: 18ch; color: var(--accent); }
+    .case-figure { max-width: 880px; margin: clamp(38px, 5vw, 70px) 0 0; }
+    .case-figure img { width: 100%; max-height: min(58vw, 620px); object-fit: contain; background: var(--surface-interactive); }
+    .case-figure figcaption { max-width: 60em; margin-top: 14px; }
+    .persona-groups { display: grid; gap: clamp(58px, 8vw, 112px); }
+    .persona-group { padding-top: clamp(20px, 2.4vw, 34px); border-top: 1px solid var(--hairline); }
+    .persona-group-heading { width: min(100%, 54rem); margin-bottom: clamp(24px, 3vw, 42px); }
+    .persona-group-heading .type-label { margin-bottom: 10px; }
+    .persona-group-title { color: var(--text-primary); font: 510 clamp(24px, 2.25vw, 34px) / 1.02 var(--font-system); font-variation-settings: var(--font-system-formal); letter-spacing: -.035em; }
+    .persona-group-heading .type-caption { max-width: 46em; margin-top: 14px; }
+    .persona-group-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(36px, 5vw, 88px); }
+    .persona { min-width: 0; }
+    .persona-visual { aspect-ratio: 1; margin: 0; overflow: hidden; background: var(--surface-interactive); }
+    .persona-visual img { width: 100%; height: 100%; object-fit: contain; filter: grayscale(1) contrast(.9) brightness(.92); }
+    .persona-content { padding-bottom: 20px; }
+    .persona .type-label { display: block; }
+    .persona .type-detail { margin: 0; display: grid; grid-template-columns: 1.28em minmax(0, 1fr); column-gap: 0; align-items: start; color: var(--text-primary); }
+    .persona-index { width: 1.9em; height: 1.9em; margin-top: .11em; display: grid; place-items: center; border-radius: 50%; color: var(--surface-terminal); background: var(--accent); font: 620 .48em/1 var(--font-system); font-variation-settings: var(--font-system-formal); letter-spacing: 0; }
+    .persona > .type-body-reading { max-width: 31em; margin-top: 18px; font-size: clamp(17px, 1.15vw, 19px); line-height: 1.58; }
+    .decision-chapter > .chapter-opener { padding-bottom: clamp(70px, 9vw, 128px); }
+    .scrolly {
+      display: grid;
+      grid-template-columns: var(--section-rail) minmax(0, 1fr);
+      background: var(--surface-canvas);
+    }
+    .steps { padding: 0 clamp(28px, 3.2vw, 48px); }
+    .step { min-height: 78vh; display: flex; flex-direction: column; justify-content: center; opacity: .32; transition: opacity 260ms ease; }
+    .step.active { opacity: 1; }
+    .step .type-label { margin-bottom: 16px; }
+    .step h3 { margin-top: 18px; }
+    .step p { margin-top: 26px; }
+    .visual-stage { position: sticky; top: var(--bar-h); height: calc(100vh - var(--bar-h)); overflow: hidden; background: var(--surface-canvas); }
+    .visual-stage::before { content: "Evidence stage"; position: absolute; z-index: 4; top: 22px; left: 24px; color: var(--text-muted); font: 440 var(--type-caption-size)/1.5 var(--font-system); font-variation-settings: var(--font-system-formal); }
+    .panel { position: absolute; inset: 0; padding: clamp(34px, 3.4vw, 58px) clamp(18px, 2.3vw, 38px) clamp(18px, 2.3vw, 38px); display: grid; place-items: center; opacity: 0; transform: scale(.99); transition: opacity 420ms ease, transform 540ms ease; pointer-events: none; }
+    .panel.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+    .panel img { width: 100%; max-height: 88vh; object-fit: contain; }
+
+    .deep-dive { --dive-summary-h: calc(100vh - var(--bar-h)); position: relative; min-height: var(--dive-summary-h); overflow: clip; background: var(--surface-canvas); }
+    .dive-frame {
+      --dive-scroll-x: 0px;
+      min-height: var(--dive-summary-h);
+      position: relative;
+      overflow-x: auto;
+      overflow-y: clip;
+      overscroll-behavior-inline: contain;
+      scrollbar-width: none;
+      background: var(--surface-canvas);
+      touch-action: pan-y;
+    }
+    .dive-frame::-webkit-scrollbar { display: none; }
+    .dive-scroll-range { width: 200%; height: 1px; position: absolute; top: 0; left: 0; pointer-events: none; }
+    .dive-summary {
+      min-height: var(--dive-summary-h);
+      padding: clamp(48px, 6vw, 92px) clamp(28px, 5vw, 78px);
+      position: sticky;
+      top: var(--bar-h);
+      z-index: 1;
+      display: block;
+      background: var(--surface-canvas);
+      transform: translate3d(var(--dive-scroll-x), 0, 0);
+    }
+    .dive-summary-heading { max-width: 720px; }
+    .dive-summary-heading .type-label { margin-bottom: 16px; }
+    .dive-summary-main { max-width: 650px; margin-top: clamp(34px, 5vw, 72px); }
+    .dive-summary .chapter-summary { max-width: 17ch; margin-top: 0; }
+    .dive-actions { margin-top: 46px; display: flex; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .open-dive {
+      min-height: 52px;
+      padding: 0 18px 0 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 28px;
+      color: var(--text-primary);
+      background: var(--surface-interactive);
+      cursor: pointer;
+      font-weight: 510;
+      line-height: 1;
+      transition: transform 220ms ease, background 220ms ease;
+    }
+    .open-dive:hover { transform: translateX(3px); }
+    .open-dive .arrow { color: var(--accent); font-size: 20px; }
+    .skip-dive { color: var(--text-secondary); }
+
+    .dive-gesture-cue {
+      position: relative;
+      margin-top: 36px;
+      padding-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--hairline);
+    }
+    .dive-gesture-cue span:last-child { color: var(--accent); font-size: 18px; }
+
+    .dive-takeover {
+      --dive-offset: 100%;
+      min-height: var(--dive-summary-h);
+      max-height: var(--dive-summary-h);
+      margin-top: calc(var(--bar-h) - 100vh);
+      position: relative;
+      z-index: 8;
+      overflow: hidden;
+      background: var(--surface-canvas);
+      transform: translate3d(calc(var(--dive-offset) + var(--dive-scroll-x)), 0, 0);
+      visibility: hidden;
+      pointer-events: none;
+      will-change: transform;
+    }
+    .dive-frame[data-state="interacting"] .dive-takeover,
+    .dive-frame[data-state="closing"] .dive-takeover,
+    .dive-frame[data-state="open"] .dive-takeover { visibility: visible; pointer-events: auto; }
+    .dive-frame[data-expanded="true"] .dive-takeover { max-height: none; overflow: visible; }
+    .dive-frame.settling .dive-takeover { transition: transform 520ms cubic-bezier(.16,.86,.26,1); }
+    .dive-frame.dragging, .dive-frame.dragging * { cursor: grabbing !important; user-select: none; }
+
+    .return-wrap {
+      height: 0;
+      position: sticky;
+      top: calc(var(--bar-h) + 18px);
+      z-index: 12;
+      padding-left: clamp(22px, 3vw, 44px);
+      pointer-events: none;
+    }
+    .close-dive {
+      min-height: 42px;
+      padding: 0 16px;
+      color: var(--text-secondary);
+      background: var(--surface-interactive);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .dive-chapter {
+      min-height: 100vh;
+      padding: clamp(100px, 13vw, 190px) clamp(32px, 8vw, 132px);
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-auto-rows: min-content;
+      column-gap: clamp(14px, 2vw, 34px);
+      row-gap: clamp(26px, 3.5vw, 52px);
+      align-content: center;
+      scroll-margin-top: calc(var(--bar-h) + 52px);
+    }
+    .dive-chapter + .dive-chapter { border-top: 1px solid var(--hairline); }
+    .dive-chapter .type-label { grid-column: 1 / span 2; align-self: start; padding-top: 8px; }
+    .dive-chapter h3 { grid-column: 4 / span 3; max-width: 15ch; margin: 0; }
+    .dive-chapter p { grid-column: 8 / span 5; margin: 0; }
+    .dive-figure { grid-column: 4 / -1; margin: 0; }
+    .dive-figure img { width: 100%; max-height: 66vh; object-fit: contain; }
+    .dive-figure figcaption { margin-top: 16px; }
+    .dive-end {
+      min-height: 68vh;
+      padding: clamp(90px, 12vw, 180px) clamp(32px, 8vw, 132px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-top: 1px solid var(--hairline);
+    }
+    .dive-end strong { max-width: 12ch; }
+    .dive-end span { margin-top: 26px; }
+
+    .learning { min-height: 80vh; }
+    .project-footer { color: var(--text-primary); background: var(--surface-terminal); }
+    .project-pagination { display: grid; grid-template-columns: 1fr 1fr; }
+    .project-link {
+      min-height: 42vh;
+      padding: clamp(48px, 7vw, 104px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 56px;
+      border-top: 1px solid var(--hairline);
+      transition: background 220ms ease;
+    }
+    .project-link + .project-link { border-left: 1px solid var(--hairline); }
+    .project-link:hover { background: var(--surface-interactive); }
+    .project-link span { color: var(--text-secondary); }
+    .project-link strong { max-width: 13ch; }
+    .project-link.next { text-align: right; align-items: flex-end; }
+    .footer-global {
+      min-height: 128px;
+      padding: 34px clamp(24px, 6vw, 104px);
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: clamp(28px, 6vw, 90px);
+      border-top: 1px solid var(--hairline);
+      color: var(--text-secondary);
+    }
+    .footer-global strong { color: var(--text-primary); font-weight: 560; }
+    .footer-links { display: flex; gap: clamp(20px, 3vw, 38px); }
+    .footer-links a:hover { color: var(--text-primary); }
+
+    @media (max-width: 980px) {
+      :root { --rail-w: 200px; }
+      .scrolly { grid-template-columns: 300px minmax(0, 1fr); }
+      .hero-aside { max-width: 34em; margin-top: 40px; }
+    }
+
+    @media (max-width: 760px) {
+      :root { --bar-h: 58px; }
+      .topbar { gap: 16px; }
+      .topbar-back { font-size: 0; }
+      .topbar-back::before { content: "←"; font-size: 16px; }
+      .case-name { font-size: 13px; }
+      .copy-edit-panel { right: 12px; bottom: 12px; max-width: calc(100vw - 24px); flex-wrap: wrap; }
+      .copy-edit-panel[data-editing="true"] { justify-content: flex-end; }
+      .copy-edit-panel[data-editing="true"] .copy-edit-status { width: 100%; max-width: none; padding: 3px 7px 1px; text-align: right; }
+      .case-shell { display: block; }
+      .rail { top: var(--bar-h); width: 100%; height: auto; min-height: 62px; padding: 13px 18px; flex-direction: row; align-items: center; gap: 18px; overflow-x: auto; overflow-y: hidden; border-right: 0; border-bottom: 1px solid var(--hairline); }
+      .rail-foot { display: none; }
+      .rail-main { display: flex; width: max-content; gap: 6px; align-items: center; }
+      .rail-main > a, .rail-main > a.active { max-width: none; white-space: nowrap; padding: 8px 10px; font: 480 13px/1.25 var(--font-system); font-variation-settings: var(--font-system-formal); letter-spacing: 0; }
+      .rail-main > a::before { display: none; }
+      .rail-group-label { margin: 0 4px 0 10px; padding: 8px 0; white-space: nowrap; }
+      .nested-rail { margin: 0 6px 0 0; padding: 0; display: flex; gap: 4px; }
+      .nested-rail.goal-nested { display: none; }
+      .nested-rail.goal-nested.expanded { display: flex; }
+      .nested-rail a, .nested-rail button { padding: 8px 9px; display: flex; gap: 5px; white-space: nowrap; font-size: 12px; }
+      .hero { padding-left: 24px; padding-right: 24px; }
+      .hero-visual { min-height: 410px; }
+      .chapter-opener { min-height: 0; padding: 76px 24px; }
+      .section-divider { min-height: 170px; padding: 54px 24px; }
+      .workshop-bridge { padding: 54px 24px; }
+      .chapter-title { max-width: 19ch; }
+      .chapter-summary { max-width: 19ch; }
+      .goal-overview-grid { grid-template-columns: 1fr; gap: 32px; margin-top: 42px; }
+      .goal-overview-visual { min-height: clamp(250px, 70vw, 390px); }
+      .goal-frame { --goal-summary-h: calc(100vh - var(--bar-h) - 62px); }
+      .goal-takeover { margin-top: calc(var(--bar-h) + 62px - 100vh); }
+      .goal-return-wrap { top: calc(var(--bar-h) + 74px); padding-left: 16px; }
+      .chapter-evidence { padding: 0 24px 76px; }
+      .chapter-evidence > * { margin-left: 0; }
+      .subsection-grid { padding: 68px 24px; grid-template-columns: 1fr; row-gap: 26px; }
+      .subsection-title, .subsection-content { grid-column: 1; grid-row: auto; }
+      .persona-group-heading { width: 100%; }
+      .persona-group-grid { grid-template-columns: 1fr; gap: 56px; }
+      .dive-summary-main { margin-top: 42px; }
+      .scrolly { display: block; }
+      .steps { padding-bottom: 70px; }
+      .step { min-height: 52vh; }
+      .visual-stage { position: relative; top: 0; height: 66vh; }
+      .deep-dive { --dive-summary-h: calc(100vh - var(--bar-h) - 62px); }
+      .dive-summary { top: calc(var(--bar-h) + 62px); padding: 44px 24px 34px; }
+      .dive-takeover { margin-top: calc(var(--bar-h) + 62px - 100vh); }
+      .return-wrap { top: calc(var(--bar-h) + 74px); padding-left: 16px; }
+      .dive-chapter { min-height: 100vh; padding-left: 24px; padding-right: 24px; grid-template-columns: 1fr; row-gap: 26px; }
+      .dive-chapter .type-label, .dive-chapter h3, .dive-chapter p, .dive-figure { grid-column: 1; }
+      .dive-chapter h3 { margin-top: 0; }
+      .project-pagination { grid-template-columns: 1fr; }
+      .project-link { min-height: 34vh; }
+      .project-link + .project-link { border-left: 0; }
+      .footer-global { grid-template-columns: 1fr; min-height: 180px; }
+      .footer-global > span { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .001ms !important; transition-delay: 0ms !important; }
+      .rough-ink.rough-ink-visible::after { animation: none; clip-path: inset(0); }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+  <link rel="stylesheet" href="../files/case-study-cohesion.css?v=preview-left-fade-20261115" />
+  <link rel="stylesheet" href="../files/case-study-standardization.css?v=standardization-perf2-20261116" />
+  <link rel="stylesheet" href="../files/case-study-governance.css?v=governance-roles-20261115" />
+<style>.copy-edit-panel{display:none!important}</style></head>
+<body>
+  <nav class="topbar type-interface" aria-label="Case-study navigation">
+    <a class="topbar-back" href="../index.html">← Selected work</a>
+    <span class="case-name">Custom data management UX across account and project levels</span>
+  </nav>
+  <div class="copy-edit-panel type-interface" data-copy-edit-panel data-editing="false">
+    <span class="copy-edit-status" data-copy-edit-status aria-live="polite"></span>
+    <div class="copy-edit-actions">
+      <button type="button" data-copy-edit-copy>Copy changes</button>
+      <button type="button" data-copy-edit-download>Download</button>
+      <button type="button" data-copy-edit-discard>Discard</button>
+    </div>
+    <button class="copy-edit-toggle" type="button" data-copy-edit-toggle aria-pressed="false">Edit text</button>
+  </div>
+
+  <div class="case-shell" data-case>
+    <div class="progress" aria-hidden="true"><span></span></div>
+    <aside class="rail" aria-label="Case-study index">
+      <nav class="rail-main">
+        <a class="active" href="#opening">Opening</a>
+        <a href="#context">Context</a>
+        <ul class="nested-rail" aria-label="Context subsections">
+          <li><a href="#background"><span class="number">1</span><span>Background</span></a></li>
+          <li><a href="#personas"><span class="number">2</span><span>Personas</span></a></li>
+          <li><a href="#problem-definition"><span class="number">3</span><span>Problem definition</span></a></li>
+        </ul>
+        <span class="rail-group-label">Solution strategy</span>
+        <a href="#collaboration">Collaboration strategy</a>
+        <ul class="nested-rail goal-nested" aria-label="Collaboration strategy practices">
+          <li><a href="#shared-brief"><span class="number">1</span><span>Shared goals</span></a></li>
+          <li><a href="#joint-research"><span class="number">2</span><span>Joint research</span></a></li>
+          <li><a href="#working-overlap"><span class="number">3</span><span>Working overlap</span></a></li>
+          <li><a href="#logic-prototypes"><span class="number">4</span><span>Logic prototypes</span></a></li>
+        </ul>
+        <span class="rail-group-label">Product and UX decisions</span>
+        <a href="#project-flexibility">Cohesion</a>
+        <ul class="nested-rail goal-nested" aria-label="Cross-product cohesion decisions">
+          <li><a href="#use-aec-data-components"><span class="number">1</span><span>AEC Data components</span></a></li>
+          <li><a href="#adapt-cad-components"><span class="number">2</span><span>CAD adaptation</span></a></li>
+          <li><a href="#maintain-construction-patterns"><span class="number">3</span><span>Construction Cloud patterns</span></a></li>
+          <li><a href="#keep-module-controls"><span class="number">4</span><span>Module controls</span></a></li>
+        </ul>
+        <a href="#reuse-before-creation">Data standardization</a>
+        <ul class="nested-rail goal-nested" aria-label="Reuse decisions">
+          <li><a href="#find-existing-definitions"><span class="number">1</span><span>Find existing</span></a></li>
+          <li><a href="#create-when-needed"><span class="number">2</span><span>Create when needed</span></a></li>
+        </ul>
+        <a href="#standards-governance">Governance</a>
+        <ul class="nested-rail goal-nested" aria-label="Governance decisions">
+          <li><a href="#separate-governance-scope"><span class="number">1</span><span>Separate scope</span></a></li>
+          <li><a href="#preserve-applied-values"><span class="number">2</span><span>Preserve values</span></a></li>
+          <li><a href="#make-changes-visible"><span class="number">3</span><span>Show consequences</span></a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <section class="chapter hero" id="opening" data-chapter>
+        <div class="hero-copy">
+          <div>
+            <div class="eyebrow type-label">Autodesk Construction Cloud · UX Lead · 2025</div>
+            <h2 class="type-display">Custom data management UX across account and project levels.</h2>
+          </div>
+          <div class="hero-aside">
+            <p class="type-body-reading">Working on Autodesk Construction Cloud, I partnered with a platform custom-data team to define a cohesive data-management experience for our customers across products and management levels, supporting project-level flexibility and account-level data standardization.</p>
+            <em class="editorial-aside">The work spans two products, four personas, and two governance levels.</em>
+          </div>
+        </div>
+        <figure class="hero-visual reveal"><img src="../files/hero-ui.png" alt="Layered Autodesk interfaces for creating parameters and adding custom fields" /></figure>
+      </section>
+
+      <section class="chapter context" id="context" data-chapter>
+        <header class="chapter-opener reveal">
+          <div class="chapter-heading">
+            <div class="type-label">1 / Context</div>
+            <h2 class="chapter-title type-section">Context</h2>
+          </div>
+          <p class="chapter-summary type-summary">A collaboration between <span data-rough-annotation data-rough-group="context">two Autodesk teams</span>, each managing a <span data-rough-annotation data-rough-group="context">different product</span> and with different goals, serving <span data-rough-annotation data-rough-group="context">four personas</span> with distinct needs for standardized data.</p>
+        </header>
+
+        <section class="subsection-grid" id="background" aria-labelledby="background-title">
+          <h3 class="subsection-title type-subsection" id="background-title">Background</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Autodesk Construction Cloud’s Submittals module needed custom data for project records, while AEC Data already provided account-level data definition management.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Autodesk Construction Cloud connects design, construction, and project-management workflows. In Submittals, entities have a predefined property set, which limited the information teams could capture, sort, filter, export, and report on.</p>
+              <p class="type-body-reading">AEC Data is an Autodesk platform service used primarily in Revit to create and manage reusable data definitions. This project applies that capability to custom data in Submittals and develops a reusable pattern for other Construction Cloud modules.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid" id="personas" aria-labelledby="personas-title">
+          <h3 class="subsection-title type-subsection" id="personas-title">Personas</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Four personas use the same data framework in different products, workflows, and governance levels.</p>
+            <div class="subsection-evidence">
+              <div class="persona-groups" aria-label="Persona breakdown">
+                <section class="persona-group" aria-labelledby="construction-cloud-personas-title">
+                  <header class="persona-group-heading">
+                    <div>
+                      <div class="type-label">Construction Cloud</div>
+                      <h4 class="persona-group-title" id="construction-cloud-personas-title">Project workflows personas</h4>
+                    </div>
+                    <p class="type-caption">People who define and use project data inside active construction work.</p>
+                  </header>
+                  <div class="persona-group-grid">
+                    <article class="persona">
+                      <div class="persona-content">
+                        <h5 class="type-detail"><span class="persona-index">1</span><span>Construction project manager</span></h5>
+                      </div>
+                      <figure class="persona-visual">
+                        <img src="../files/assets/personas-high-resolution/construction-project-manager.png" alt="Construction project manager reviewing a project schedule" />
+                      </figure>
+                      <p class="type-body-reading">Manages schedules, budgets, safety, and compliance at project level. Needs project data to remain standardized and compliant without repeated setup.</p>
+                    </article>
+                    <article class="persona">
+                      <div class="persona-content">
+                        <h5 class="type-detail"><span class="persona-index">2</span><span>Construction project engineer</span></h5>
+                      </div>
+                      <figure class="persona-visual">
+                        <img src="../files/assets/personas-high-resolution/construction-project-engineer.png" alt="Construction project engineer reviewing a plan on a construction site" />
+                      </figure>
+                      <p class="type-body-reading">Maintains project documentation and resolves blockers. Needs to add, sort, filter, and export information when Submittals’ predefined properties do not cover the item.</p>
+                    </article>
+                  </div>
+                </section>
+
+                <section class="persona-group" aria-labelledby="aec-data-personas-title">
+                  <header class="persona-group-heading">
+                    <div>
+                      <div class="type-label">AEC Data</div>
+                      <h4 class="persona-group-title" id="aec-data-personas-title">Design and account management personas</h4>
+                    </div>
+                    <p class="type-caption">People who create data definitions and set the standards used across projects.</p>
+                  </header>
+                  <div class="persona-group-grid">
+                    <article class="persona">
+                      <div class="persona-content">
+                        <h5 class="type-detail"><span class="persona-index">1</span><span>Architect</span></h5>
+                      </div>
+                      <figure class="persona-visual">
+                        <img src="../files/assets/personas-high-resolution/architect.png" alt="Architect reviewing a building model and design plans" />
+                      </figure>
+                      <p class="type-body-reading">Uses data definitions in Revit to describe BIM elements and capture design intent. Needs definitions that represent model information accurately.</p>
+                    </article>
+                    <article class="persona">
+                      <div class="persona-content">
+                        <h5 class="type-detail"><span class="persona-index">2</span><span>VDC/BIM manager</span></h5>
+                      </div>
+                      <figure class="persona-visual">
+                        <img src="../files/assets/personas-high-resolution/vdc-bim-manager.png" alt="VDC and BIM manager working with project information on monitors" />
+                      </figure>
+                      <p class="type-body-reading">Manages organizational standards, permissions, templates, and training. Needs data definitions that remain compliant and comparable across projects for reporting and analysis.</p>
+                    </article>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid" id="problem-definition" aria-labelledby="problem-title">
+          <h3 class="subsection-title type-subsection" id="problem-title">Problem definition</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading"><span data-rough-annotation="underline" data-rough-group="problem">Account managers</span> needed to enforce data definition <span data-rough-annotation="circle" data-rough-group="problem">consistency</span> across projects, while <span data-rough-annotation="underline" data-rough-group="problem">construction project personas</span> needed more <span data-rough-annotation="circle" data-rough-group="problem" data-rough-offset="66">flexibility</span> in defining their own standards.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Submittals restricted entities to predefined properties. Construction project engineers needed custom fields to capture, sort, filter, and export information that those properties did not support.</p>
+              <p class="type-body-reading">AEC Data needed data definitions to remain consistent from design workflows into construction projects. The project had two goals: enable custom data in Submittals and establish a reusable data-definition management model across Construction Cloud modules and governance levels.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="workshop-bridge" aria-labelledby="solution-strategy-title">
+        <div class="workshop-bridge-heading">
+          <div class="type-label">From context to collaboration</div>
+          <h2 class="type-section" id="solution-strategy-title">Solution strategy</h2>
+        </div>
+        <figure class="workshop-bridge-visual">
+          <img src="../files/whiteboard.png" alt="Workshop whiteboard mapping custom data workflows and governance questions" />
+          <figcaption class="type-caption">Captured whiteboard scribbles from cross-team workshop in Boston</figcaption>
+        </figure>
+      </section>
+
+      <section class="chapter" id="collaboration" data-chapter>
+        <div class="goal-frame" data-goal-dive data-expanded="false">
+        <div class="goal-scroll-range" aria-hidden="true"></div>
+        <header class="chapter-opener reveal goal-summary">
+          <div class="chapter-heading">
+            <div class="type-label">2 / Collaboration strategy</div>
+            <h2 class="chapter-title type-section">Collaboration strategy</h2>
+          </div>
+          <p class="chapter-summary type-summary">How we managed the challenges of the organizational collaboration.</p>
+          <div class="goal-overview-grid goal-overview-grid--text">
+            <ol class="goal-decision-overview" aria-label="Operating practices that enabled cross-team delivery">
+              <li class="goal-decision-card"><button type="button" data-goal-target="shared-brief"><span class="type-label">1</span><span class="goal-decision-copy"><strong class="type-detail">Openly communicated each team's goals, making them the project's shared goals</strong><span class="goal-decision-summary type-body-summary">To make design communication effective we aligned on our teams goals and paradigms.</span></span></button></li>
+              <li class="goal-decision-card"><button type="button" data-goal-target="joint-research"><span class="type-label">2</span><span class="goal-decision-copy"><strong class="type-detail">Built shared understanding of all personas</strong><span class="goal-decision-summary type-body-summary">Used joint research to compare four personas’ responsibilities, vocabulary, and data needs.</span></span></button></li>
+              <li class="goal-decision-card"><button type="button" data-goal-target="working-overlap"><span class="type-label">3</span><span class="goal-decision-copy"><strong class="type-detail">Dedicated extended overlapping work hours across timezones</strong><span class="goal-decision-summary type-body-summary">Extended shared working hours for decisions requiring both teams. Used the rest of our working hours for communication within our respective time zones.</span></span></button></li>
+              <li class="goal-decision-card"><button type="button" data-goal-target="logic-prototypes"><span class="type-label">4</span><span class="goal-decision-copy"><strong class="type-detail">Made business logic testable with coded prototypes</strong><span class="goal-decision-summary type-body-summary">To demonstrate the flow of data definitions across multiple layers and systems, we developed a coded prototype that allowed to see real impact, where traditional prototypes would have been insufficient.</span></span></button></li>
+            </ol>
+          </div>
+        </header>
+
+        <article class="goal-takeover" data-goal-takeover aria-hidden="true">
+          <div class="goal-return-wrap"><button class="goal-close type-interface" type="button" data-close-goal>← Return to summary</button></div>
+        <section class="subsection-grid goal-decision" id="shared-brief" aria-labelledby="shared-brief-title">
+          <h3 class="subsection-title type-subsection" id="shared-brief-title">Creating a shared brief</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">The teams had different product goals. The project treated flexible project data and reusable account standards as one shared scope.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Construction Cloud needed custom properties in new modules. AEC Data needed data definitions to remain consistent across products and governance levels. Defining both needs at the start kept them visible in product, UX, and implementation decisions.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="joint-research" aria-labelledby="joint-research-title">
+          <h3 class="subsection-title type-subsection" id="joint-research-title">Building shared persona understanding</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Collaborative interviews and usability testing gave both teams a shared understanding of the four personas involved.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Project managers and project engineers work with data in active construction projects. Architects and VDC/BIM managers create and govern standards. The research connected these roles to the same data model without treating their workflows as interchangeable.</p>
+              <figure class="case-figure">
+                <img src="../files/whiteboard.png" alt="Workshop whiteboard mapping the custom data workflow and governance questions" />
+                <figcaption class="type-caption">A shared working model gave both teams a reference for discussing custom data, ownership, and workflow differences.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="working-overlap" aria-labelledby="working-overlap-title">
+          <h3 class="subsection-title type-subsection" id="working-overlap-title">Designing a shared operating rhythm</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Boston and Tel Aviv had limited working-hour overlap and different working weeks.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">We reserved live sessions for decisions that needed input from both the Construction Cloud workflow team and the platform custom-data team. Occasional late-night sessions reduced delays when an asynchronous handoff would block the work.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="logic-prototypes" aria-labelledby="logic-prototypes-title">
+          <h3 class="subsection-title type-subsection" id="logic-prototypes-title">Making complex logic testable</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Account, project, and module rules were difficult to assess in static prototypes.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Working prototypes made dependencies, hierarchy behavior, and edge cases concrete. Feedback sessions with customer-success managers who knew both account and project personas helped us assess the model before it became product behavior.</p>
+            </div>
+          </div>
+        </section>
+        </article>
+        </div>
+      </section>
+
+      <header class="section-divider" aria-labelledby="design-solutions-title">
+        <h2 class="type-section" id="design-solutions-title">Product and UX decisions</h2>
+      </header>
+
+      <section class="chapter" id="project-flexibility" data-chapter>
+        <div class="goal-frame" data-goal-dive data-cohesion data-expanded="false">
+        <div class="goal-scroll-range" aria-hidden="true"></div>
+        <header class="chapter-opener reveal goal-summary">
+          <div class="chapter-heading">
+            <div class="type-label">3 / Cohesion</div>
+            <h2 class="chapter-title type-section">How we created a cohesive data experience across products</h2>
+          </div>
+          <p class="chapter-summary type-summary">Platform Data Definitions had to be reused in Construction Cloud without importing Revit-centered terminology, navigation, or workflow assumptions.</p>
+          <div class="goal-overview-grid">
+            <div class="goal-decision-column">
+            <ol class="goal-decision-overview" aria-label="Decisions that created cohesion across products">
+              <li class="goal-decision-card"><button type="button" data-goal-target="use-aec-data-components"><span class="type-label">1</span><span class="goal-decision-copy"><strong class="type-detail">Reused Platform Data UI components.</strong><span class="goal-decision-summary type-body-summary">Reused the shared definition model and its core browse, create, and edit components.</span></span></button></li>
+              <li class="goal-decision-card"><button type="button" data-goal-target="adapt-cad-components"><span class="type-label">2</span><span class="goal-decision-copy"><strong class="type-detail">Adapted CAD-centric components to Construction Cloud personas.</strong><span class="goal-decision-summary type-body-summary">Adapted CAD terminology and form structure to custom-data UI in construction project workflows while limiting changes to a minimum to reduce engineering maintenance complexity.</span></span></button></li>
+              <li class="goal-decision-card"><button type="button" data-goal-target="maintain-construction-patterns"><span class="type-label">3</span><span class="goal-decision-copy"><strong class="type-detail">Maintained familiar patterns in critical Construction Cloud flows.</strong><span class="goal-decision-summary type-body-summary">Kept navigation and layout consistent with existing Construction Cloud workflows in earlier parts of the user flow.</span></span></button></li>
+              <li class="goal-decision-card"><button type="button" data-goal-target="keep-module-controls"><span class="type-label">4</span><span class="goal-decision-copy"><strong class="type-detail">Defined a standard layout that allows design flexibility per future module</strong><span class="goal-decision-summary type-body-summary">We defined a dedicated location for controls where each module’s team could manage their own controls while remaining consistent across the platform.</span></span></button></li>
+            </ol>
+            </div>
+            <figure class="goal-overview-visual"><img src="../files/components-map.png" alt="Map of shared AEC Data components and their Construction Cloud uses" /></figure>
+          </div>
+          <p class="goal-section-outcome">Reusing Platform Data components inside familiar Construction Cloud flows kept the shared definition model consistent across products while preserving the navigation and controls project teams expected.</p>
+        </header>
+
+        <article class="goal-takeover" data-goal-takeover aria-hidden="true">
+          <div class="goal-return-wrap"><button class="goal-close type-interface" type="button" data-close-goal>← Return to summary</button></div>
+        <section class="subsection-grid goal-decision" id="use-aec-data-components" aria-labelledby="use-aec-data-components-title">
+          <h3 class="subsection-title type-subsection" id="use-aec-data-components-title">Using existing AEC Data UI components</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">AEC Data already provided components to browse, create, and edit reusable data definitions.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The existing platform model gave Construction Cloud a shared foundation for data definitions. Reusing it avoided a separate model for Submittals, while leaving room to adapt the surrounding interface for project workflows.</p>
+              <figure class="case-figure">
+                <img src="../files/components-map.png" alt="Map of shared AEC Data components and their Construction Cloud uses" />
+                <figcaption class="type-caption">Shared components provide one data-definition foundation without requiring identical product interfaces.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="adapt-cad-components" aria-labelledby="adapt-cad-components-title">
+          <h3 class="subsection-title type-subsection" id="adapt-cad-components-title">Adapting CAD-centric components to Construction Cloud personas</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">AEC Data was designed for Revit users capturing design intent. Construction Cloud users needed custom fields that matched project-management work.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">CAD-oriented categories and parameter terminology were not meaningful to Construction Cloud personas and had caused confusion in testing. The definition logic remained shared, but the interface was reorganized around custom-data patterns already used in Construction Cloud.</p>
+              <figure class="case-figure">
+                <img src="../files/adaptation.png" alt="CAD-oriented data form reorganized as a Construction Cloud interaction" />
+                <figcaption class="type-caption">The same definition model is expressed through patterns familiar to Construction Cloud users.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="maintain-construction-patterns" aria-labelledby="maintain-construction-patterns-title">
+          <h3 class="subsection-title type-subsection" id="maintain-construction-patterns-title">Maintaining familiar Construction Cloud patterns</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Construction Cloud users manage custom fields inside module settings, not through a separate platform workspace.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Module settings list only fields added to that module. Existing parameter forms were extracted from their Revit wrapper and embedded in Construction Cloud modals and side panels, preserving familiar navigation, terminology, and editing patterns.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="keep-module-controls" aria-labelledby="keep-module-controls-title">
+          <h3 class="subsection-title type-subsection" id="keep-module-controls-title">Keeping module controls with each workflow</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">A shared definition can be used differently in each Construction Cloud module.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">A field can be required, optional, pre-populated, or organized by category for different reasons in different modules. The shared definition model carries common data, while each module keeps the controls that determine how its users work with that data.</p>
+            </div>
+          </div>
+        </section>
+        </article>
+        </div>
+      </section>
+
+      <section class="chapter" id="reuse-before-creation" data-chapter>
+        <div class="goal-frame" data-goal-dive data-standardization data-expanded="false">
+        <div class="goal-scroll-range" aria-hidden="true"></div>
+        <header class="chapter-opener reveal goal-summary">
+          <div class="chapter-heading">
+            <div class="type-label">4 / Data standardization</div>
+            <h2 class="chapter-title type-section">How we optimized for data standardization</h2>
+          </div>
+          <p class="chapter-summary type-summary">Project teams need custom data, but each duplicate definition makes reporting and standardization harder across the account.</p>
+          <div class="goal-overview-grid">
+            <div class="goal-decision-column">
+            <ol class="goal-decision-overview" aria-label="Decisions that made reuse the default">
+              <li class="goal-decision-card"><button type="button" data-goal-target="find-existing-definitions"><span class="type-label">1</span><span class="goal-decision-copy"><strong class="type-detail">Selection before creation</strong><span class="goal-decision-summary type-body-summary">Presented existing definitions first so project teams could reuse one before creating another.</span></span></button></li>
+              <li class="goal-decision-card"><button type="button" data-goal-target="create-when-needed"><span class="type-label">2</span><span class="goal-decision-copy"><strong class="type-detail">Avoiding duplication in the creation flow</strong><span class="goal-decision-summary type-body-summary">We explored showing similar account definitions while creating a field; this safeguard remained out of scope.</span></span></button></li>
+            </ol>
+            </div>
+            <figure class="goal-overview-visual"><img src="../files/selection-flow.png" alt="Workflow that presents existing data definitions before creating a new definition" /></figure>
+          </div>
+          <p class="goal-section-outcome">Showing existing definitions before creation made reuse the default path while preserving a way to create project-specific fields; a duplicate check within creation remained a proposal.</p>
+        </header>
+
+        <article class="goal-takeover" data-goal-takeover aria-hidden="true">
+          <div class="goal-return-wrap"><button class="goal-close type-interface" type="button" data-close-goal>← Return to summary</button></div>
+        <section class="subsection-grid goal-decision" id="find-existing-definitions" aria-labelledby="find-existing-definitions-title">
+          <h3 class="subsection-title type-subsection" id="find-existing-definitions-title">Selection before creation</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">The add-field flow starts with existing definitions and search.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">When project users need a new property, they do not always know whether a suitable definition already exists. Showing the available set before creation makes reuse visible at the point of decision.</p>
+              <figure class="case-figure">
+                <img src="../files/selection-flow.png" alt="Workflow that presents existing data definitions before creating a new definition" />
+                <figcaption class="type-caption">Existing definitions appear before the project-specific creation path, making reuse the normal first action.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="create-when-needed" aria-labelledby="create-when-needed-title">
+          <h3 class="subsection-title type-subsection" id="create-when-needed-title">Avoiding duplication in the creation flow</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">We explored a second opportunity to catch duplicates while someone names a new field.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The proposed safeguard would surface similarly named account definitions in the creation modal and offer a way to use one instead. This remained an idea outside the implemented scope, rather than a delivered feature.</p>
+            </div>
+          </div>
+        </section>
+        </article>
+        </div>
+      </section>
+
+      <section class="chapter" id="standards-governance" data-chapter>
+        <div class="goal-frame" data-goal-dive data-governance data-expanded="false">
+        <div class="goal-scroll-range" aria-hidden="true"></div>
+        <header class="chapter-opener reveal goal-summary">
+          <div class="chapter-heading">
+            <div class="type-label">5 / Governance</div>
+            <h2 class="chapter-title type-section">How we balanced project autonomy with account standards</h2>
+          </div>
+          <p class="chapter-summary type-summary">Account standards need to remain manageable across projects, while project teams need control over data created for their own work.</p>
+          <div class="goal-overview-grid">
+            <div class="goal-decision-column">
+            <ol class="goal-decision-overview" aria-label="Decisions that balanced project autonomy with account standards">
+              <li class="goal-decision-card"><button type="button" data-goal-target="separate-governance-scope"><span class="type-label">1</span><span class="goal-decision-copy"><strong class="type-detail">We provided the users with project-level private data definitions.</strong><span class="goal-decision-summary type-body-summary">Separated project definitions from the account so each scope could be managed independently.</span></span></button></li>
+              <li class="goal-decision-card"><button type="button" data-goal-target="preserve-applied-values"><span class="type-label">2</span><span class="goal-decision-copy"><strong class="type-detail">Preserved existing project data while maintaining account control.</strong><span class="goal-decision-summary type-body-summary">Allowed account standards to evolve without changing values already used in active project records.</span></span></button></li>
+              <li class="goal-decision-card"><button type="button" data-goal-target="make-changes-visible"><span class="type-label">3</span><span class="goal-decision-copy"><strong class="type-detail">Defining visual treatments.</strong><span class="goal-decision-summary type-body-summary">Compared ways to indicate removed values while keeping existing project data readable.</span></span></button></li>
+            </ol>
+            </div>
+            <figure class="goal-overview-visual"><img src="../files/governance.png" alt="Account and project governance model for custom data definitions" /></figure>
+          </div>
+          <p class="goal-section-outcome">Separating account standards from project-private definitions and preserving applied values gave project teams autonomy without letting account changes silently rewrite existing project data.</p>
+        </header>
+
+        <article class="goal-takeover" data-goal-takeover aria-hidden="true">
+          <div class="goal-return-wrap"><button class="goal-close type-interface" type="button" data-close-goal>← Return to summary</button></div>
+        <section class="subsection-grid goal-decision" id="separate-governance-scope" aria-labelledby="separate-governance-scope-title">
+          <h3 class="subsection-title type-subsection" id="separate-governance-scope-title">Partitioning project-specific data definitions</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Account-level definitions support standards across projects. Project-specific definitions give project admins a place for local data.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">A fully shared library would let one project’s choices interfere with another project’s standards. Partitioning local definitions prevents account-level clutter while giving project admins control over data created for their own workflows.</p>
+              <figure class="case-figure">
+                <img src="../files/governance.png" alt="Account and project governance model for custom data definitions" />
+                <figcaption class="type-caption">The governance model separates ownership and scope before a team decides where a definition belongs.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="preserve-applied-values" aria-labelledby="preserve-applied-values-title">
+          <h3 class="subsection-title type-subsection" id="preserve-applied-values-title">Preserving project data while maintaining account control</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">An account-level list can change without rewriting data already applied to an active project record.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Project records may already use a list value when an account manager changes or removes it from a shared definition. The model retains the applied project value, rather than quietly rewriting completed or active project work.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="make-changes-visible" aria-labelledby="make-changes-visible-title">
+          <h3 class="subsection-title type-subsection" id="make-changes-visible-title">Defining visual treatments</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Removed values need to remain visible and understandable on existing project records.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">We compared an explicit “(removed)” label with a less descriptive visual treatment, considering clarity in the interface and text exports.</p>
+            </div>
+          </div>
+        </section>
+        </article>
+        </div>
+      </section>
+
+      <section class="chapter decision-chapter" id="decision" data-chapter hidden aria-hidden="true">
+        <header class="chapter-opener reveal">
+          <div class="chapter-heading">
+            <div class="type-label">2 / System design</div>
+            <h2 class="chapter-title type-section">Decision</h2>
+          </div>
+          <p class="chapter-summary type-summary">Reuse AEC Data definitions in Submittals, adapt the interaction model for construction workflows, and show existing definitions before users create project-specific ones.</p>
+        </header>
+        <div class="scrolly" data-scrolly>
+          <div class="steps">
+            <article class="step active" id="shared-infrastructure" data-panel="0">
+              <div class="type-label">Part A · Decision</div>
+              <h3 class="type-subsection">Use shared data definitions.</h3>
+              <p class="type-body-reading">Submittals used AEC Data’s account-level definitions and shared platform logic as its foundation. This established a common data-definition model across products and a foundation for account-level governance.</p>
+            </article>
+            <article class="step" id="translation" data-panel="1">
+              <div class="type-label">Part B · Decision</div>
+              <h3 class="type-subsection">Adapt the interaction model for Construction Cloud.</h3>
+              <p class="type-body-reading">AEC Data components were designed for Revit and CAD workflows. Their essential fields were placed in Construction Cloud modals and side panels so construction personas could use established navigation patterns without losing the shared data model.</p>
+            </article>
+            <article class="step" id="reuse" data-panel="2">
+              <div class="type-label">Part C · Decision</div>
+              <h3 class="type-subsection">Show existing definitions before creation.</h3>
+              <p class="type-body-reading">When a project user adds a field, Submittals first shows existing data definitions and search. A new definition remains available when no existing definition meets the project need.</p>
+            </article>
+          </div>
+          <div class="visual-stage" aria-live="polite">
+            <figure class="panel active"><img src="../files/components-map.png" alt="System map showing shared AEC components feeding ACC project modules" /></figure>
+            <figure class="panel"><img src="../files/adaptation.png" alt="CAD form translated into a Construction Cloud modal" /></figure>
+            <figure class="panel"><img src="../files/selection-flow.png" alt="Selection-before-creation workflow" /></figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter deep-dive" id="governance" aria-label="Optional governance depth" hidden aria-hidden="true">
+        <div class="dive-frame" data-deep-dive data-state="closed" data-expanded="false">
+          <div class="dive-scroll-range" aria-hidden="true"></div>
+          <header class="dive-summary">
+            <div class="dive-summary-heading">
+              <div class="type-label">Optional depth / Governance</div>
+              <h2 class="chapter-title type-section">Account and project ownership</h2>
+            </div>
+            <div class="dive-summary-main">
+              <p class="chapter-summary type-summary">A shared definition could not quietly rewrite data already applied to project records.</p>
+              <div class="dive-actions">
+                <button class="open-dive type-interface" type="button" data-open-dive aria-expanded="false" aria-controls="governance-takeover">
+                  <span>Read the decision</span><span class="arrow" aria-hidden="true">→</span>
+                </button>
+                <a class="skip-dive type-interface" href="#cross-product-reuse">Skip · Continue ↓</a>
+              </div>
+              <div class="dive-gesture-cue type-caption" aria-hidden="true"><span>Swipe left to open · right to return</span><span>↔</span></div>
+            </div>
+          </header>
+
+          <article class="dive-takeover" id="governance-takeover" aria-label="Governance mini case study" aria-hidden="true" data-dive-takeover>
+            <div class="return-wrap">
+              <button class="close-dive type-interface" type="button" data-close-dive>← Return to summary</button>
+            </div>
+            <section class="dive-chapter" id="dive-constraint" data-dive-chapter="constraint">
+              <div class="type-label">Part A · Governance</div>
+              <h3 class="type-proposition">A shared definition must not rewrite a project record.</h3>
+              <p class="type-body-reading">A project team may already use a value when an account manager changes the shared list that introduced it. The model needed to preserve that applied project data.</p>
+              <figure class="dive-figure">
+                <img src="../files/whiteboard.png" alt="Workshop whiteboard used to map governance constraints" />
+                <figcaption class="type-caption">The governance question: which changes affect future selection, and which values must remain with the project.</figcaption>
+              </figure>
+            </section>
+            <section class="dive-chapter" id="dive-model" data-dive-chapter="model">
+              <div class="type-label">Part B · Governance</div>
+              <h3 class="type-proposition">Separate account standards from project-specific definitions.</h3>
+              <p class="type-body-reading">Account-level standards remain reusable and governed. Project-specific definitions have their own scope, giving project owners local flexibility without turning every local need into a platform standard.</p>
+              <figure class="dive-figure">
+                <img src="../files/governance.png" alt="Detailed governance model and project settings interface" />
+                <figcaption class="type-caption">The model makes ownership visible before someone makes a consequential edit.</figcaption>
+              </figure>
+            </section>
+            <section class="dive-chapter" id="dive-tradeoff" data-dive-chapter="tradeoff">
+              <div class="type-label">Part C · Governance</div>
+              <h3 class="type-proposition">Keep applied project data intact when account standards change.</h3>
+              <p class="type-body-reading">A shared list can evolve without removing a value already applied to a project record. The system distinguishes what is available next from what was used in existing project work.</p>
+              <figure class="dive-figure">
+                <img src="../files/components-map.png" alt="Shared component architecture across account and project levels" />
+                <figcaption class="type-caption">The shared model defines the relationship between standards and project data without treating them as the same thing.</figcaption>
+              </figure>
+            </section>
+            <div class="dive-end" data-dive-end>
+              <strong class="type-subsection">The nested story ends. The main argument does not.</strong>
+              <span class="type-label">Keep scrolling to continue ↓</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="chapter" id="cross-product-reuse" data-chapter hidden aria-hidden="true">
+        <div class="goal-frame" data-goal-dive data-expanded="false">
+        <div class="goal-scroll-range" aria-hidden="true"></div>
+        <header class="chapter-opener reveal goal-summary">
+          <div class="chapter-heading">
+            <div class="type-label">6 / Goal 4</div>
+            <h2 class="chapter-title type-section">Reuse the model while making it native to Construction Cloud</h2>
+          </div>
+          <p class="chapter-summary type-summary">AEC Data provided shared data logic and infrastructure; Construction Cloud needed an interaction model that matched its project workflow conventions.</p>
+          <ol class="goal-decision-overview" aria-label="Decisions that made the model reusable across products">
+            <li class="goal-decision-card"><button type="button" data-goal-target="reuse-platform-logic"><span class="type-label">1</span><strong class="type-detail">Reused shared data logic and infrastructure.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="translate-cad-interactions"><span class="type-label">2</span><strong class="type-detail">Translated CAD-oriented interactions.</strong></button></li>
+            <li class="goal-decision-card"><button type="button" data-goal-target="extend-construction-cloud-patterns"><span class="type-label">3</span><strong class="type-detail">Kept the pattern reusable across modules.</strong></button></li>
+          </ol>
+        </header>
+
+        <article class="goal-takeover" data-goal-takeover aria-hidden="true">
+          <div class="goal-return-wrap"><button class="goal-close type-interface" type="button" data-close-goal>← Return to summary</button></div>
+        <section class="subsection-grid goal-decision" id="reuse-platform-logic" aria-labelledby="reuse-platform-logic-title">
+          <h3 class="subsection-title type-subsection" id="reuse-platform-logic-title">Reused shared data logic and infrastructure</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">AEC Data’s existing definition model provided a foundation for consistent custom data across the design-to-construction workflow.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The work did not create a separate definition model for Submittals. It used AEC Data’s shared logic and components as the base for a construction-management implementation.</p>
+              <figure class="case-figure">
+                <img src="../files/components-map.png" alt="Map of shared AEC Data components and their Construction Cloud uses" />
+                <figcaption class="type-caption">Shared infrastructure supports a consistent data-definition model across products without requiring identical interfaces.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="translate-cad-interactions" aria-labelledby="translate-cad-interactions-title">
+          <h3 class="subsection-title type-subsection" id="translate-cad-interactions-title">Translated CAD-oriented interactions</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">AEC Data components were designed for Revit and CAD workflows, while Construction Cloud users work through project modules, lists, modals, and side panels.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The essential fields and logic were retained, but their interaction patterns changed. Construction Cloud uses the navigation conventions its project personas already know instead of reproducing a CAD-oriented form wholesale.</p>
+              <figure class="case-figure">
+                <img src="../files/adaptation.png" alt="CAD-oriented data form reorganized as a Construction Cloud interaction" />
+                <figcaption class="type-caption">The same definition model is expressed through interaction patterns familiar to Construction Cloud users.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="extend-construction-cloud-patterns" aria-labelledby="extend-construction-cloud-patterns-title">
+          <h3 class="subsection-title type-subsection" id="extend-construction-cloud-patterns-title">Kept the pattern reusable across modules</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">The custom-data experience needed to work in Submittals and establish a model that other Construction Cloud modules could adopt.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">Reusable does not mean every module receives the same screen. The shared model preserves common definition logic while allowing a module to place custom-data controls where they fit its own workflow.</p>
+            </div>
+          </div>
+        </section>
+        </article>
+        </div>
+      </section>
+
+      <section class="chapter" id="validation" data-chapter hidden aria-hidden="true">
+        <header class="chapter-opener reveal">
+          <div class="chapter-heading">
+            <div class="type-label">7 / Validation</div>
+            <h2 class="chapter-title type-section">Validation and unresolved decisions</h2>
+          </div>
+          <p class="chapter-summary type-summary">Joint research, working prototypes, and usability testing informed the model; several detailed interaction decisions remained open.</p>
+        </header>
+
+        <section class="subsection-grid goal-decision" id="testing-signal" aria-labelledby="testing-signal-title">
+          <h3 class="subsection-title type-subsection" id="testing-signal-title">Tested the model with the people who use it</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Research and prototype reviews tested whether the account, project, and module rules could be understood across the personas involved.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">The project used interviews, usability testing, prototype reviews, and customer-success feedback to keep the model grounded in how project teams and account managers handle data. The supplied material documents the methods, not a quantified usability result.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection-grid goal-decision" id="open-questions" aria-labelledby="open-questions-title">
+          <h3 class="subsection-title type-subsection" id="open-questions-title">Kept unresolved interaction details explicit</h3>
+          <div class="subsection-content">
+            <p class="subsection-summary type-body-reading">Sorting, discovery, “used in” information, list-value display, and module-specific variations needed further design and validation.</p>
+            <div class="subsection-evidence">
+              <p class="type-body-reading">These details belong in the next design and research cycle rather than being represented as settled outcomes. The core model defines the account/project relationship; the remaining questions refine how people discover, inspect, and manage that model in different modules.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="chapter learning" id="learning" data-chapter hidden aria-hidden="true">
+        <header class="chapter-opener reveal">
+          <div class="chapter-heading">
+            <div class="type-label">4 / Reflection</div>
+            <h2 class="chapter-title type-section">Learning</h2>
+          </div>
+          <p class="chapter-summary type-summary">The interface became the visible edge of an organizational agreement.</p>
+        </header>
+        <div class="chapter-evidence reveal">
+          <p class="type-body-reading">The larger lesson was structural: teams move faster when they agree which differences are meaningful before they standardize the rest.</p>
+          <p class="type-caption">Condensed mock copy based on the supplied reference. Outcomes will be calibrated to the evidence during content development.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="project-footer">
+    <nav class="project-pagination" aria-label="Adjacent case studies">
+      <a class="project-link previous" href="#opening">
+        <span class="type-interface">← Previous case study</span>
+        <strong class="type-subsection">From shared library to shared behavior</strong>
+      </a>
+      <a class="project-link next" href="#opening">
+        <span class="type-interface">Next case study →</span>
+        <strong class="type-subsection">When the dashboard became a decision</strong>
+      </a>
+    </nav>
+    <div class="footer-global type-interface">
+      <strong>Tom Bar-Gal / UX thinking</strong>
+      <nav class="footer-links" aria-label="Portfolio pages"><a href="#opening">Work</a><a href="#opening">Experiments</a><a href="#opening">About</a></nav>
+      <span>2026</span>
+    </div>
+  </footer>
+
+  <script type="module">
+      import { annotate } from 'https://unpkg.com/rough-notation?module';
+      import { getRoundedOutlinePath, getOutlineTilt } from '../files/case-study-title-outline.js?v=outline-join-20261024';
+      import { selectActiveChapter, selectActiveSubsection } from '../files/case-study-nav-state.js';
+      import { createOneShotScrollAnnotations } from '../files/case-study-rough-annotation-state.js';
+      import { createTrackpadScrollController, getRevealProgress, getSnapTarget, isHorizontalIntent, runSettleTransition } from '../files/case-study-sidecar-state.js?v=animated-native-settle';
+      import { buildCopyKey, collectCopyChanges, serializeCopyChanges } from '../files/case-study-copy-edit-state.js';
+      import { createCohesionController } from '../files/case-study-cohesion.js?v=preview-light-shadow-20261115';
+      import { createStandardizationController } from '../files/case-study-standardization.js?v=standardization-perf2-20261116';
+      import { createGovernanceController } from '../files/case-study-governance.js?v=governance-roles-20261115';
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: .12 });
+      document.querySelectorAll('.reveal').forEach((element) => {
+        if (reduceMotion) element.classList.add('visible');
+        else revealObserver.observe(element);
+      });
+
+      const roughAnnotationElements = [...document.querySelectorAll('[data-rough-annotation]')];
+      if (roughAnnotationElements.length) {
+        const annotationColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+        const roughAnnotationDuration = 360;
+        const roughAnnotationOrder = new Map();
+        const roughAnnotationGroupCounts = new Map();
+        roughAnnotationElements.forEach((element) => {
+          const group = element.dataset.roughGroup || 'default';
+          const order = roughAnnotationGroupCounts.get(group) || 0;
+          roughAnnotationOrder.set(element, order);
+          roughAnnotationGroupCounts.set(group, order + 1);
+        });
+        let roughAnnotationController;
+        const roughAnnotationObservers = roughAnnotationElements.map((element) => {
+          const defaultOffset = 18 + roughAnnotationOrder.get(element) * 18;
+          const offset = Number.parseFloat(element.dataset.roughOffset) || defaultOffset;
+          return new IntersectionObserver(
+            (entries) => roughAnnotationController.handleEntries(entries),
+            { rootMargin: `0px 0px -${offset}% 0px`, threshold: .25 }
+          );
+        });
+
+        roughAnnotationController = createOneShotScrollAnnotations({
+          elements: roughAnnotationElements,
+          createAnnotation: (element) => {
+            const type = element.dataset.roughAnnotation || 'highlight';
+            if (type === 'highlight') {
+              element.dataset.roughInk = element.textContent;
+              element.classList.add('rough-ink');
+            }
+            const annotation = annotate(element, {
+              type,
+              color: annotationColor,
+              padding: type === 'highlight' ? [1, 2, 1, 2] : 2,
+              multiline: true,
+              iterations: 1,
+              animate: !reduceMotion,
+              animationDuration: roughAnnotationDuration
+            });
+            return {
+              show: () => {
+                if (type === 'highlight') element.classList.add('rough-ink-visible');
+                annotation.show();
+              }
+            };
+          },
+          observe: (element) => roughAnnotationObservers[roughAnnotationElements.indexOf(element)]?.observe(element),
+          unobserve: (element) => roughAnnotationObservers[roughAnnotationElements.indexOf(element)]?.unobserve(element),
+          schedule: (callback, delay) => window.setTimeout(callback, delay),
+          animationDuration: roughAnnotationDuration,
+          sequenceGap: 60,
+          prefersReducedMotion: reduceMotion
+        });
+      }
+
+      const shell = document.querySelector('[data-case]');
+    const chapters = [...shell.querySelectorAll('[data-chapter]:not([hidden])')];
+    const links = [...shell.querySelectorAll('.rail-main > a')];
+    const subsectionLinks = [...shell.querySelectorAll('.nested-rail a')];
+    const subsectionTargets = subsectionLinks.map((link) => ({ link, target: document.querySelector(link.hash) })).filter(({ target }) => target);
+    const goalFrames = [...shell.querySelectorAll('[data-goal-dive]')];
+    const goalFrameControllers = new Map();
+    const progress = shell.querySelector('.progress span');
+    const governanceRail = shell.querySelector('[data-governance-rail]');
+    let activeChapterIndex = 0;
+
+    const updateGoalRailState = () => {
+      goalFrames.forEach((frame) => {
+        const decisionLink = subsectionLinks.find((link) => document.querySelector(link.hash)?.closest('[data-goal-dive]') === frame);
+        const rail = decisionLink?.closest('.goal-nested');
+        if (rail) rail.classList.toggle('expanded', frame.dataset.expanded === 'true');
+      });
+    };
+
+    const updateSubsectionState = () => {
+      const barHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h')) || 64;
+      const readingLine = barHeight + Math.min(window.innerHeight * .24, 220);
+      const visibleSubsectionTargets = subsectionTargets.filter(({ target }) => {
+        const frame = target.closest('[data-goal-dive]');
+        return !frame || frame.dataset.expanded === 'true';
+      });
+      const activeLinkIndex = selectActiveSubsection(
+        visibleSubsectionTargets.map(({ target }) => ({
+          chapterIndex: chapters.findIndex((chapter) => chapter.contains(target)),
+          top: target.getBoundingClientRect().top,
+        })),
+        activeChapterIndex,
+        readingLine,
+      );
+      const activeLink = visibleSubsectionTargets[activeLinkIndex]?.link;
+      subsectionLinks.forEach((link) => link.classList.toggle('active', link === activeLink));
+    };
+
+    const updateChapterState = () => {
+      const barHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h')) || 64;
+      const readingLine = barHeight + Math.min(window.innerHeight * .24, 220);
+      activeChapterIndex = selectActiveChapter(chapters.map((chapter) => chapter.getBoundingClientRect().top), readingLine);
+      links.forEach((link, index) => {
+        const isActive = index === activeChapterIndex;
+        link.classList.toggle('active', isActive);
+        link.classList.toggle('read', index < activeChapterIndex);
+        if (isActive) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+      updateGoalRailState();
+      updateSubsectionState();
+    };
+
+    const updateProgress = () => {
+      const rect = shell.getBoundingClientRect();
+      const available = Math.max(1, rect.height - window.innerHeight);
+      const travelled = Math.min(available, Math.max(0, -rect.top + 64));
+      progress.style.setProperty('--progress', `${(travelled / available) * 100}%`);
+    };
+    const goalSidecarDuration = reduceMotion ? 0 : 520;
+    const createGoalSidecarController = (frame) => {
+      const takeover = frame.querySelector('[data-goal-takeover]');
+      const closeButton = frame.querySelector('[data-close-goal]');
+      let revealProgress = 0;
+      let settleTimer = 0;
+      let delayedCloseTimer = 0;
+      let suppressNativeScrollEnd = false;
+      let scrollSyncFrame = 0;
+      let pointerGesture = null;
+
+      const setRevealProgress = (nextProgress) => {
+        revealProgress = Math.min(1, Math.max(0, nextProgress));
+        takeover.style.setProperty('--goal-offset', `${(1 - revealProgress) * 100}%`);
+        takeover.setAttribute('aria-hidden', String(revealProgress === 0));
+      };
+      const getHorizontalScrollRange = () => Math.max(1, frame.scrollWidth - frame.clientWidth);
+      const syncNativeScrollProgress = (nextProgress) => {
+        const nextScrollLeft = Math.min(1, Math.max(0, nextProgress)) * getHorizontalScrollRange();
+        frame.style.setProperty('--goal-scroll-x', `${nextScrollLeft}px`);
+        if (Math.abs(frame.scrollLeft - nextScrollLeft) <= .5) return;
+        suppressNativeScrollEnd = true;
+        frame.scrollLeft = nextScrollLeft;
+        window.cancelAnimationFrame(scrollSyncFrame);
+        scrollSyncFrame = window.requestAnimationFrame(() => {
+          scrollSyncFrame = window.requestAnimationFrame(() => { suppressNativeScrollEnd = false; });
+        });
+      };
+      const finishSettling = (target, focusSummary) => {
+        frame.classList.remove('settling', 'dragging');
+        syncNativeScrollProgress(target);
+        frame.dataset.state = target ? 'open' : 'closed';
+        frame.dataset.expanded = String(Boolean(target));
+        takeover.setAttribute('aria-hidden', String(!target));
+        if (!target && focusSummary) frame.querySelector('[data-goal-target]')?.focus({ preventScroll: true });
+        updateChapterState();
+        updateProgress();
+      };
+      const settleGoal = (target, { focusSummary = false, returnToStart = false } = {}) => {
+        window.clearTimeout(settleTimer);
+        window.clearTimeout(delayedCloseTimer);
+        goalTrackpadScroll.reset();
+        const commit = () => {
+          frame.classList.add('settling');
+          frame.dataset.state = target ? 'open' : 'closing';
+          if (target) frame.dataset.expanded = 'true';
+          settleTimer = runSettleTransition({
+            target,
+            duration: goalSidecarDuration,
+            schedule: (callback, delay) => window.setTimeout(callback, delay),
+            onVisualTarget: setRevealProgress,
+            onAnimationEnd: (settledTarget) => finishSettling(settledTarget, focusSummary)
+          });
+        };
+        if (!target && returnToStart) {
+          const barHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h')) || 64;
+          const sectionTop = window.scrollY + frame.getBoundingClientRect().top - barHeight;
+          if (Math.abs(window.scrollY - sectionTop) > 12) {
+            window.scrollTo({ top: sectionTop, behavior: reduceMotion ? 'auto' : 'smooth' });
+            delayedCloseTimer = window.setTimeout(commit, reduceMotion ? 0 : 360);
+            return;
+          }
+        }
+        commit();
+      };
+      const beginInteraction = () => {
+        window.clearTimeout(settleTimer);
+        window.clearTimeout(delayedCloseTimer);
+        frame.classList.remove('settling');
+        frame.dataset.state = 'interacting';
+        takeover.setAttribute('aria-hidden', 'false');
+      };
+      const goalTrackpadScroll = createTrackpadScrollController({
+        getProgress: () => revealProgress,
+        onSettle: (target, { startProgress }) => settleGoal(target, { returnToStart: target === 0 && startProgress >= .5 })
+      });
+      const revealTarget = (targetId) => {
+        const target = targetId ? frame.querySelector(`#${targetId}`) : null;
+        target?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      };
+
+      frame.addEventListener('wheel', (event) => {
+        const movementX = -event.deltaX;
+        if (!goalTrackpadScroll.handleWheel({ movementX, movementY: event.deltaY })) return;
+        suppressNativeScrollEnd = false;
+        beginInteraction();
+      }, { passive: true });
+      frame.addEventListener('scroll', () => {
+        const scrollLeft = frame.scrollLeft;
+        frame.style.setProperty('--goal-scroll-x', `${scrollLeft}px`);
+        setRevealProgress(scrollLeft / getHorizontalScrollRange());
+      }, { passive: true });
+      frame.addEventListener('scrollend', () => {
+        if (suppressNativeScrollEnd) return;
+        goalTrackpadScroll.handleScrollEnd();
+      });
+      frame.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0 || event.target.closest('button, a')) return;
+        pointerGesture = { id: event.pointerId, startX: event.clientX, startY: event.clientY, startProgress: revealProgress, axis: null };
+        frame.setPointerCapture(event.pointerId);
+      });
+      frame.addEventListener('pointermove', (event) => {
+        if (!pointerGesture || pointerGesture.id !== event.pointerId) return;
+        const movementX = event.clientX - pointerGesture.startX;
+        const movementY = event.clientY - pointerGesture.startY;
+        if (!pointerGesture.axis) {
+          if (isHorizontalIntent({ movementX, movementY })) pointerGesture.axis = 'horizontal';
+          else if (Math.abs(movementY) >= 8) pointerGesture.axis = 'vertical';
+        }
+        if (pointerGesture.axis !== 'horizontal') return;
+        event.preventDefault();
+        beginInteraction();
+        frame.classList.add('dragging');
+        setRevealProgress(getRevealProgress({ progress: pointerGesture.startProgress, movementX, width: frame.getBoundingClientRect().width }));
+      });
+      const finishPointerGesture = (event) => {
+        if (!pointerGesture || pointerGesture.id !== event.pointerId) return;
+        if (frame.hasPointerCapture(event.pointerId)) frame.releasePointerCapture(event.pointerId);
+        if (pointerGesture.axis === 'horizontal') {
+          const target = getSnapTarget({ progress: revealProgress, startProgress: pointerGesture.startProgress });
+          settleGoal(target, { returnToStart: target === 0 && pointerGesture.startProgress === 1 });
+        }
+        pointerGesture = null;
+      };
+      frame.addEventListener('pointerup', finishPointerGesture);
+      frame.addEventListener('pointercancel', finishPointerGesture);
+      closeButton.addEventListener('click', () => settleGoal(0, { focusSummary: true, returnToStart: true }));
+
+      return {
+        open(targetId) {
+          if (frame.dataset.expanded === 'true') {
+            revealTarget(targetId);
+            return;
+          }
+          settleGoal(1);
+          window.setTimeout(() => revealTarget(targetId), goalSidecarDuration + 20);
+        },
+        close() { settleGoal(0, { focusSummary: true, returnToStart: true }); }
+      };
+    };
+    let nextOutlineVariant = 0;
+    const markCurrentDecision = (frame) => {
+      const cards = [...frame.querySelectorAll('.goal-decision-card')];
+      const titles = cards.map((card) => card.querySelector('.goal-decision-copy > .type-detail'));
+      const outlines = titles.map((title) => {
+        const variant = ++nextOutlineVariant;
+        const host = title.parentElement;
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        svg.classList.add('decision-outline');
+        svg.setAttribute('aria-hidden', 'true');
+        svg.dataset.visible = 'false';
+        svg.style.transform = `rotate(${getOutlineTilt(variant)}deg)`;
+        svg.append(path);
+        host.append(svg);
+        return {
+          show() { svg.dataset.visible = 'true'; },
+          hide() { svg.dataset.visible = 'false'; },
+          redraw() {
+            const rect = title.getBoundingClientRect();
+            const hostRect = host.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
+            const width = rect.width + 40;
+            const height = rect.height + 36;
+            svg.style.left = `${rect.left - hostRect.left - 20}px`;
+            svg.style.top = `${rect.top - hostRect.top - 18}px`;
+            svg.style.width = `${width}px`;
+            svg.style.height = `${height}px`;
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            path.setAttribute('d', getRoundedOutlinePath(width, height, variant));
+            path.style.setProperty('--outline-length', `${path.getTotalLength()}px`);
+          },
+        };
+      });
+      let active = -1;
+      let editing = false;
+      const syncOutline = () => {
+        if (editing) return;
+        const next = cards.findIndex((card) => card.dataset.current === 'true');
+        if (next === active) return;
+        if (active >= 0) outlines[active].hide();
+        active = next;
+        if (active >= 0) {
+          outlines[active].redraw();
+          outlines[active].show();
+        }
+      };
+      const redraw = () => {
+        outlines.forEach((outline) => outline.redraw());
+      };
+      const clear = () => {
+        outlines.forEach((outline) => outline.hide());
+        active = -1;
+      };
+      const observer = new MutationObserver(syncOutline);
+      cards.forEach((card) => observer.observe(card, { attributes: true, attributeFilter: ['data-current'] }));
+      const resizeObserver = new ResizeObserver(redraw);
+      titles.forEach((title) => {
+        resizeObserver.observe(title);
+        title.addEventListener('input', redraw);
+      });
+      window.addEventListener('resize', redraw);
+      document.fonts.ready.then(redraw);
+      redraw();
+      syncOutline();
+      return {
+        refresh: redraw,
+        setEditing(nextState) {
+          editing = nextState;
+          if (editing) clear();
+          else syncOutline();
+        },
+      };
+    };
+    const decisionHighlightControllers = [];
+    goalFrames.forEach((frame) => {
+      const navigate = () => { updateChapterState(); updateProgress(); };
+      const controller = typeof HTMLDialogElement !== 'undefined' && frame.hasAttribute('data-cohesion')
+        ? createCohesionController(frame, navigate)
+        : typeof HTMLDialogElement !== 'undefined' && frame.hasAttribute('data-standardization')
+          ? createStandardizationController(frame, navigate)
+          : typeof HTMLDialogElement !== 'undefined' && frame.hasAttribute('data-governance')
+            ? createGovernanceController(frame, navigate)
+          : createGoalSidecarController(frame);
+      goalFrameControllers.set(frame, controller);
+      frame.querySelectorAll('[data-goal-target]').forEach((button) => {
+        button.addEventListener('click', () => openGoalSidecar(frame, button.dataset.goalTarget));
+      });
+    });
+    const openGoalSidecar = (frame, targetId) => {
+      goalFrameControllers.get(frame)?.open(targetId);
+    };
+    const closeGoalSidecar = (frame) => {
+      goalFrameControllers.get(frame)?.close();
+    };
+    subsectionLinks.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const target = document.querySelector(link.hash);
+        const frame = target?.closest('[data-goal-dive]');
+        if (!frame) return;
+        event.preventDefault();
+        if (frame.classList.contains('co-frame')) {
+          const steps = [...frame.querySelectorAll('.goal-decision')];
+          const cards = [...frame.querySelectorAll('.goal-decision-card')];
+          (cards[steps.indexOf(target)] || frame).scrollIntoView({ behavior: reduceMotion ? 'instant' : 'smooth', block: 'center' });
+          return;
+        }
+        openGoalSidecar(frame, target.id);
+      });
+    });
+    let updateFrame = 0;
+    const requestNavigationUpdate = () => {
+      if (updateFrame) return;
+      updateFrame = window.requestAnimationFrame(() => {
+        updateFrame = 0;
+        updateChapterState();
+        updateProgress();
+      });
+    };
+    window.addEventListener('scroll', requestNavigationUpdate, { passive: true });
+    window.addEventListener('resize', requestNavigationUpdate);
+
+    const scrolly = document.querySelector('[data-scrolly]');
+    const steps = [...scrolly.querySelectorAll('.step')];
+    const panels = [...scrolly.querySelectorAll('.panel')];
+    const stepObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const index = Number(entry.target.dataset.panel);
+        steps.forEach((step, stepIndex) => step.classList.toggle('active', stepIndex === index));
+        panels.forEach((panel, panelIndex) => panel.classList.toggle('active', panelIndex === index));
+      });
+    }, { rootMargin: '-35% 0px -46% 0px', threshold: 0 });
+    steps.forEach((step) => stepObserver.observe(step));
+
+    const diveFrame = document.querySelector('[data-deep-dive]');
+    const openButton = diveFrame.querySelector('[data-open-dive]');
+    const closeButton = diveFrame.querySelector('[data-close-dive]');
+    const takeover = diveFrame.querySelector('[data-dive-takeover]');
+    const diveChapters = [...diveFrame.querySelectorAll('[data-dive-chapter]')];
+    const nestedButtons = governanceRail ? [...governanceRail.querySelectorAll('[data-dive-target]')] : [];
+    let revealProgress = 0;
+    let settleTimer = 0;
+    let delayedCloseTimer = 0;
+    let suppressNativeScrollEnd = false;
+    let scrollSyncFrame = 0;
+
+    const setRevealProgress = (nextProgress) => {
+      revealProgress = Math.min(1, Math.max(0, nextProgress));
+      takeover.style.setProperty('--dive-offset', `${(1 - revealProgress) * 100}%`);
+      takeover.setAttribute('aria-hidden', String(revealProgress === 0));
+    };
+
+    const getHorizontalScrollRange = () => Math.max(1, diveFrame.scrollWidth - diveFrame.clientWidth);
+
+    const syncNativeScrollProgress = (nextProgress) => {
+      const nextScrollLeft = Math.min(1, Math.max(0, nextProgress)) * getHorizontalScrollRange();
+      diveFrame.style.setProperty('--dive-scroll-x', `${nextScrollLeft}px`);
+      if (Math.abs(diveFrame.scrollLeft - nextScrollLeft) <= .5) return;
+      suppressNativeScrollEnd = true;
+      diveFrame.scrollLeft = nextScrollLeft;
+      window.cancelAnimationFrame(scrollSyncFrame);
+      scrollSyncFrame = window.requestAnimationFrame(() => {
+        scrollSyncFrame = window.requestAnimationFrame(() => { suppressNativeScrollEnd = false; });
+      });
+    };
+
+    const finishSettling = (target, focusSummary) => {
+      diveFrame.classList.remove('settling', 'dragging');
+      syncNativeScrollProgress(target);
+      diveFrame.dataset.state = target ? 'open' : 'closed';
+      diveFrame.dataset.expanded = String(Boolean(target));
+      openButton.setAttribute('aria-expanded', String(Boolean(target)));
+      takeover.setAttribute('aria-hidden', String(!target));
+      if (!target && focusSummary) openButton.focus({ preventScroll: true });
+      updateChapterState();
+      updateProgress();
+    };
+
+    const settleDive = (target, { focusSummary = false, returnToStart = false } = {}) => {
+      window.clearTimeout(settleTimer);
+      window.clearTimeout(delayedCloseTimer);
+      trackpadScroll.reset();
+      const duration = reduceMotion ? 0 : 520;
+      const commit = () => {
+        diveFrame.classList.add('settling');
+        diveFrame.dataset.state = target ? 'open' : 'closing';
+        if (target) diveFrame.dataset.expanded = 'true';
+        openButton.setAttribute('aria-expanded', String(Boolean(target)));
+        settleTimer = runSettleTransition({
+          target,
+          duration,
+          schedule: (callback, delay) => window.setTimeout(callback, delay),
+          onVisualTarget: setRevealProgress,
+          onAnimationEnd: (settledTarget) => finishSettling(settledTarget, focusSummary)
+        });
+      };
+
+      if (!target && returnToStart) {
+        const barHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h')) || 64;
+        const sectionTop = window.scrollY + diveFrame.getBoundingClientRect().top - barHeight;
+        if (Math.abs(window.scrollY - sectionTop) > 12) {
+          window.scrollTo({ top: sectionTop, behavior: reduceMotion ? 'auto' : 'smooth' });
+          delayedCloseTimer = window.setTimeout(commit, reduceMotion ? 0 : 360);
+          return;
+        }
+      }
+      commit();
+    };
+
+    const beginInteraction = () => {
+      window.clearTimeout(settleTimer);
+      window.clearTimeout(delayedCloseTimer);
+      diveFrame.classList.remove('settling');
+      diveFrame.dataset.state = 'interacting';
+      takeover.setAttribute('aria-hidden', 'false');
+    };
+
+    const trackpadScroll = createTrackpadScrollController({
+      getProgress: () => revealProgress,
+      onSettle: (target, { startProgress }) => {
+        settleDive(target, { returnToStart: target === 0 && startProgress >= .5 });
+      }
+    });
+
+    openButton.addEventListener('click', () => settleDive(1));
+    closeButton.addEventListener('click', () => settleDive(0, { focusSummary: true, returnToStart: true }));
+    document.addEventListener('keydown', (event) => {
+      const openGoalFrame = goalFrames.find((frame) => frame.dataset.expanded === 'true');
+      if (event.key === 'Escape' && openGoalFrame) {
+        closeGoalSidecar(openGoalFrame, { focusSummary: true });
+        return;
+      }
+      if (event.key === 'Escape' && diveFrame.dataset.expanded === 'true') {
+        settleDive(0, { focusSummary: true, returnToStart: true });
+      }
+    });
+
+    diveFrame.addEventListener('wheel', (event) => {
+      const movementX = -event.deltaX;
+      if (!trackpadScroll.handleWheel({ movementX, movementY: event.deltaY })) return;
+      suppressNativeScrollEnd = false;
+      beginInteraction();
+    }, { passive: true });
+
+    diveFrame.addEventListener('scroll', () => {
+      const scrollLeft = diveFrame.scrollLeft;
+      diveFrame.style.setProperty('--dive-scroll-x', `${scrollLeft}px`);
+      setRevealProgress(scrollLeft / getHorizontalScrollRange());
+    }, { passive: true });
+
+    diveFrame.addEventListener('scrollend', () => {
+      if (suppressNativeScrollEnd) return;
+      trackpadScroll.handleScrollEnd();
+    });
+
+    let pointerGesture = null;
+    diveFrame.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0 || event.target.closest('button, a')) return;
+      pointerGesture = {
+        id: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        startProgress: revealProgress,
+        axis: null
+      };
+      diveFrame.setPointerCapture(event.pointerId);
+    });
+    diveFrame.addEventListener('pointermove', (event) => {
+      if (!pointerGesture || pointerGesture.id !== event.pointerId) return;
+      const movementX = event.clientX - pointerGesture.startX;
+      const movementY = event.clientY - pointerGesture.startY;
+      if (!pointerGesture.axis) {
+        if (isHorizontalIntent({ movementX, movementY })) pointerGesture.axis = 'horizontal';
+        else if (Math.abs(movementY) >= 8) pointerGesture.axis = 'vertical';
+      }
+      if (pointerGesture.axis !== 'horizontal') return;
+      event.preventDefault();
+      beginInteraction();
+      diveFrame.classList.add('dragging');
+      setRevealProgress(getRevealProgress({
+        progress: pointerGesture.startProgress,
+        movementX,
+        width: diveFrame.getBoundingClientRect().width
+      }));
+    });
+
+    const finishPointerGesture = (event) => {
+      if (!pointerGesture || pointerGesture.id !== event.pointerId) return;
+      if (diveFrame.hasPointerCapture(event.pointerId)) diveFrame.releasePointerCapture(event.pointerId);
+      if (pointerGesture.axis === 'horizontal') {
+        const target = getSnapTarget({ progress: revealProgress, startProgress: pointerGesture.startProgress });
+        settleDive(target, { returnToStart: target === 0 && pointerGesture.startProgress === 1 });
+      }
+      pointerGesture = null;
+    };
+    diveFrame.addEventListener('pointerup', finishPointerGesture);
+    diveFrame.addEventListener('pointercancel', finishPointerGesture);
+
+    const updateDiveChapter = () => {
+      if (diveFrame.dataset.expanded !== 'true') return;
+      const barHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bar-h')) || 64;
+      const readingLine = barHeight + Math.min(window.innerHeight * .26, 190);
+      let activeIndex = 0;
+      diveChapters.forEach((chapter, index) => {
+        if (chapter.getBoundingClientRect().top <= readingLine) activeIndex = index;
+      });
+      nestedButtons.forEach((button, index) => button.classList.toggle('active', index === activeIndex));
+    };
+    window.addEventListener('scroll', updateDiveChapter, { passive: true });
+    nestedButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = diveFrame.querySelector(`[data-dive-chapter="${button.dataset.diveTarget}"]`);
+        if (!target) return;
+        const revealTarget = () => target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+        if (diveFrame.dataset.expanded === 'true') {
+          revealTarget();
+          return;
+        }
+        settleDive(1);
+        window.setTimeout(revealTarget, reduceMotion ? 0 : 540);
+      });
+    });
+
+    const copyDraftStorageKey = 'tom-bar-gal.case-study-copy-draft.v1';
+    const copyEditPanel = document.querySelector('[data-copy-edit-panel]');
+    const copyEditToggle = copyEditPanel.querySelector('[data-copy-edit-toggle]');
+    const copyEditStatus = copyEditPanel.querySelector('[data-copy-edit-status]');
+    const copyEditCopy = copyEditPanel.querySelector('[data-copy-edit-copy]');
+    const copyEditDownload = copyEditPanel.querySelector('[data-copy-edit-download]');
+    const copyEditDiscard = copyEditPanel.querySelector('[data-copy-edit-discard]');
+    const editableSelector = [
+      '.type-display',
+      '.type-section',
+      '.type-summary',
+      '.type-subsection',
+      '.type-proposition',
+      '.type-body-reading',
+      '.type-body-support',
+      '.type-caption',
+      '.editorial-aside',
+      '.editorial-pull',
+      '.type-label',
+      '.goal-decision-card .type-detail',
+      '.goal-decision-card .type-body-summary',
+    ].join(', ');
+    const editableElements = [...document.querySelectorAll(`main ${editableSelector}`)].filter((element) => (
+      !element.closest('[hidden], a') &&
+      (!element.closest('button') || element.closest('.goal-decision-card button')) &&
+      !element.querySelector('[data-rough-annotation]')
+    ));
+    const copyRecords = editableElements.map((element, index) => {
+      const sectionId = element.closest('[id]')?.id || 'case-study';
+      const original = element.textContent.trim();
+      const key = buildCopyKey({ sectionId, index });
+      element.dataset.copyEditable = key;
+      return { element, key, original, value: original };
+    });
+    let copyEditing = false;
+
+    // Editable overview copy lives inside navigation buttons. Preserve editing intent before those button handlers run.
+    document.addEventListener('click', (event) => {
+      if (!copyEditing || !event.target.closest('[data-copy-editable]')) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }, true);
+    document.addEventListener('keydown', (event) => {
+      if (!copyEditing || !event.target.closest('[data-copy-editable]')) return;
+      if (event.key !== ' ' && event.key !== 'Enter') return;
+      event.stopImmediatePropagation();
+    }, true);
+    document.addEventListener('keyup', (event) => {
+      if (!copyEditing || !event.target.closest('[data-copy-editable]')) return;
+      if (event.key !== ' ' && event.key !== 'Enter') return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }, true);
+
+    const getCopyChanges = () => collectCopyChanges(copyRecords.map(({ key, original, value }) => ({ key, original, value })));
+    const setCopyEditStatus = (message) => { copyEditStatus.textContent = message; };
+    const updateCopyEditStatus = () => {
+      const changes = getCopyChanges();
+      setCopyEditStatus(changes.length ? `${changes.length} change${changes.length === 1 ? '' : 's'} saved locally` : 'No draft changes');
+    };
+    const loadCopyDraft = () => {
+      try {
+        const stored = window.localStorage.getItem(copyDraftStorageKey);
+        if (!stored) return;
+        const draft = JSON.parse(stored);
+        copyRecords.forEach((record) => {
+          const saved = draft[record.key];
+          if (!saved || saved.original !== record.original || typeof saved.value !== 'string') return;
+          record.value = saved.value;
+          record.element.textContent = saved.value;
+        });
+      } catch {
+        setCopyEditStatus('Draft storage is unavailable in this browser');
+      }
+    };
+    const saveCopyDraft = () => {
+      const changes = getCopyChanges();
+      try {
+        if (!changes.length) {
+          window.localStorage.removeItem(copyDraftStorageKey);
+        } else {
+          const draft = Object.fromEntries(changes.map(({ key, original, value }) => [key, { original, value }]));
+          window.localStorage.setItem(copyDraftStorageKey, JSON.stringify(draft));
+        }
+        updateCopyEditStatus();
+      } catch {
+        setCopyEditStatus('Changes are visible, but could not be saved locally');
+      }
+    };
+    const setCopyEditing = (nextState) => {
+      copyEditing = nextState;
+      document.documentElement.dataset.copyEditing = String(nextState);
+      copyEditPanel.dataset.editing = String(nextState);
+      copyEditToggle.setAttribute('aria-pressed', String(nextState));
+      copyEditToggle.textContent = nextState ? 'Done editing' : 'Edit text';
+      decisionHighlightControllers.forEach((controller) => controller.setEditing(nextState));
+      copyRecords.forEach(({ element }) => {
+        if (nextState) element.setAttribute('contenteditable', 'plaintext-only');
+        else element.removeAttribute('contenteditable');
+      });
+      if (nextState) updateCopyEditStatus();
+    };
+    const copyChanges = async () => {
+      const changes = getCopyChanges();
+      if (!changes.length) {
+        setCopyEditStatus('Make an edit before copying changes');
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(serializeCopyChanges(changes));
+        setCopyEditStatus(`${changes.length} change${changes.length === 1 ? '' : 's'} copied`);
+      } catch {
+        setCopyEditStatus('Could not copy changes. Use Download instead.');
+      }
+    };
+    const downloadChanges = () => {
+      const changes = getCopyChanges();
+      if (!changes.length) {
+        setCopyEditStatus('Make an edit before downloading changes');
+        return;
+      }
+      const file = new Blob([serializeCopyChanges(changes)], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(file);
+      const link = document.createElement('a');
+        link.href = url;
+        link.download = 'case-study-copy-draft.txt';
+        link.click();
+        window.setTimeout(() => URL.revokeObjectURL(url), 0);
+        setCopyEditStatus('Draft downloaded');
+    };
+    const discardChanges = () => {
+      if (!getCopyChanges().length) return;
+      if (!window.confirm('Discard all local copy changes?')) return;
+      copyRecords.forEach((record) => {
+        record.value = record.original;
+        record.element.textContent = record.original;
+      });
+      if (!copyEditing) decisionHighlightControllers.forEach((controller) => controller.refresh());
+      try {
+        window.localStorage.removeItem(copyDraftStorageKey);
+        updateCopyEditStatus();
+      } catch {
+        setCopyEditStatus('Changes were reset, but local draft storage could not be cleared');
+      }
+    };
+    loadCopyDraft();
+    goalFrames.filter((frame) => frame.classList.contains('co-frame')).forEach((frame) => {
+      decisionHighlightControllers.push(markCurrentDecision(frame));
+    });
+    copyRecords.forEach((record) => {
+      record.element.addEventListener('input', () => {
+        record.value = record.element.textContent.trim();
+        saveCopyDraft();
+      });
+      record.element.addEventListener('paste', (event) => {
+        event.preventDefault();
+        const pastedText = event.clipboardData?.getData('text/plain') || '';
+        document.execCommand('insertText', false, pastedText);
+      });
+    });
+    copyEditToggle.addEventListener('click', () => setCopyEditing(!copyEditing));
+    copyEditCopy.addEventListener('click', copyChanges);
+    copyEditDownload.addEventListener('click', downloadChanges);
+    copyEditDiscard.addEventListener('click', discardChanges);
+
+    updateChapterState();
+    updateProgress();
+    updateDiveChapter();
+  </script>
+</body>
+</html>

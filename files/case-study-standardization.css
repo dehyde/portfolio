@@ -1,0 +1,84 @@
+.st-visual { pointer-events: none; }
+.st-fit { position: absolute; inset: 0 auto auto 0; width: 1440px; height: 1000px; transform-origin: 0 0; }
+.st-board { position: absolute; inset: 0; transform-origin: center; }
+.st-board-heading { position: absolute; top: 17px; left: 85px; color: var(--accent); font: 650 20px/1.2 var(--font-system); letter-spacing: .09em; }
+.st-board-heading span { position: absolute; left: 0; top: 0; width: 620px; white-space: nowrap; }
+.st-heading-after { opacity: 0; }
+.st-note { position: absolute; z-index: 2; left: 86px; width: 560px; height: 175px; display: flex; flex-direction: column; justify-content: center; padding: 22px 42px; color: #283028; background: linear-gradient(180deg, var(--paper-dark) 0, var(--paper) 14%, var(--paper) 72%, color-mix(in srgb, var(--paper) 84%, white) 100%); border-bottom-right-radius: 46px 8px; box-shadow: 0 3px 4px #0002, 0 19px 31px #0004; transform-origin: 45% 15%; }
+.st-note::before { content: ''; position: absolute; right: 13px; bottom: 9px; z-index: -1; width: 37%; height: 25%; background: #0002; box-shadow: 11px 13px 21px #0005; transform: rotate(4deg) skewX(8deg); }
+.st-note::after { content: ''; position: absolute; right: 0; bottom: 0; width: 50px; height: 26px; border-bottom-right-radius: 46px 8px; background: linear-gradient(140deg, #0000 25%, #ffffff85 100%); }
+.st-note-tape { position: absolute; left: 42%; top: -15px; width: 130px; height: 31px; background: linear-gradient(180deg, #e8e0c9d9, #cfc3a3b8); box-shadow: 0 3px 5px #0002; transform: rotate(-4deg); }
+.st-note strong { display: block; margin-top: 7px; font: 560 41px/1.1 var(--font-system); letter-spacing: -.035em; }
+.st-note-wireframe { display: none; }
+.st-note-list { top: 86px; --paper: color-mix(in srgb, var(--accent) 50%, white); --paper-dark: color-mix(in srgb, var(--accent) 72%, white); transform: rotate(-1.5deg); }
+.st-note-select { top: 311px; z-index: 4; --paper: color-mix(in srgb, var(--accent) 25%, white); --paper-dark: color-mix(in srgb, var(--accent) 44%, white); opacity: 0; }
+.st-note-select .st-note-tape { opacity: 0; }
+.st-note-create { top: 311px; --paper: color-mix(in srgb, var(--accent) 41%, white); --paper-dark: color-mix(in srgb, var(--accent) 61%, white); transform: rotate(-1deg); }
+.st-note-return { top: 561px; --paper: color-mix(in srgb, var(--accent) 32%, white); --paper-dark: color-mix(in srgb, var(--accent) 51%, white); transform: rotate(1.5deg); }
+.st-link { position: absolute; z-index: 1; left: 359px; width: 3px; background: var(--accent); box-shadow: 0 0 0 1px #1a201b; }
+.st-link::after { content: ''; position: absolute; bottom: 0; left: -6px; width: 13px; height: 13px; border-right: 3px solid var(--accent); border-bottom: 3px solid var(--accent); transform: rotate(45deg); }
+.st-link-first { top: 260px; height: 46px; }
+.st-link-inserted { top: 488px; height: 40px; opacity: 0; }
+.st-link-last { top: 486px; height: 69px; }
+.st-sticker { position: absolute; z-index: 2; width: var(--sticker-width); padding: 10px 10px 37px; border: 1px solid #ebe6d8; background: #f8f7f2; box-shadow: 0 24px 54px #0007, 0 0 0 1px #fff8; transform-origin: 50% 10%; }
+.st-sticker img { display: block; width: 100%; height: auto; }
+.st-sticker > span { position: absolute; right: 18px; bottom: 9px; color: #485149; font: 600 18px/1.1 var(--font-system); }
+.st-sticker-list { top: 73px; left: 765px; --sticker-width: 520px; transform: rotate(2deg); }
+.st-sticker-select { top: 365px; left: 785px; --sticker-width: 485px; z-index: 3; opacity: 0; }
+.st-sticker-create { top: 471px; left: 937px; --sticker-width: 296px; transform: rotate(-3deg); }
+.st-create-window { position: absolute; z-index: 3; left: 50%; top: 150px; height: 700px; aspect-ratio: 346 / 402; box-shadow: 0 50px 115px #0009; transform: translateX(-50%); transform-origin: center; }
+.co-overview .st-create-window { left: 0; top: 0; width: 346px; height: 402px; transform-origin: 0 0; box-shadow: 0 20px 48px #0009; }
+.st-create-window > :is(.st-create-base, .st-typed-name) { display: block; width: 100%; height: 100%; }
+.st-typed-name { position: absolute; inset: 0; clip-path: inset(21% calc(100% - var(--st-name-reveal, 0%)) 73% 0); }
+/* The offsets include the padding around the dropdown's exported shadow. */
+.st-create-window > .st-suggestion { position: absolute; left: 2.601156%; top: 25.373134%; width: 94.797688%; height: auto; opacity: 0; }
+.st-concept { position: absolute; left: 0; bottom: calc(100% + 14px); color: var(--accent); font: 650 24px/1.2 var(--font-system); letter-spacing: .09em; white-space: nowrap; opacity: 0; transform-origin: bottom left; }
+.st-wireframe-note { position: absolute; left: 80px; bottom: 7px; margin: 0; color: #a6afa6; font: 400 16px/1.2 var(--font-system); }
+[data-standardization] .goal-overview-grid { margin-top: 16px; }
+.co-overview .st-board-heading, .co-overview .st-sticker, .co-overview .st-wireframe-note { display: none; }
+.co-overview .st-note { left: 426px; width: 520px; height: calc(var(--st-step) - 65px); justify-content: flex-start; padding: 18px 24px 8px; }
+.co-overview .st-note::before { display: none; }
+.co-overview .st-note strong { position: relative; z-index: 1; margin-top: 0; }
+.co-overview .st-note-list { top: 0; }
+.co-overview .st-note-select { top: calc(var(--st-step) - 20px); }
+.co-overview .st-note-create { top: calc(var(--st-step) + 44px); }
+.co-overview .st-note-return { top: calc(2 * var(--st-step) + 44px); }
+.co-overview .st-note-wireframe { display: block; position: absolute; z-index: 2; top: 140px; left: 24px; width: 460px; max-width: calc(100% - 48px); height: max(125px, calc(var(--st-step) - 175px)); object-fit: contain; object-position: left bottom; filter: drop-shadow(0 9px 12px #0005); transform: rotate(1.5deg); }
+.co-overview .st-note-select .st-note-wireframe { transform: rotate(-1.5deg); }
+.co-overview .st-note-select .st-note-wireframe { top: 95px; height: max(170px, calc(var(--st-step) - 130px)); }
+.co-overview .st-note-return .st-note-wireframe { top: 105px; height: max(110px, calc(var(--st-step) - 180px)); }
+.co-reader-standardization .co-stage-note { flex: 0 0 auto; max-width: 56ch; }
+.co-reader-standardization .co-stage-hint { flex: 0 0 auto; }
+
+@media (max-height: 780px) {
+  .co-reader-standardization .co-stage-hint { display: none; }
+}
+
+@media (max-width: 900px) {
+  .co-overview .st-note strong { font-size: 41px; }
+  .st-board-heading { left: 70px; font-size: 54px; }
+  .st-board-heading span { width: 1200px; }
+  .st-note { left: 70px; width: 860px; height: 205px; padding: 20px 36px; }
+  .st-note strong { font-size: 62px; }
+  .st-note-tape { width: 170px; }
+  .st-link { left: 470px; }
+  .st-link-first { top: 291px; height: 15px; }
+  .st-link-inserted { top: 516px; height: 10px; }
+  .st-link-last { top: 516px; height: 40px; }
+  .st-sticker-list { left: 987px; top: 110px; --sticker-width: 370px; }
+  .st-sticker-select { left: 985px; top: 380px; --sticker-width: 370px; }
+  .st-sticker-create { left: 1040px; top: 525px; --sticker-width: 277px; }
+  .st-sticker > span { display: none; }
+  .st-wireframe-note { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-visual * { transition: none !important; animation: none !important; }
+}
+
+/* Hand-drawn connectors stay in the spaces between the notes as the flow expands. */
+.co-overview .st-link { display: block; z-index: 3; left: 965px; width: 90px; height: 90px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90'%3E%3Cpath d='M22 5 C65 10 65 57 24 75 M27 60 L23 76 L40 78' fill='none' stroke='%23f1e277' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; box-shadow: none; }
+.co-overview .st-link::after { display: none; }
+.co-overview .st-link-first { top: calc(var(--st-step) - 100px); }
+.co-overview .st-link-inserted { top: calc(2 * var(--st-step) - 100px); }
+.co-overview .st-link-last { top: calc(2 * var(--st-step) - 56px); }
