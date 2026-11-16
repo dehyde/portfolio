@@ -43,29 +43,40 @@
 .cf-collage-parameter img {
   clip-path: polygon(9.42% 8.4%, 90.58% 8.4%, 90.58% 56.35%, 81.17% 56.35%, 81.17% 91.73%, 11.67% 91.73%, 11.67% 56.35%, 9.42% 56.35%);
 }
-.cf-collage-chip { width: max-content; max-width: 96%; }
-.cf-chip-cost { --travel: 24px; left: 9%; top: 7%; z-index: 0; filter: blur(3px); opacity: .5; }
-.cf-chip-finish { --travel: 14px; right: 4%; top: 12%; z-index: 1; filter: blur(2px); opacity: .65; }
-.cf-chip-zone { --travel: 12px; right: 0; top: 59%; z-index: 1; filter: blur(1.5px); opacity: .65; }
-.cf-chip-rating { --travel: -40px; left: 28%; top: 19%; z-index: 4; }
-.cf-chip-material { --travel: -64px; left: 14%; top: 70%; z-index: 5; }
-.cf-chip-material .cf-definition { font-size: 24px; padding: 4px 4px 4px 14px; gap: 14px; box-shadow: 0 10px 24px #0003; }
-.cf-chip-material .cf-value { font-size: 20px; padding: 8px 12px; }
-.cf-chip-discipline { --travel: -48px; left: 1%; top: 51%; z-index: 4; filter: blur(.75px); }
-.cf-chip-system { --travel: -76px; left: 39%; top: 87%; z-index: 5; filter: blur(3px); opacity: .6; }
+.cf-collage-chip {
+  --depth: 0;
+  --distance: max(var(--depth), calc(-1 * var(--depth)));
+  --travel: calc(-24px - var(--depth) * 34px);
+  width: max-content;
+  max-width: 96%;
+  z-index: calc(4 + var(--depth) * 2);
+  transform: translateY(calc(var(--parallax) * var(--travel) * var(--travel-scale))) scale(calc(1 + var(--depth) * .14));
+  transform-origin: left center;
+  filter: blur(calc(var(--distance) * 1.25px));
+  opacity: calc(1 - var(--distance) * .12);
+}
+.cf-collage-chip .cf-definition { font-size: 18px; }
+.cf-collage-chip .cf-value { font-size: 16px; }
+.cf-chip-cost { --depth: -2; left: 9%; top: 7%; }
+.cf-chip-finish { --depth: -1; right: 4%; top: 12%; }
+.cf-chip-zone { --depth: -1.5; right: 0; top: 59%; }
+.cf-chip-equipment { --depth: 0; left: 28%; top: 19%; }
+.cf-chip-material { --depth: 2; left: 14%; top: 70%; }
+.cf-chip-discipline { --depth: 1; left: 1%; top: 51%; }
+.cf-chip-system { --depth: 1.5; left: 39%; top: 87%; }
 @media (max-width: 600px) {
   .cf-collage { --travel-scale: .45; aspect-ratio: .85; margin-top: 28px; }
   .cf-collage-library { left: 0; top: 25%; width: 85%; }
   .cf-collage-parameter { left: 33%; top: 30%; width: 69%; }
   .cf-chip-cost { left: 2%; top: 5%; }
   .cf-chip-finish { right: 0; top: 10%; }
-  .cf-chip-rating { left: 8%; top: 20%; }
+  .cf-chip-equipment { left: 8%; top: 20%; }
   .cf-chip-zone { right: 0; top: 67%; }
   .cf-chip-discipline { left: 0; top: 58%; }
   .cf-chip-material { left: 1%; top: 82%; }
-  .cf-chip-material .cf-definition { font-size: 19px; gap: 9px; padding-left: 10px; }
-  .cf-chip-material .cf-value { font-size: 16px; padding: 7px 9px; }
-  .cf-chip-system { left: 34%; top: 96%; }
+  .cf-chip-system { left: 28%; top: 96%; }
+  .cf-collage-chip .cf-definition { font-size: 14px; }
+  .cf-collage-chip .cf-value { font-size: 13px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cf-collage { --travel-scale: 0; }
