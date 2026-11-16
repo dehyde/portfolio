@@ -118,3 +118,31 @@
 @media(prefers-reduced-motion:reduce){
   .card:hover .title-highlight,.card:focus-visible .title-highlight{animation:none}
 }
+
+/* A highlighter stroke follows each measured line of title text. */
+.project h3 .title-highlight,
+.card:hover .title-highlight,
+.card:focus-visible .title-highlight{background:none;animation:none}
+.project h3 .highlight-line{
+  display:inline-block;max-width:100%;white-space:nowrap;
+  background-image:linear-gradient(transparent 48%,#f6e99f 48%,#f6e99f 91%,transparent 91%);
+  background-repeat:no-repeat;background-position:left top;background-size:0% 100%;
+  transition:background-size .18s ease;
+}
+@media(hover:hover){
+  .card:hover .highlight-line{
+    background-size:100% 100%;
+    transition:background-size .48s cubic-bezier(.25,.75,.2,1) calc(var(--line-index) * .48s);
+  }
+}
+.card:focus-visible .highlight-line{
+  background-size:100% 100%;
+  transition:background-size .48s cubic-bezier(.25,.75,.2,1) calc(var(--line-index) * .48s);
+}
+.company>h2{border-top:0}
+.intro{padding-bottom:110px}
+.augury-company{margin-top:100px}
+@media(max-width:760px){.intro{padding-bottom:76px}.augury-company{margin-top:76px}}
+@media(prefers-reduced-motion:reduce){
+  .project h3 .highlight-line{transition:none}
+}

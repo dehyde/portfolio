@@ -64,4 +64,41 @@
  reset.addEventListener('click',measure);window.addEventListener('resize',measure);document.addEventListener('visibilitychange',()=>{last=0;acc=0});measure();
 })();
 </script><dialog class="password-dialog" aria-labelledby="password-title"><form id="workplan-gate"><h2 id="password-title">This case study is protected</h2><p>Enter the password to view Workplan UX improvements.</p><label for="workplan-password">Password</label><input id="workplan-password" type="password" autocomplete="current-password" required><p id="password-error" role="alert"></p><div class="gate-actions"><button type="button" id="gate-cancel">Cancel</button><button type="submit">View case study</button></div></form></dialog><script>(()=>{const dialog=document.querySelector('.password-dialog'),form=document.getElementById('workplan-gate'),field=document.getElementById('workplan-password'),error=document.getElementById('password-error'),link=document.querySelector('.workplan .card');link.addEventListener('click',e=>{e.preventDefault();field.value='';error.textContent='';dialog.showModal();field.focus()});document.getElementById('gate-cancel').addEventListener('click',()=>dialog.close());form.addEventListener('submit',async e=>{e.preventDefault();try{const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(field.value));const value=Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');if(value==='f470a6c1f258d7ebef965867277c70c338f497d433abba5ddd249348c03d4881'){dialog.close();window.open(link.href,'_blank','noopener')}else{error.textContent='Incorrect password. Please try again.';field.focus();field.select()}}catch{error.textContent='Password verification is unavailable in this browser.'}})})();</script>
-</main><footer><span>Tom Bar-Gal</span><a href="#top">Back to top</a></footer></div></body></html>
+</main><footer><span>Tom Bar-Gal</span><a href="#top">Back to top</a></footer></div><script>(()=> {
+  const titles=[...document.querySelectorAll('.project h3 .title-highlight')];
+  const textByTitle=new Map(titles.map(el=>[el,el.textContent.trim()]));
+  let frame=0,lastWidth=0;
+  function layout(){
+    titles.forEach(title=>{
+      const original=textByTitle.get(title);
+      title.textContent=original;
+      const node=title.firstChild;
+      const matches=[...original.matchAll(/\S+/g)];
+      if(!node||!matches.length)return;
+      const range=document.createRange(),lines=[];
+      for(const match of matches){
+        range.setStart(node,match.index);
+        range.setEnd(node,match.index+match[0].length);
+        const rect=range.getBoundingClientRect();
+        const last=lines[lines.length-1];
+        if(!last||Math.abs(rect.top-last.top)>2)lines.push({top:rect.top,words:[match[0]]});
+        else last.words.push(match[0]);
+      }
+      title.textContent='';
+      lines.forEach((line,index)=>{
+        if(index)title.appendChild(document.createElement('br'));
+        const span=document.createElement('span');
+        span.className='highlight-line';
+        span.style.setProperty('--line-index',index);
+        span.textContent=line.words.join(' ');
+        title.appendChild(span);
+      });
+    });
+  }
+  function schedule(){cancelAnimationFrame(frame);frame=requestAnimationFrame(layout)}
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedule);
+  else schedule();
+  window.addEventListener('resize',()=>{
+    if(innerWidth!==lastWidth){lastWidth=innerWidth;schedule()}
+  });
+})();</script></body></html>
