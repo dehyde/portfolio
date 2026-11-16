@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><style id="case-loading-style">
+.case-loading{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#202320;color:#eff2ed;opacity:1;transition:opacity .32s ease}
+.case-loading.is-ready{opacity:0;pointer-events:none}
+.case-loading-inner{text-align:center;padding:24px}
+.case-loading-mark{display:flex;align-items:center;justify-content:center;gap:6px;height:24px;margin-bottom:25px}
+.case-loading-mark i{width:7px;height:7px;background:var(--loading-accent,#d4c451);border-radius:50%;animation:case-loading-bounce 1s ease-in-out infinite}
+.case-loading-mark i:nth-child(2){animation-delay:.13s}.case-loading-mark i:nth-child(3){animation-delay:.26s}
+.case-loading-title{font:400 25px/1.2 Georgia,serif;letter-spacing:-.3px}
+.case-loading-note{margin-top:10px;color:#b4bbb2;font:14px/1.4 Arial,sans-serif}
+@keyframes case-loading-bounce{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-7px);opacity:1}}
+@media(prefers-reduced-motion:reduce){.case-loading,.case-loading-mark i{transition:none;animation:none}.case-loading-mark i{opacity:1}}
+</style><noscript><style>.case-loading{display:none!important}</style></noscript>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Custom data management across account and project levels — Tom Bar-Gal</title>
@@ -730,7 +741,7 @@
   <link rel="stylesheet" href="../files/case-study-standardization.css?v=standardization-perf2-20261116" />
   <link rel="stylesheet" href="../files/case-study-governance.css?v=governance-roles-20261115" />
 <style>.copy-edit-panel{display:none!important}</style></head>
-<body>
+<body><div class="case-loading" role="status" aria-live="polite"><div class="case-loading-inner"><div class="case-loading-mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="case-loading-title">Opening case study</div><div class="case-loading-note">Getting the details ready…</div></div></div><script>(()=>{const overlay=document.querySelector('.case-loading'),started=performance.now();let finished=false;function reveal(){if(finished)return;finished=true;const remaining=Math.max(0,400-(performance.now()-started));setTimeout(()=>{overlay.classList.add('is-ready');setTimeout(()=>overlay.remove(),350)},remaining)}setTimeout(reveal,5000);document.addEventListener('DOMContentLoaded',()=>{const visible=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.width&&r.height&&r.bottom>0&&r.top<innerHeight*1.1}).slice(0,8);const loadImage=img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})});Promise.all(visible.map(loadImage)).then(reveal,reveal)},{once:true})})();</script>
   <nav class="topbar type-interface" aria-label="Case-study navigation">
     <a class="topbar-back" href="../index.html">← Selected work</a>
     <span class="case-name">Custom data management UX across account and project levels</span>
