@@ -37,22 +37,20 @@ class FieldLanguageTest(unittest.TestCase):
             self.assertTrue(image['alt'])
             self.assertTrue(int(image['width']) > 0 and int(image['height']) > 0)
 
-    def test_field_examples_appear_in_relevant_sections(self):
+    def test_chips_are_contextual_not_section_end_decorations(self):
         for section in ('project-flexibility', 'reuse-before-creation'):
             content = self.html.split(f'id="{section}"', 1)[1].split('</header>', 1)[0]
-            self.assertIn('class="cf-field-example"', content)
-            self.assertIn('class="cf-definition"', content)
-        self.assertEqual(self.html.count('class="cf-definition"'), 8)
-        self.assertEqual(self.html.count('class="cf-value"'), 2)
+            self.assertNotIn('class="cf-field-example"', content)
+            self.assertNotIn('class="cf-definition"', content)
+        self.assertEqual(self.html.count('class="cf-definition"'), 3)
+        self.assertEqual(self.html.count('class="cf-value"'), 1)
 
     def test_navigation_ids_are_unique(self):
         self.assertEqual(len(self.page.ids), len(set(self.page.ids)))
 
-    def test_layout_keeps_upright_images_and_responsive_field_paths(self):
+    def test_layout_keeps_upright_images_and_legible_value_type(self):
         self.assertNotIn('rotate(', self.css)
         self.assertNotIn('perspective', self.css)
-        self.assertIn('@media (max-width: 400px)', self.css)
-        self.assertIn('flex-direction: column', self.css)
         self.assertIn('font-variation-settings: normal', self.css)
 
 

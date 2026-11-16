@@ -1,5 +1,5 @@
 import { createCaseStudyProcessController } from './case-study-cohesion.js?v=preview-refine-20261024';
-import { createVisual, scenes } from './case-study-governance-visuals.js?v=governance-isometric-shadow-20261116';
+import { createVisual, scenes } from './case-study-governance-visuals.js?v=governance-mobile-20261116';
 import { getGovernanceMotionTime } from './case-study-governance-state.js?v=governance-polish-20261114b';
 
 export function createGovernanceController(frame, onNavigationChange) {

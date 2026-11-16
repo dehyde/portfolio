@@ -35,26 +35,26 @@ export function createVisual() {
         <use class="gv-plane" href="#${prefix}-plane"/>
         <text class="gv-scope-label" x="48" y="65">Account</text>
         <text class="gv-action-label gv-scope-detail" x="48" y="92">Shared across projects</text>
-        <use href="#${prefix}-person" transform="translate(48 129)"/>
+        <g class="gv-account-person"><use href="#${prefix}-person" transform="translate(48 129)"/>
         <text class="gv-person-label" x="82" y="149">Account admin</text>
-        <text class="gv-action-label" x="82" y="178">Manages shared definitions</text>
+        <text class="gv-action-label" x="82" y="178">Manages shared definitions</text></g>
         <g class="gv-shared-token">
           <g class="gv-definition gv-shared-definition"><rect x="330" y="191" width="194" height="40" rx="5"/><text class="gv-definition-label" x="342" y="219">MEP approval</text></g>
-          <text class="gv-token-value" x="330" y="268">Electrical</text>
+          <g class="gv-options"><text class="gv-token-value" x="330" y="268">Electrical</text>
           <g class="gv-option-token"><text class="gv-token-value" x="432" y="268">Plumbing</text><path class="gv-option-strike" d="M430 261H510" pathLength="1"/></g>
-          <text class="gv-token-value" x="540" y="268">HVAC</text>
+          <text class="gv-token-value gv-option-last" x="540" y="268">HVAC</text></g>
           <text class="gv-account-action" x="330" y="304">Plumbing removed from the choices</text>
         </g>
       </g>
       <g class="gv-projects">
         <text class="gv-scope-label" x="48" y="419">Project</text>
         <text class="gv-action-label gv-scope-detail" x="48" y="446">Local definitions and saved data</text>
-        <use href="#${prefix}-person" transform="translate(48 488)"/>
+        <g class="gv-project-person"><use href="#${prefix}-person" transform="translate(48 488)"/>
         <text class="gv-person-label" x="82" y="508">Project admin</text>
-        <text class="gv-action-label" x="82" y="537">Creates a project-only field</text>
-        <g class="gv-private-token">
+        <text class="gv-action-label" x="82" y="537">Creates a project-only field</text></g>
+        <g class="gv-private-token"><g class="gv-private-content">
           <g class="gv-definition gv-private-definition"><rect x="330" y="514" width="236" height="40" rx="5"/><text class="gv-definition-label" x="342" y="542">Inspection zone</text></g>
-          <text class="gv-token-detail" x="330" y="584">Only in this project</text>
+          <text class="gv-token-detail" x="330" y="584">Only in this project</text></g>
         </g>
         <g class="gv-persona-engineer">
           <use href="#${prefix}-person" transform="translate(48 560)"/>

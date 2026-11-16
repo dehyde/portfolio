@@ -740,8 +740,8 @@
   </style>
   <link rel="stylesheet" href="../files/case-study-cohesion.css?v=preview-left-fade-20261115" />
   <link rel="stylesheet" href="../files/case-study-standardization.css?v=standardization-perf2-20261116" />
-  <link rel="stylesheet" href="../files/case-study-governance.css?v=governance-isometric-shadow-20261116" />
-  <link rel="stylesheet" href="../files/case-study-field-language.css?v=collage-visible-fields-20261116" />
+  <link rel="stylesheet" href="../files/case-study-governance.css?v=governance-mobile-20261116" />
+  <link rel="stylesheet" href="../files/case-study-field-language.css?v=field-language-mobile-20261116" />
 <style>.copy-edit-panel{display:none!important}</style></head>
 <body><div class="case-loading" role="status" aria-live="polite"><div class="case-loading-inner"><div class="case-loading-mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="case-loading-title">Opening case study</div><div class="case-loading-note">Getting the details ready…</div></div></div><script>(()=>{const overlay=document.querySelector('.case-loading'),started=performance.now();let finished=false;function reveal(){if(finished)return;finished=true;const remaining=Math.max(0,400-(performance.now()-started));setTimeout(()=>{overlay.classList.add('is-ready');setTimeout(()=>overlay.remove(),350)},remaining)}setTimeout(reveal,5000);document.addEventListener('DOMContentLoaded',()=>{const visible=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.width&&r.height&&r.bottom>0&&r.top<innerHeight*1.1}).slice(0,8);const loadImage=img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})});Promise.all(visible.map(loadImage)).then(reveal,reveal)},{once:true})})();</script>
   <nav class="topbar type-interface" aria-label="Case-study navigation">
@@ -1040,20 +1040,6 @@
             <figure class="goal-overview-visual"><img src="../files/components-map.png" alt="Map of shared AEC Data components and their Construction Cloud uses" /></figure>
           </div>
           <p class="goal-section-outcome">Reusing Platform Data components inside familiar Construction Cloud flows kept the shared definition model consistent across products while preserving the navigation and controls project teams expected.</p>
-                  <div class="cf-field-examples">
-              <figure class="cf-field-example" aria-label="Illustrative shared Fire rating definition across Revit and Construction Cloud">
-                <figcaption class="type-caption">One definition across products</figcaption>
-                <div class="cf-field-path">
-                  <div class="cf-field-stop"><span class="type-caption">Revit / AEC Data</span><span class="cf-definition">Fire rating</span></div>
-                  <span class="cf-field-link" aria-hidden="true"></span>
-                  <div class="cf-field-stop"><span class="type-caption">ACC / Submittals</span><span class="cf-definition">Fire rating</span></div>
-                </div>
-              </figure>
-              <figure class="cf-field-example" aria-label="Illustrative Finish definition with a saved Painted value">
-                <figcaption class="type-caption">A definition and its saved value</figcaption>
-                <span class="cf-definition">Finish<span class="cf-value">Painted</span></span>
-              </figure>
-          </div>
         </header>
 
         <article class="goal-takeover" data-goal-takeover aria-hidden="true">
@@ -1128,16 +1114,6 @@
             <figure class="goal-overview-visual"><img src="../files/selection-flow.png" alt="Workflow that presents existing data definitions before creating a new definition" /></figure>
           </div>
           <p class="goal-section-outcome">Showing existing definitions before creation made reuse the default path while preserving a way to create project-specific fields; a duplicate check within creation remained a proposal.</p>
-                  <div class="cf-field-examples">
-              <figure class="cf-field-example" aria-label="Illustrative existing Approved vendors definition selected for a module">
-                <figcaption class="type-caption">Reuse an existing definition</figcaption>
-                <div class="cf-field-path">
-                  <div class="cf-field-stop"><span class="type-caption">Account library</span><span class="cf-definition">Approved vendors</span></div>
-                  <span class="cf-field-link" aria-hidden="true"></span>
-                  <div class="cf-field-stop"><span class="type-caption">Module fields</span><span class="cf-definition">Approved vendors</span></div>
-                </div>
-              </figure>
-          </div>
         </header>
 
         <article class="goal-takeover" data-goal-takeover aria-hidden="true">
@@ -1455,7 +1431,7 @@
       import { buildCopyKey, collectCopyChanges, serializeCopyChanges } from '../files/case-study-copy-edit-state.js';
       import { createCohesionController } from '../files/case-study-cohesion.js?v=preview-light-shadow-20261115';
       import { createStandardizationController } from '../files/case-study-standardization.js?v=standardization-perf2-20261116';
-      import { createGovernanceController } from '../files/case-study-governance.js?v=governance-isometric-shadow-20261116';
+      import { createGovernanceController } from '../files/case-study-governance.js?v=governance-mobile-20261116';
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const revealObserver = new IntersectionObserver((entries) => {

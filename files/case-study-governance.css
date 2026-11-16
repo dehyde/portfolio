@@ -27,3 +27,39 @@
 @media (prefers-reduced-motion: reduce) {
   .gv-visual * { animation: none !important; transition: none !important; }
 }
+
+/* Keep the spatial model; reflow its labels instead of shrinking desktop type. */
+@media (max-width: 760px) {
+  #standards-governance .co-overview {
+    top: calc(var(--bar-h) + 62px);
+    z-index: 4;
+    padding-block: 8px;
+    background: var(--surface-canvas);
+    isolation: isolate;
+  }
+  #standards-governance .co-overview::before {
+    content: "";
+    position: absolute;
+    inset: 0 -24px;
+    z-index: -1;
+    background: var(--surface-canvas);
+  }
+  #standards-governance .co-overview .gv-visual { max-width: 360px; }
+  .gv-action-label, .gv-token-detail, .gv-account-action, .gv-retained-note { display: none; }
+  .gv-scope-label { font-size: 36px; }
+  .gv-person-label { font-size: 34px; }
+  .gv-account-person { transform: translateY(-20px); }
+  .gv-project-person { transform: translateY(-25px); }
+  .gv-shared-token { transform: translate(-170px, 30px); }
+  .gv-shared-definition { transform-origin: 330px 191px; transform: scale(1.6); }
+  .gv-options { transform: translateY(36px); }
+  .gv-token-value { font-size: 32px; }
+  .gv-option-token { transform: translateX(70px); }
+  .gv-option-strike { transform: scaleX(1.65); transform-origin: 430px 261px; }
+  .gv-option-last { transform: translateX(128px); }
+  .gv-private-content { transform: translate(-170px, 20px); }
+  .gv-private-definition { transform-origin: 330px 514px; transform: scale(1.6); }
+  .gv-persona-engineer { transform: translateY(60px); }
+  .gv-retained-definition { transform-origin: 330px 632px; transform: translate(-170px, 40px) scale(1.6); }
+  .gv-removed-label { font-size: 32px; transform: translate(-170px, 64px); }
+}
