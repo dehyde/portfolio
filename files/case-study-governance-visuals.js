@@ -21,7 +21,7 @@ export function createVisual() {
         <g class="gv-shared-token">
           <rect x="320" y="125" width="500" height="152" rx="3"/>
           <text class="gv-token-kicker" x="346" y="157">ACCOUNT FIELD DEFINITION</text>
-          <text class="gv-card-heading" x="346" y="190">MEP approval</text>
+          <g class="gv-definition gv-shared-definition"><rect x="346" y="165" width="254" height="36" rx="5"/><text class="gv-definition-label" x="358" y="190">MEP approval</text></g>
           <text class="gv-token-detail" x="346" y="220">Available options</text>
           <text class="gv-token-value" x="346" y="254">Electrical</text>
           <g class="gv-option-token"><text class="gv-token-value" x="510" y="254">Plumbing</text><path class="gv-option-strike" d="M 506 246 L 636 246" pathLength="1"/></g>
@@ -37,9 +37,9 @@ export function createVisual() {
         <text class="gv-project-label" x="145" y="410">PROJECT A</text>
         <text class="gv-person-label" x="165" y="458">PROJECT ADMIN</text>
         <text class="gv-action-label" x="165" y="489">Creates a project-only field</text>
-        <g class="gv-private-token"><rect x="585" y="410" width="365" height="90" rx="3"/><text class="gv-token-kicker" x="610" y="442">PROJECT-ONLY DEFINITION</text><text class="gv-card-heading" x="610" y="478">Local field</text></g>
+        <g class="gv-private-token"><rect x="585" y="410" width="365" height="90" rx="3"/><text class="gv-token-kicker" x="610" y="442">PROJECT-ONLY DEFINITION</text><g class="gv-definition gv-private-definition"><rect x="610" y="450" width="203" height="37" rx="5"/><text class="gv-definition-label" x="622" y="476">Local field</text></g></g>
         <g class="gv-persona-engineer"><text class="gv-person-label" x="165" y="598">PROJECT ENGINEER</text><text class="gv-action-label" x="165" y="629">Uses the field on a project item</text></g>
-        <g class="gv-retained-token"><rect x="585" y="540" width="365" height="150" rx="3"/><text class="gv-token-kicker" x="610" y="572">EXISTING PROJECT ITEM</text><text class="gv-token-detail" x="610" y="602">MEP approval</text><text class="gv-card-heading" x="610" y="638">Plumbing</text><text class="gv-cues gv-removed-label" x="760" y="638">(removed)</text><text class="gv-token-detail" x="610" y="670">Previously saved on an item</text></g>
+        <g class="gv-retained-token"><rect x="585" y="540" width="365" height="150" rx="3"/><text class="gv-token-kicker" x="610" y="572">EXISTING PROJECT ITEM</text><g class="gv-retained-definition"><rect class="gv-definition" x="610" y="588" width="326" height="44" rx="5"/><text class="gv-definition-label" x="622" y="617">MEP approval</text><rect class="gv-value-surface" x="806" y="593" width="125" height="34" rx="4"/><text class="gv-value-label" x="818" y="616">Plumbing</text></g><text class="gv-cues gv-removed-label" x="610" y="654">Removed from available options</text><text class="gv-token-detail" x="610" y="681">Previously saved on an item</text></g>
         <g class="gv-cues"><text class="gv-clarity-label" x="585" y="735">Not available for new selections</text></g>
       </g>
     </g>

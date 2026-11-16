@@ -7,10 +7,9 @@
 .gv-person-label { fill: var(--text-primary); font: 600 24px var(--font-system); letter-spacing: .05em; }
 .gv-project-label { fill: var(--accent); font: 650 19px var(--font-system); letter-spacing: .1em; }
 .gv-action-label { fill: var(--text-support); font: 500 20px var(--font-system); }
-.gv-shared-token rect, .gv-private-token rect, .gv-retained-token rect { fill: var(--text-primary); filter: drop-shadow(0 12px 18px #0006); }
-.gv-private-token rect { fill: #ddd694; }
+.gv-shared-token > rect, .gv-private-token > rect, .gv-retained-token > rect { fill: var(--text-primary); filter: drop-shadow(0 12px 18px #0006); }
+.gv-private-token > rect { fill: #ddd694; }
 .gv-token-kicker { fill: #596459; font: 650 16px var(--font-system); letter-spacing: .08em; }
-.gv-card-heading { fill: var(--surface-chrome); font: 600 29px var(--font-system); }
 .gv-token-detail { fill: #596459; font: 500 19px var(--font-system); }
 .gv-token-value { fill: var(--surface-chrome); font: 530 21px var(--font-system); }
 .gv-option-strike { fill: none; stroke: #596459; stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; }
@@ -18,3 +17,9 @@
 .gv-removed-label { fill: #74651b; font: 550 20px var(--font-system); }
 .gv-persona-engineer, .gv-retained-token, .gv-cues, .gv-private-token, .gv-account-action { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .gv-visual * { animation: none !important; transition: none !important; } }
+
+/* Definition names and recorded values share the same treatment throughout the illustration. */
+.gv-definition { fill: #e6e5d9; }
+.gv-definition-label { fill: #293029; font: 550 24px "Recursive", monospace; font-variation-settings: "MONO" 1; }
+.gv-value-surface { fill: #30372f; }
+.gv-value-label { fill: #eff2ed; font: 700 20px Arial, sans-serif; }
