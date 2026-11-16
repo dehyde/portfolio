@@ -132,12 +132,12 @@
 @media(hover:hover){
   .card:hover .highlight-line{
     background-size:100% 100%;
-    transition:background-size .48s cubic-bezier(.25,.75,.2,1) calc(var(--line-index) * .48s);
+    transition:background-size .4s cubic-bezier(.2,.7,.2,1);
   }
 }
 .card:focus-visible .highlight-line{
   background-size:100% 100%;
-  transition:background-size .48s cubic-bezier(.25,.75,.2,1) calc(var(--line-index) * .48s);
+  transition:background-size .4s cubic-bezier(.2,.7,.2,1);
 }
 .company>h2{border-top:0}
 .intro{padding-bottom:110px}
