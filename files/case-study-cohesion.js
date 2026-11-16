@@ -1,4 +1,4 @@
-import { getSceneAt, getDecisionPlayback, getStickyEntryOffset, getMotionTime, readDiveStep, withDiveStep, shouldExitOnScroll, isScrollExitKey, getOverviewReleaseY } from './case-study-cohesion-state.js?v=preview-light-shadow-20261115';
+import { getSceneAt, getDecisionPlayback, getStickyEntryOffset, getMotionTime, readDiveStep, withDiveStep, shouldExitOnScroll, isScrollExitKey, getOverviewReleaseY } from './case-study-cohesion-state.js?v=mobile-reading-area-20261116';
 import { createVisual as createCohesionVisual, scenes as cohesionScenes } from './case-study-cohesion-visuals.js?v=preview-light-shadow-20261115';
 
 const stateObject = () => history.state && typeof history.state === 'object' ? history.state : {};
@@ -51,7 +51,7 @@ function createMotionPlayer(visual) {
 
 export function createCaseStudyProcessController(frame, onNavigationChange, {
   id, title, scenes, createVisual, motionTime = getMotionTime,
-  sourceLinksByStep = [], nextLinks = [], centerOverviewOnPin = false,
+  sourceLinksByStep = [], nextLinks = [], centerOverviewOnPin = false, readBelowOverview = false,
 }) {
   const article = frame.querySelector('[data-goal-takeover]');
   const steps = [...article.querySelectorAll('.goal-decision')];
@@ -143,7 +143,10 @@ export function createCaseStudyProcessController(frame, onNavigationChange, {
   function syncOverview() {
     if (dialog.open) return;
     const editing = document.documentElement.dataset.copyEditing === 'true';
-    const playback = getDecisionPlayback(titles.map((title) => ({ top: title.getBoundingClientRect().top })), window.innerHeight);
+    const inset = readBelowOverview && window.innerWidth <= 760
+      ? (Number.parseFloat(getComputedStyle(overview).top) || 0) + overview.getBoundingClientRect().height
+      : 0;
+    const playback = getDecisionPlayback(titles.map((title) => ({ top: title.getBoundingClientRect().top })), window.innerHeight, inset);
     cards.forEach((card, index) => { card.dataset.current = String(!editing && index === playback.focused); });
     if (editing) return;
     const top = Number.parseFloat(getComputedStyle(overview).top) || 0;

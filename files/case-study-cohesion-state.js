@@ -22,12 +22,14 @@ export function getFocusedDecision(titleRects, viewportHeight) {
   return getDecisionPlayback(titleRects, viewportHeight).focused;
 }
 
-export function getDecisionPlayback(titleRects, viewportHeight) {
+export function getDecisionPlayback(titleRects, viewportHeight, obscuredTop = 0) {
   if (!Array.isArray(titleRects) || !Number.isFinite(viewportHeight) || viewportHeight <= 0) {
     return { focused: null, index: 0, progress: 0 };
   }
-  const enterLine = viewportHeight * 2 / 3;
-  const exitLine = viewportHeight / 4;
+  const inset = Number.isFinite(obscuredTop) && obscuredTop >= 0 && obscuredTop < viewportHeight ? obscuredTop : 0;
+  const readingHeight = viewportHeight - inset;
+  const enterLine = inset + readingHeight * 2 / 3;
+  const exitLine = inset + readingHeight / 4;
   let index = 0;
   let entered = false;
   let focused = null;
