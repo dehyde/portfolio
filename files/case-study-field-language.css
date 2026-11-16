@@ -1,0 +1,72 @@
+/* Shared definition/value notation for explanatory diagrams, not product UI. */
+.cf-definition {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 100%;
+  padding: 3px 3px 3px 9px;
+  border: 1px solid #d4d7c9;
+  border-radius: 5px;
+  color: #293029;
+  background: #e6e5d9;
+  font: 550 14px/1.25 var(--font-system);
+  font-variation-settings: "CASL" .08, "CRSV" .5, "MONO" 1, "slnt" 0;
+  vertical-align: middle;
+}
+.cf-definition:not(:has(.cf-value)) { padding: 7px 10px; }
+.cf-value {
+  padding: 6px 9px;
+  border-radius: 3px;
+  color: #eff2ed;
+  background: #30372f;
+  font: 700 13px/1.25 Arial, sans-serif;
+  font-variation-settings: normal;
+}
+.cf-collage {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 1000px);
+  aspect-ratio: 1.1;
+  margin: 60px auto 40px;
+}
+.cf-collage figure { margin: 0; }
+.cf-collage img { display: block; width: 100%; height: auto; }
+.cf-collage-label {
+  display: block;
+  color: var(--text-support);
+  font: 440 12px/1.5 var(--font-system);
+  font-variation-settings: var(--font-system-formal);
+}
+.cf-collage-definitions { position: absolute; top: 0; left: 42%; z-index: 2; }
+.cf-collage-definitions .cf-definition-line { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 7px; }
+.cf-collage-library { position: absolute; left: 0; top: 10%; width: 66%; }
+.cf-collage-library figcaption { margin-bottom: 8px; }
+.cf-library-crop { aspect-ratio: 1.8; overflow: hidden; border-radius: 4px; }
+.cf-collage-parameter { position: absolute; left: 48%; top: 18%; width: 52%; z-index: 3; }
+.cf-collage-form { position: absolute; left: 12%; top: 44%; width: 29%; z-index: 4; }
+.cf-form-crop { aspect-ratio: 1.8; overflow: hidden; border-radius: 3px; box-shadow: 0 0 0 5px var(--surface-canvas); }
+.cf-collage-form figcaption { margin-top: 10px; }
+.cf-collage-use { position: absolute; right: 3%; bottom: 0; z-index: 4; }
+.cf-collage-use .cf-collage-label { margin-bottom: 7px; }
+.cf-field-example { margin: 28px 0 0; }
+.cf-field-example figcaption { margin-bottom: 12px; }
+.cf-field-path { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.cf-field-stop { display: grid; gap: 8px; justify-items: start; }
+.cf-field-stop .type-caption { color: var(--text-support); }
+.cf-field-link { width: 42px; margin-top: 23px; border-top: 1px solid var(--text-secondary); }
+.cf-field-example .cf-example-note { margin-top: 12px; color: var(--text-support); }
+@media (max-width: 600px) {
+  .cf-collage { min-height: 400px; aspect-ratio: .8; margin-top: 42px; }
+  .cf-collage-definitions { left: 18%; }
+  .cf-collage-library { top: 17%; width: 77%; }
+  .cf-collage-parameter { top: 26%; left: 36%; width: 64%; }
+  .cf-collage-form { top: 45%; left: 0; width: 35%; }
+  .cf-collage-use { right: 0; }
+  .cf-collage-label { font-size: 11px; }
+  .cf-field-path { gap: 12px; }
+  .cf-field-link { width: 24px; }
+}
+@media (max-width: 400px) {
+  .cf-field-path { align-items: flex-start; flex-direction: column; }
+  .cf-field-link { width: 0; height: 20px; margin: 0 0 0 16px; border-top: 0; border-left: 1px solid var(--text-secondary); }
+}

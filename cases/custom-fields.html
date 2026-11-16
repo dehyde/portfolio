@@ -740,6 +740,7 @@
   <link rel="stylesheet" href="../files/case-study-cohesion.css?v=preview-left-fade-20261115" />
   <link rel="stylesheet" href="../files/case-study-standardization.css?v=standardization-perf2-20261116" />
   <link rel="stylesheet" href="../files/case-study-governance.css?v=governance-field-values-20261116" />
+  <link rel="stylesheet" href="../files/case-study-field-language.css?v=collage-field-language-20261116" />
 <style>.copy-edit-panel{display:none!important}</style></head>
 <body><div class="case-loading" role="status" aria-live="polite"><div class="case-loading-inner"><div class="case-loading-mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="case-loading-title">Opening case study</div><div class="case-loading-note">Getting the details ready…</div></div></div><script>(()=>{const overlay=document.querySelector('.case-loading'),started=performance.now();let finished=false;function reveal(){if(finished)return;finished=true;const remaining=Math.max(0,400-(performance.now()-started));setTimeout(()=>{overlay.classList.add('is-ready');setTimeout(()=>overlay.remove(),350)},remaining)}setTimeout(reveal,5000);document.addEventListener('DOMContentLoaded',()=>{const visible=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.width&&r.height&&r.bottom>0&&r.top<innerHeight*1.1}).slice(0,8);const loadImage=img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})});Promise.all(visible.map(loadImage)).then(reveal,reveal)},{once:true})})();</script>
   <nav class="topbar type-interface" aria-label="Case-study navigation">
@@ -809,7 +810,27 @@
             <em class="editorial-aside">The work spans two products, four personas, and two governance levels.</em>
           </div>
         </div>
-        <figure class="hero-visual reveal"><img src="../files/hero-ui.png" alt="Layered Autodesk interfaces for creating parameters and adding custom fields" /></figure>
+        <div class="cf-collage reveal" role="group" aria-label="Account library, shared definitions, and project field creation">
+          <div class="cf-collage-definitions">
+            <span class="cf-collage-label">A shared vocabulary</span>
+            <div class="cf-definition-line"><span class="cf-definition">Fire rating</span><span class="cf-definition">Finish</span></div>
+          </div>
+          <figure class="cf-collage-library">
+            <figcaption class="cf-collage-label">Account library</figcaption>
+            <div class="cf-library-crop"><img src="../assets/custom-account.webp" width="882" height="536" alt="The account parameter library in Autodesk Construction Cloud" decoding="async" /></div>
+          </figure>
+          <figure class="cf-collage-parameter">
+            <img src="../files/hero-ui.png" width="754" height="834" alt="Create Parameter dialog with the Materials list open" decoding="async" />
+          </figure>
+          <figure class="cf-collage-form">
+            <div class="cf-form-crop"><img src="../assets/field-form.png" width="1384" height="1608" alt="Create Field form, cropped to its name and data type controls" decoding="async" /></div>
+            <figcaption class="cf-collage-label">Project-level flexibility</figcaption>
+          </figure>
+          <div class="cf-collage-use">
+            <span class="cf-collage-label">Defined once. Used on an item.</span>
+            <span class="cf-definition">Material<span class="cf-value">Concrete</span></span>
+          </div>
+        </div>
       </section>
 
       <section class="chapter context" id="context" data-chapter>
@@ -1028,6 +1049,14 @@
             <p class="subsection-summary type-body-reading">AEC Data already provided components to browse, create, and edit reusable data definitions.</p>
             <div class="subsection-evidence">
               <p class="type-body-reading">The existing platform model gave Construction Cloud a shared foundation for data definitions. Reusing it avoided a separate model for Submittals, while leaving room to adapt the surrounding interface for project workflows.</p>
+              <figure class="cf-field-example" aria-label="Illustrative shared Fire rating definition across Revit and Construction Cloud">
+                <figcaption class="type-caption">One definition across products</figcaption>
+                <div class="cf-field-path">
+                  <div class="cf-field-stop"><span class="type-caption">Revit / AEC Data</span><span class="cf-definition">Fire rating</span></div>
+                  <span class="cf-field-link" aria-hidden="true"></span>
+                  <div class="cf-field-stop"><span class="type-caption">ACC / Submittals</span><span class="cf-definition">Fire rating</span></div>
+                </div>
+              </figure>
               <figure class="case-figure">
                 <img src="../files/components-map.png" alt="Map of shared AEC Data components and their Construction Cloud uses" />
                 <figcaption class="type-caption">Shared components provide one data-definition foundation without requiring identical product interfaces.</figcaption>
@@ -1066,6 +1095,10 @@
             <p class="subsection-summary type-body-reading">A shared definition can be used differently in each Construction Cloud module.</p>
             <div class="subsection-evidence">
               <p class="type-body-reading">A field can be required, optional, pre-populated, or organized by category for different reasons in different modules. The shared definition model carries common data, while each module keeps the controls that determine how its users work with that data.</p>
+              <figure class="cf-field-example" aria-label="Illustrative Finish definition with a saved Painted value">
+                <figcaption class="type-caption">A definition and its saved value</figcaption>
+                <span class="cf-definition">Finish<span class="cf-value">Painted</span></span>
+              </figure>
             </div>
           </div>
         </section>
@@ -1102,6 +1135,14 @@
             <p class="subsection-summary type-body-reading">The add-field flow starts with existing definitions and search.</p>
             <div class="subsection-evidence">
               <p class="type-body-reading">When project users need a new property, they do not always know whether a suitable definition already exists. Showing the available set before creation makes reuse visible at the point of decision.</p>
+              <figure class="cf-field-example" aria-label="Illustrative existing Approved vendors definition selected for a module">
+                <figcaption class="type-caption">Reuse an existing definition</figcaption>
+                <div class="cf-field-path">
+                  <div class="cf-field-stop"><span class="type-caption">Account library</span><span class="cf-definition">Approved vendors</span></div>
+                  <span class="cf-field-link" aria-hidden="true"></span>
+                  <div class="cf-field-stop"><span class="type-caption">Module fields</span><span class="cf-definition">Approved vendors</span></div>
+                </div>
+              </figure>
               <figure class="case-figure">
                 <img src="../files/selection-flow.png" alt="Workflow that presents existing data definitions before creating a new definition" />
                 <figcaption class="type-caption">Existing definitions appear before the project-specific creation path, making reuse the normal first action.</figcaption>
