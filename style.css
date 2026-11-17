@@ -326,4 +326,4 @@
   .people { flex-wrap: wrap; }
 }
 
-.about-contact { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 24px; }
+.about-contact { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 24px; margin-top: 24px; }
