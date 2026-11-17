@@ -153,9 +153,9 @@
 .company h2>.company-brand{color:var(--ink)}
 .company-years{font:400 16px/1.2 var(--sans);color:var(--muted);white-space:nowrap}
 .company h2>.company-subtitle{font:400 18px/1.3 var(--serif);color:var(--muted)}
-.company-logo.augury-logo{width:140px;height:60px;filter:brightness(0)}
+.company-logo.augury-logo{width:140px;height:60px;margin-right:-32px;filter:brightness(0)}
 .augury-company{margin-top:126px}
-@media(max-width:760px){.augury-company{margin-top:94px}.company-brand{gap:20px}.company-logo.augury-logo{width:128px;height:55px}}
+@media(max-width:760px){.augury-company{margin-top:94px}.company-brand{gap:20px}.company-logo.augury-logo{width:128px;height:55px;margin-right:-29px}}
 /* The custom-data case study uses this warm yellow accent. */
 @media(hover:hover){.card:hover .custom-preview{background:#d4c451}}
 /* A filled lock, in a softer shade. */
