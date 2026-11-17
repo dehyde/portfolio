@@ -743,10 +743,10 @@
   <link rel="stylesheet" href="../files/case-study-standardization.css?v=standardization-perf2-20261116" />
   <link rel="stylesheet" href="../files/case-study-governance.css?v=governance-mobile-20261116" />
   <link rel="stylesheet" href="../files/case-study-field-language.css?v=collage-soft-focus-20261117" />
-<style>.copy-edit-panel{display:none!important}</style></head>
+<style>.copy-edit-panel{display:none!important}</style><link rel="stylesheet" href="../files/case-navigation.css"></head>
 <body><div class="case-loading" role="status" aria-live="polite"><div class="case-loading-inner"><div class="case-loading-mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="case-loading-title">Opening case study</div><div class="case-loading-note">Getting the details ready…</div></div></div><script>(()=>{const overlay=document.querySelector('.case-loading'),started=performance.now();let finished=false;function reveal(){if(finished)return;finished=true;const remaining=Math.max(0,400-(performance.now()-started));setTimeout(()=>{overlay.classList.add('is-ready');setTimeout(()=>overlay.remove(),350)},remaining)}setTimeout(reveal,5000);document.addEventListener('DOMContentLoaded',()=>{const visible=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.width&&r.height&&r.bottom>0&&r.top<innerHeight*1.1}).slice(0,8);const loadImage=img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})});Promise.all(visible.map(loadImage)).then(reveal,reveal)},{once:true})})();</script>
   <nav class="topbar type-interface" aria-label="Case-study navigation">
-    <a class="topbar-back" href="../index.html">← Selected work</a>
+    <a class="topbar-back" href="../index.html#work">← Back to portfolio</a>
     <span class="case-name">Managing custom attributes and schemas across accounts and projects</span>
   </nav>
   <div class="copy-edit-panel type-interface" data-copy-edit-panel data-editing="false">
@@ -1399,23 +1399,7 @@
     </main>
   </div>
 
-  <footer class="project-footer">
-    <nav class="project-pagination" aria-label="Adjacent case studies">
-      <a class="project-link previous" href="#opening">
-        <span class="type-interface">← Previous case study</span>
-        <strong class="type-subsection">From shared library to shared behavior</strong>
-      </a>
-      <a class="project-link next" href="#opening">
-        <span class="type-interface">Next case study →</span>
-        <strong class="type-subsection">When the dashboard became a decision</strong>
-      </a>
-    </nav>
-    <div class="footer-global type-interface">
-      <strong>Tom Bar-Gal Arbiv / UX thinking</strong>
-      <nav class="footer-links" aria-label="Portfolio pages"><a href="#opening">Work</a><a href="#opening">Experiments</a><a href="#opening">About</a></nav>
-      <span>2026</span>
-    </div>
-  </footer>
+  <footer class="shared-case-footer"><nav aria-label="Case study navigation"><a href="../index.html#work">← Back to portfolio</a><a href="#opening">Back to top ↑</a></nav><span>Tom Bar-Gal · Product design</span></footer>
 
   <script type="module">
       import { annotate } from 'https://unpkg.com/rough-notation?module';
@@ -2190,5 +2174,5 @@
     updateProgress();
     updateDiveChapter();
   </script>
-</body>
+<script src="../files/case-navigation.js" defer></script></body>
 </html>

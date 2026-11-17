@@ -123,7 +123,7 @@ h2 { max-width: 16ch; font: 450 clamp(36px, 4vw, 58px)/1.06 var(--serif); font-v
 .is-carousel .workflow-comparison > h3, .is-carousel .flow-origin { display: none; }
 .is-carousel .flow-route { grid-template-columns: minmax(0, 1fr) 110px; min-width: 700px; padding-left: 16px; }
 .workflow-story.is-static .workflow-stage { position: static; height: auto; }
-@media (max-width: 850px) {
+@media (max-width: 760px) {
   .workflow-stage { top: 118px; }
   .workflow-stage-body { grid-template-columns: 160px minmax(0, 1fr); gap: 24px; }
   .workflow-connector { left: 160px; width: 24px; }

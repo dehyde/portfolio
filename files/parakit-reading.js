@@ -5,7 +5,7 @@
   const progress = document.querySelector('.progress span');
   const chapters = [...main.querySelectorAll('.chapter')];
   const links = new Map([...rail.querySelectorAll('a')].map(link => [link.hash, link]));
-  const compact = matchMedia('(max-width: 850px)');
+  const compact = matchMedia('(max-width: 760px)');
   let activeLink = rail.querySelector('[aria-current]');
   let scheduled = false;
 

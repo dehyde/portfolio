@@ -341,3 +341,5 @@
 @media (prefers-reduced-motion: reduce) {
   .about-contact a { transition: none; }
 }
+
+.parakit h3:after{content:"  🔒";font:16px var(--sans)}

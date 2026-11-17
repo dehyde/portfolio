@@ -764,11 +764,11 @@
       .workflow-start .guided-card { margin: 0; max-width: none; }
     }
   </style>
-</head>
+<link rel="stylesheet" href="../files/case-navigation.css"></head>
 <body><div class="case-loading" role="status" aria-live="polite"><div class="case-loading-inner"><div class="case-loading-mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="case-loading-title">Opening case study</div><div class="case-loading-note">Getting the details ready…</div></div></div><script>(()=>{const overlay=document.querySelector('.case-loading'),started=performance.now();let finished=false;function reveal(){if(finished)return;finished=true;const remaining=Math.max(0,400-(performance.now()-started));setTimeout(()=>{overlay.classList.add('is-ready');setTimeout(()=>overlay.remove(),350)},remaining)}setTimeout(reveal,5000);document.addEventListener('DOMContentLoaded',()=>{const visible=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.width&&r.height&&r.bottom>0&&r.top<innerHeight*1.1}).slice(0,8);const loadImage=img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})});Promise.all(visible.map(loadImage)).then(reveal,reveal)},{once:true})})();</script>
   <a class="skip" href="#main">Skip to case study</a>
   <nav class="topbar" aria-label="Case-study navigation">
-    <a class="topbar-back" href="../index.html">← Custom fields case study</a>
+    <a class="topbar-back" href="../index.html#work">← Back to portfolio</a>
     <span class="case-name">IoT maintenance management</span>
     <span class="topbar-meta">Tom Bar-Gal Arbiv · Selected work</span>
   </nav>
@@ -1023,7 +1023,7 @@
 <div class="future"><h3>Plans for the future</h3><ul class="source-list type-reading"><li>Improving “which device to fix” communication</li><li>A group-by-machine view to allow users to better understand the impact</li><li>Grouping by connectivity (or network topology chart) to help users better analyze the root causes of connectivity issues</li><li>Encouraging engagement through weekly emails and alerts</li><li>Aligning data throughout the system</li></ul></div></div>
       </section>
 
-      <footer class="footer"><a class="next-case" href="custom-fields.html"><p class="type-label">Another case study ↗</p><p class="type-summary">Custom data management across account and project levels.</p></a><div class="footer-bottom"><span>© Tom Bar-Gal Arbiv · 2023</span><a href="mailto:tom.bar.gal@gmail.com">tom.bar.gal@gmail.com</a><a href="#opening">Back to top ↑</a></div></footer>
+      <footer class="shared-case-footer"><nav aria-label="Case study navigation"><a href="../index.html#work">← Back to portfolio</a><a href="#opening">Back to top ↑</a></nav><span>Tom Bar-Gal · Product design</span></footer>
     </main>
   </div>
   <dialog id="image-viewer" class="image-viewer" aria-label="Original project screen">
@@ -1199,5 +1199,5 @@
       update();
     })();
   </script>
-</body>
+<script src="../files/case-navigation.js" defer></script></body>
 </html>

@@ -25,11 +25,11 @@
 <script src="../files/parakit-video.js" defer></script>
 <script src="../files/parakit-reading.js" defer></script>
 <script src="../files/parakit-workflows.js" defer></script>
-</head>
+<link rel="stylesheet" href="../files/case-navigation.css"></head>
 <body>
 <div class="case-loading" role="status" aria-live="polite"><div class="case-loading-inner"><div class="case-loading-mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="case-loading-title">Opening case study</div><div class="case-loading-note">Getting the details ready…</div></div></div><script id="case-loading-script">(()=>{const overlay=document.querySelector('.case-loading'),started=performance.now();let finished=false;function reveal(){if(finished)return;finished=true;const remaining=Math.max(0,400-(performance.now()-started));setTimeout(()=>{overlay.classList.add('is-ready');setTimeout(()=>overlay.remove(),350)},remaining)}setTimeout(reveal,5000);document.addEventListener('DOMContentLoaded',()=>{const visible=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.width&&r.height&&r.bottom>0&&r.top<innerHeight*1.1}).slice(0,8);const loadImage=img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})});Promise.all(visible.map(loadImage)).then(reveal,reveal)},{once:true})})();</script>
 <a class="skip" href="#main">Skip to content</a>
-<header class="topbar"><a href="../index.html#work">← All projects</a><span>Parakit</span><span class="topbar-meta">Product design &amp; development</span></header>
+<header class="topbar"><a href="../index.html#work">← Back to portfolio</a><span>Parakit</span><span class="topbar-meta">Product design &amp; development</span></header>
 <div class="progress" aria-hidden="true"><span></span></div>
 <div class="shell"><nav class="rail" aria-label="Case study sections">
   <span class="rail-title">PARAKIT</span>
@@ -186,5 +186,5 @@
     </div>
   </div>
 </section>
-<footer class="case-footer"><a href="../index.html#work">← Back to selected work</a><a href="#overview">Back to top ↑</a></footer>
-</main></div></body></html>
+<footer class="shared-case-footer"><nav aria-label="Case study navigation"><a href="../index.html#work">← Back to portfolio</a><a href="#overview">Back to top ↑</a></nav><span>Tom Bar-Gal · Product design</span></footer>
+</main></div><script src="../files/case-navigation.js" defer></script></body></html>
