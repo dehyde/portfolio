@@ -28,16 +28,17 @@
   color: var(--muted);
   font: 400 clamp(18px, 1.65vw, 22px)/1.45 var(--serif);
 }
-.about-personal {
-  display: flex;
-  align-items: flex-start;
+.about-copy {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  align-items: start;
   gap: 16px;
 }
-.about-portrait { flex: 0 0 120px; width: 120px; }
+.about-portrait { width: 120px; }
 .about-portrait img { width: 100%; height: auto; mix-blend-mode: multiply; }
 @media (max-width: 480px) {
-  .about-personal { gap: 12px; }
-  .about-portrait { flex-basis: 90px; width: 90px; }
+  .about-copy { grid-template-columns: 90px minmax(0, 1fr); gap: 12px; }
+  .about-portrait { width: 90px; }
 }
 .company>h2{display:flex;align-items:center;gap:24px;padding:28px 0;border-top:1px solid var(--ink)}.company-logo{width:176px;height:30px;object-fit:contain;object-position:left center}.company-logo.augury-logo{width:106px;height:54px;filter:brightness(0)}.company h2>span{font:400 18px var(--serif);color:var(--muted)}.project-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}.card{display:flex;flex-direction:column;height:100%;border:1px solid var(--line);background:#fff;transition:box-shadow .2s,border-color .2s;cursor:pointer}.card:hover{border-color:#84897f;box-shadow:0 10px 30px #20232012} .strengths{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0 0 22px;min-height:0}.strengths li{font:400 15px/1.35 var(--sans);padding:7px 10px;border:1px solid #202320;background:#202320;color:#fff;border-radius:4px;letter-spacing:-.35px}.project-copy{padding:28px;display:flex;flex-direction:column;flex:1;min-height:334px}.project h3{font:400 36px/1.1 var(--serif);letter-spacing:-.9px;margin-bottom:16px}.project-copy>p{font:400 21px/1.5 var(--serif);color:var(--muted);margin-bottom:25px}.card-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:19px}.people{display:flex;align-items:center;gap:16px}.portraits{position:relative;display:flex;flex-shrink:0}.portraits img{width:65px;height:65px;object-fit:cover;border-radius:2px}.people p{font-size:15px;line-height:1.5;color:#4e554d}.augury-company{margin-top:45px}
 /* Screenshots form overlapping layers, not a tiled layout. */
@@ -255,7 +256,7 @@
   letter-spacing: 0;
   text-transform: none;
 }
-.about-education { align-self: center; }
+.about-education { align-self: end; }
 .about-education ul { display: grid; gap: 12px; }
 .about-education li { font: 400 14px/1.5 var(--sans); }
 .about-education li strong,
