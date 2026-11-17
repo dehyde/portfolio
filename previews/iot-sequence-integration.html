@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style id="case-loading-style">
+.case-loading{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#202320;color:#eff2ed;opacity:1;transition:opacity .32s ease}
+.case-loading.is-ready{opacity:0;pointer-events:none}
+.case-loading-inner{text-align:center;padding:24px}
+.case-loading-mark{display:flex;align-items:center;justify-content:center;gap:6px;height:24px;margin-bottom:25px}
+.case-loading-mark i{width:7px;height:7px;background:var(--loading-accent,#d4c451);border-radius:50%;animation:case-loading-bounce 1s ease-in-out infinite}
+.case-loading-mark i:nth-child(2){animation-delay:.13s}.case-loading-mark i:nth-child(3){animation-delay:.26s}
+.case-loading-title{font:400 25px/1.2 Georgia,serif;letter-spacing:-.3px}
+.case-loading-note{margin-top:10px;color:#b4bbb2;font:14px/1.4 Arial,sans-serif}
+@keyframes case-loading-bounce{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-7px);opacity:1}}
+@media(prefers-reduced-motion:reduce){.case-loading,.case-loading-mark i{transition:none;animation:none}.case-loading-mark i{opacity:1}}
+</style><noscript><style>.case-loading{display:none!important}</style></noscript>
+  <meta charset="UTF-8"><meta name="robots" content="noindex">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An Augury product design case study: turning IoT device data into clearer maintenance decisions. Tom Bar-Gal, 2021–2022.">
+  <meta name="theme-color" content="#101832">
+  <title>IoT maintenance management — Tom Bar-Gal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&amp;family=Recursive:CASL,CRSV,MONO,slnt,wght@0..1,0..1,0..1,-15..0,300..900&amp;display=swap" rel="stylesheet">
+  <style>
+    /* Same standalone HTML/CSS/JS framework and typography roles as the custom-fields case. */
+    :root {
+      --font-editorial: "Newsreader", Georgia, serif;
+      --font-system: "Recursive", Arial, sans-serif;
+      --font-system-formal: "CASL" .08, "CRSV" .5, "MONO" 0, "slnt" 0;
+      --surface-canvas: #fff;
+      --surface-chrome: #fff;
+      --surface-terminal: #f4f6fa;
+      --surface-interactive: #eaf0f8;
+      --text-primary: #142b50;
+      --text-reading: #203d61;
+      --text-support: #344b68;
+      --text-secondary: #455d79;
+      --text-muted: #526780;
+      --accent: #142b50;
+      --augury-blue: #101832;
+      --hairline: #d9e1eb;
+      --bar-h: 64px;
+      --rail-w: clamp(168px, 13vw, 196px);
+      --section-gutter: clamp(28px, 6vw, 108px);
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--surface-terminal); scroll-padding-top: 92px; }
+    body { margin: 0; background: var(--surface-canvas); color: var(--text-primary); font-family: var(--font-system); font-variation-settings: var(--font-system-formal); }
+    h1, h2, h3, p, figure { margin: 0; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    img, svg { max-width: 100%; }
+    ::selection { background: var(--accent); color: white; }
+    :focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
+    .skip { position: fixed; top: 8px; left: 8px; padding: 12px; background: white; color: #142b50; z-index: 110; transform: translateY(-150%); }
+    .skip:focus { transform: none; }
+    .topbar { position: sticky; top: 0; z-index: 80; min-height: var(--bar-h); display: flex; gap: 28px; align-items: center; padding: 0 clamp(20px, 4vw, 68px); background: var(--augury-blue); color: white; font-size: 13px; }
+    .topbar-back { white-space: nowrap; }
+    .case-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .topbar-meta { margin-left: auto; color: rgb(255 255 255 / .87); white-space: nowrap; }
+    .case-shell { display: grid; grid-template-columns: var(--rail-w) minmax(0, 1fr); }
+    .rail { position: sticky; top: var(--bar-h); height: calc(100dvh - var(--bar-h)); display: flex; flex-direction: column; padding: 32px 20px 26px clamp(18px, 2.6vw, 38px); background: var(--surface-chrome); border-right: 1px solid var(--hairline); overflow-y: auto; }
+    .progress { position: fixed; top: var(--bar-h); left: 0; right: 0; z-index: 90; height: 2px; background: var(--hairline); }
+    .progress span { display: block; width: var(--progress, 0%); height: 100%; background: #090e1e; transition: width 160ms linear; }
+    .rail-main { display: grid; gap: 6px; }
+    .rail-main a { position: relative; padding: 9px 0 9px 15px; color: var(--text-muted); font-size: 13px; line-height: 1.4; }
+    .rail-main a::before { content: ""; position: absolute; left: 0; top: 16px; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .5; }
+    .rail-main a[aria-current="location"] { padding-left: 0; color: var(--accent); font: 450 29px/1.04 var(--font-editorial); letter-spacing: -.035em; }
+    .rail-main a[aria-current="location"]::before { display: none; }
+    .rail-label { margin: 20px 0 4px; color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: .1em; }
+    .rail-foot { margin-top: auto; padding-top: 32px; color: var(--text-muted); font-size: 11px; line-height: 1.7; }
+    main { min-width: 0; }
+    .chapter { border-bottom: 1px solid var(--hairline); padding: clamp(64px, 8vw, 120px) var(--section-gutter); scroll-margin-top: 0; }
+    .type-label { color: var(--text-secondary); font-size: 13px; line-height: 1.5; font-weight: 520; }
+    .type-display { font: 450 clamp(52px, 6.4vw, 100px)/.99 var(--font-editorial); letter-spacing: -.045em; font-variation-settings: normal; }
+    .type-section { font: 450 clamp(38px, 4.4vw, 68px)/1.02 var(--font-editorial); letter-spacing: -.035em; font-variation-settings: normal; }
+    .type-summary { font: 400 clamp(27px, 3.1vw, 46px)/1.16 var(--font-editorial); letter-spacing: -.02em; font-variation-settings: normal; }
+    .type-reading { font: 350 clamp(19px, 1.35vw, 22px)/1.65 var(--font-editorial); color: var(--text-reading); font-variation-settings: normal; }
+    .type-support { font-size: 14px; line-height: 1.8; color: var(--text-support); }
+    .type-caption { font-size: 11px; line-height: 1.65; color: var(--text-muted); }
+    .hero { padding-top: clamp(64px, 8vw, 112px); }
+    .hero h1 { max-width: 13ch; margin: 28px 0 32px; }
+    .hero-intro { max-width: 35em; }
+    .hero-subtitle { margin-bottom: 16px; color: var(--text-support); font-size: 16px; }
+    .project-meta { display: flex; flex-wrap: wrap; gap: 24px 50px; margin: 40px 0 54px; }
+    .project-meta div { display: grid; gap: 6px; }
+    .project-meta dt { color: var(--text-muted); font-size: 11px; }
+    .project-meta dd { margin: 0; font-size: 13px; }
+    .hero-visual { margin-top: 54px; }
+    .hero-composition {
+      --hero-screen-width: min(62%, 750px);
+      --hero-screen-overhang: max(0px, min(calc(var(--section-gutter) * .58), calc(var(--section-gutter) - 50px)));
+      --hero-screen-left: calc(100% + var(--hero-screen-overhang) - var(--hero-screen-width));
+      position: relative;
+      display: flex;
+      align-items: end;
+      aspect-ratio: 1.85;
+      min-height: clamp(300px, 47svh, 550px);
+      padding: clamp(16px, 3vw, 44px);
+    }
+    .hero-composition .hero-photo {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: min(calc(var(--hero-screen-left) / .65), calc(var(--hero-screen-left) + var(--hero-screen-width) * .35));
+      height: 100%;
+      object-fit: cover;
+      object-position: 43% center;
+    }
+    .hero-composition .hero-logo { position: relative; align-self: end; width: clamp(64px, 8vw, 114px); margin: 0 0 8px 6px; }
+    .hero-composition .hero-screen { position: absolute; top: 22px; right: calc(-1 * var(--hero-screen-overhang)); width: var(--hero-screen-width); }
+    .asset-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(18px, 3vw, 42px); margin-top: 30px; }
+    .asset-grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .asset-grid--factory { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: start; }
+    .asset-grid--factory .source-figure:last-child img { aspect-ratio: 1 / 1; object-fit: cover; }
+    .source-figure--screen > a, .source-figure--data > a { border: 1px solid var(--hairline); }
+    .source-figure--data { margin-bottom: 22px; }
+    .source-figure--compact { max-width: 360px; }
+    .hero-visual figcaption { margin-top: 14px; }
+    .chapter-heading { display: grid; grid-template-columns: minmax(150px, .65fr) minmax(0, 1.35fr); column-gap: clamp(32px, 5vw, 80px); }
+    .chapter-heading h2 { margin-top: 18px; max-width: 15ch; }
+    .chapter-heading > .type-summary { padding-top: 33px; max-width: 27ch; }
+    .chapter-body { margin-top: clamp(28px, 4vw, 56px); }
+    .chapter-body > .type-reading + .type-reading { margin-top: 16px; }
+    .chapter h3, .chapter h4 { margin: 0 0 12px; }
+    .chapter h4 { font-size: 16px; font-weight: 550; }
+    .source-list { padding-left: 1.25em; margin: 12px 0 20px; }
+    .source-list li + li { margin-top: 5px; }
+    .source-jobs { margin: 0; }
+    .source-jobs dt { font-weight: 550; }
+    .source-jobs dd { margin: 4px 0 16px; }
+    .copy-block + .copy-block { margin-top: 32px; }
+    .asset-grid.asset-grid--single { grid-template-columns: minmax(0, 560px); }
+    .chapter > .type-section + .type-summary { margin-top: 16px; }
+    .chapter > .type-label + .type-section { margin-top: 12px; }
+    .feedback .source-list { margin-bottom: 0; }
+    .split p.contributing-factors { margin-top: 12px; }
+    .persona .type-caption { font-weight: 550; }
+    .outcome .lessons h4 { font-size: 20px; margin: 0; }
+    .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 84px); }
+    .split > * { min-width: 0; }
+    .split h3 { margin-bottom: 16px; font-size: clamp(19px, 1.7vw, 26px); font-weight: 500; letter-spacing: -.025em; }
+    .split p + p { margin-top: 20px; }
+    .statement {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      margin: 64px 0 0;
+      padding: clamp(28px, 4vw, 52px);
+      border: 0;
+      background: radial-gradient(ellipse at 100% 0%, #25365b 0%, transparent 64%), var(--augury-blue);
+      box-shadow: 0 5px 14px rgb(9 14 30 / .12), 0 20px 42px rgb(9 14 30 / .16);
+      color: white;
+    }
+    .statement h3 { color: rgb(255 255 255 / .78); font-size: 13px; font-weight: 550; margin-bottom: 18px; }
+    .statement p { max-width: 29ch; }
+    .goals { margin: 30px 0 0; padding: 0; list-style: none; }
+    .goals li { display: grid; grid-template-columns: 28px 1fr; gap: 8px; padding: 17px 0; border-bottom: 1px solid var(--hairline); font-size: 14px; line-height: 1.6; }
+    .goals span { color: var(--text-muted); font-size: 11px; padding-top: 3px; }
+    .persona { padding-left: 28px; border-left: 2px solid var(--accent); }
+    .persona .type-label { margin-bottom: 12px; }
+    .routine { margin-top: 28px; }
+    .routine > div { display: grid; grid-template-columns: 100px 1fr; gap: 14px; padding: 14px 0; border-top: 1px solid var(--hairline); font-size: 13px; line-height: 1.65; }
+    .routine dt { color: var(--text-muted); }
+    .routine dd { margin: 0; }
+    .journey { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px; counter-reset: journey; list-style: none; padding: 0; }
+    .journey li { position: relative; counter-increment: journey; }
+    .journey li::before { content: counter(journey); display: grid; place-items: center; width: 22px; height: 22px; margin-bottom: 12px; border: 1px solid var(--hairline); border-radius: 50%; color: var(--text-secondary); font-size: 11px; font-weight: 550; }
+    .journey li:not(:last-child)::after { content: ""; position: absolute; top: 11px; left: 29px; right: -11px; border-top: 1px solid #aab5c9; }
+    .journey strong { display: block; font-size: 15px; font-weight: 540; line-height: 1.5; }
+    @media (max-width: 1050px) {
+      .journey { grid-template-columns: minmax(0, 1fr); gap: 0; }
+      .journey li { display: grid; grid-template-columns: 24px 1fr; gap: 12px; padding-bottom: 18px; }
+      .journey li::before { margin: 0; }
+      .journey li:not(:last-child)::after { top: 28px; bottom: 4px; left: 11px; right: auto; border-top: 0; border-left: 1px solid var(--hairline); }
+    }
+    .phase-number { display: inline-flex; border: 1px solid var(--hairline); padding: 5px 10px; margin-bottom: 16px; font-size: 11px; color: var(--text-support); }
+    .decisions { margin: 0; padding: 0; list-style: none; counter-reset: decisions; }
+    .decisions li { counter-increment: decisions; position: relative; padding: 24px 0 24px 40px; border-top: 1px solid var(--hairline); }
+    .decisions li::before { content: "0" counter(decisions); position: absolute; left: 0; top: 28px; font-size: 11px; color: var(--text-muted); }
+    .decisions h3 { font-size: 20px; line-height: 1.3; margin-bottom: 12px; }
+    .decisions p { font: 350 19px/1.55 var(--font-editorial); color: var(--text-reading); }
+    .feedback { margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--hairline); }
+    .feedback-label { margin-bottom: 22px; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); }
+    .feedback h3 { font-size: 16px; }
+    .feedback ul { padding-left: 18px; margin: 0; }
+    .feedback li { padding: 4px 0; color: var(--text-support); font: 350 19px/1.55 var(--font-editorial); }
+    .outcome { background: white; color: #142b50; }
+    .outcome .type-label, .outcome .type-support, .outcome .type-caption { color: #526780; }
+    .outcome .type-reading { color: #203d61; }
+    .outcome .statement, .outcome .goals li { border-color: #d1dceb; }
+    .outcome .goals span { color: #526780; }
+    .lessons { margin: 46px 0 0; padding: 0; list-style: none; }
+    .lessons li { display: grid; grid-template-columns: minmax(170px, .65fr) minmax(0, 1.35fr); gap: clamp(24px, 5vw, 80px); padding: 28px 0; border-top: 1px solid #d1dceb; }
+    .lessons h3 { font-size: 21px; font-weight: 500; line-height: 1.3; }
+    .future { margin-top: 50px; }
+    .future h3 { font-size: 19px; margin-bottom: 15px; }
+    .future ul { padding-left: 18px; }
+    .future li { padding: 5px 0; }
+    .footer { padding: 56px var(--section-gutter); background: var(--surface-terminal); }
+    .next-case { display: block; padding: 26px 0 42px; }
+    .next-case .type-summary { margin-top: 18px; max-width: 24ch; }
+    .next-case:hover .type-summary { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 7px; }
+    .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; padding-top: 26px; border-top: 1px solid var(--hairline); font-size: 12px; color: var(--text-muted); }
+    .footer-bottom a:hover { color: var(--accent); }
+    .source-figure { min-width: 0; align-self: start; }
+    .source-figure img { display: block; width: 100%; height: auto; }
+    .source-figure > a { display: block; cursor: zoom-in; }
+    .source-figure figcaption { margin-top: 16px; }
+    .source-figure figcaption a { text-decoration: underline; text-underline-offset: 3px; }
+    .source-detail { margin-top: 28px; max-width: 780px; }
+    .image-viewer { width: min(96vw, 1800px); max-width: 96vw; max-height: 92dvh; padding: 0; border: 1px solid var(--hairline); background: var(--surface-canvas); color: var(--text-primary); overflow: auto; }
+    .image-viewer::backdrop { background: rgb(4 12 28 / .88); }
+    .image-viewer form { position: sticky; top: 0; z-index: 1; display: flex; justify-content: flex-end; margin: 0; padding: 12px; background: var(--surface-terminal); }
+    .image-viewer button { padding: 10px 18px; border: 1px solid var(--hairline); color: var(--text-primary); background: var(--surface-interactive); }
+    .image-viewer img { display: block; width: 100%; height: auto; }
+    @media (min-width: 1650px) { main { max-width: 1600px; } }
+    @media (max-width: 1050px) { .chapter-heading { grid-template-columns: 1fr; gap: 24px; } .chapter-heading > .type-summary { padding-top: 0; max-width: 30ch; } .split { gap: 32px; } .topbar-meta { display: none; } }
+    @media (max-width: 760px) {
+      :root { --bar-h: 56px; --section-gutter: 24px; }
+      html { scroll-padding-top: 126px; }
+      .topbar { gap: 16px; padding: 0 20px; }
+      .topbar-back { font-size: 0; }
+      .topbar-back::before { content: "← Custom fields"; font-size: 11px; }
+      .case-name { font-size: 11px; }
+      .case-shell { display: block; }
+      .rail { z-index: 70; top: var(--bar-h); height: auto; padding: 12px 14px; border-right: 0; border-bottom: 1px solid var(--hairline); overflow-x: auto; overflow-y: hidden; }
+      .rail-main { display: flex; width: max-content; gap: 5px; }
+      .rail-main a, .rail-main a[aria-current="location"] { font: 480 12px/1.3 var(--font-system); padding: 8px 9px; white-space: nowrap; letter-spacing: 0; }
+      .rail-main a[aria-current="location"] { text-decoration: underline; text-underline-offset: 6px; }
+      .rail-main a::before, .rail-label, .rail-foot { display: none; }
+      .chapter { padding-top: 64px; padding-bottom: 64px; }
+      .hero { padding-top: 56px; }
+      .hero h1 { font-size: clamp(48px, 11vw, 72px); margin-top: 24px; }
+      .project-meta { gap: 24px 32px; margin-bottom: 36px; }
+      .split, .lessons li { grid-template-columns: 1fr; }
+      .chapter-body { margin-top: 40px; }
+      .statement { margin-top: 40px; }
+      .hero-visual { margin: 36px 0 0; }
+      .hero-composition { --hero-screen-width: 67%; --hero-screen-overhang: 12px; aspect-ratio: auto; min-height: clamp(205px, 49vw, 300px); padding: 14px; }
+      .hero-composition .hero-screen { top: 16px; }
+      .hero-composition .hero-logo { width: 54px; margin: 0 0 4px 0; }
+      .hero-visual figcaption { max-width: 34%; }
+      .asset-grid, .asset-grid--factory { grid-template-columns: 1fr; }
+      .asset-grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+      .persona { padding-left: 20px; }
+      .routine > div { grid-template-columns: 88px 1fr; }
+      .lessons li { gap: 16px; }
+      .footer { padding: 40px 24px; }
+    }
+    @media print {
+      :root { --text-primary: #142b50; --text-reading: #142b50; --text-support: #324e70; --text-secondary: #526780; --text-muted: #526780; --hairline: #ccd7e4; }
+      body, .chapter, .footer { background: white; color: #142b50; }
+      .topbar, .rail, .skip, .progress { display: none; }
+      .case-shell { display: block; }
+      .chapter { padding: 30px 0; }
+      .type-display { font-size: 48px; }
+      .type-section { font-size: 36px; }
+      .type-summary { font-size: 26px; }
+      .feedback, .lessons li { break-inside: avoid; }
+    }
+    :root {
+      --screen-top: calc(var(--bar-h) + 20px);
+      --screen-cap: max(180px, calc(100svh - var(--screen-top) - 60px));
+      --screenshot-shadow: 0 2px 5px rgb(20 43 80 / .08), 0 12px 32px rgb(20 43 80 / .15);
+      --success-ink: #226639;
+      --improvement-ink: #965000;
+    }
+    .hero { padding-bottom: max(230px, 26svh); }
+    .hero-visual, .screen-pin, .screen-track > .source-figure--screen {
+      position: sticky;
+      top: var(--screen-top);
+      align-self: start;
+      min-width: 0;
+    }
+    .hero-composition .hero-screen img {
+      box-shadow: 0 4px 12px rgb(5 19 43 / .18), 0 20px 44px rgb(5 19 43 / .28);
+    }
+    .source-figure--screen > a,
+    .source-figure--data > a,
+    .screenshot > a {
+      width: fit-content;
+      max-width: 100%;
+      border: 1px solid var(--hairline);
+      box-shadow: var(--screenshot-shadow);
+    }
+    .source-figure--screen img, .source-figure--data img, .screenshot img {
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: var(--screen-cap);
+      object-fit: contain;
+    }
+    .screen-track { padding-bottom: clamp(36px, 8svh, 90px); }
+    .screenshot-pair .source-figure + .source-figure { margin-top: 24px; }
+    .screenshot-pair .source-figure img { max-height: min(27svh, 300px); }
+    .screenshot-pair .source-figure--data { margin-bottom: 0; }
+    .research-figure { margin-top: clamp(28px, 5vw, 56px); }
+    .research-figure > a { width: 100%; }
+    .discovery-model .journey { margin-top: 22px; }
+    .open-section { margin-top: clamp(42px, 7vw, 94px); padding-top: 26px; border-top: 1px solid var(--hairline); }
+    .open-section .source-detail { margin-top: 0; }
+    .open-section p + p { margin-top: 12px; }
+    .feedback-grid { align-items: stretch; gap: clamp(16px, 3vw, 36px); }
+    .feedback-result { padding: clamp(18px, 3vw, 30px); border: 1px solid var(--feedback-border); border-top: 3px solid var(--feedback-ink); background: var(--feedback-fill); }
+    .feedback-result--improve { --feedback-ink: var(--improvement-ink); --feedback-border: #eddbbf; --feedback-fill: #fff9ee; }
+    .feedback-result--success { --feedback-ink: var(--success-ink); --feedback-border: #cfe4d4; --feedback-fill: #f2faf3; }
+    .feedback .feedback-result h3 { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; color: var(--feedback-ink); font-weight: 650; }
+    .feedback-icon { display: inline-grid; place-items: center; flex: 0 0 24px; height: 24px; border: 1px solid currentColor; border-radius: 50%; font: 700 14px/1 var(--font-system); }
+    .feedback-result--improve .feedback-icon { border-radius: 5px; }
+    .review-success { color: var(--success-ink); }
+    .review-improvement { color: var(--improvement-ink); }
+    .monitoring-step p + p { margin-top: 20px; }
+    .monitoring-piece, .monitoring-piece img { position: absolute; }
+    .monitoring-piece img { display: block; inset: 0; width: 100%; height: 100%; }
+    .monitoring-machine { aspect-ratio: 1607 / 950; }
+    .monitoring-node { aspect-ratio: 169 / 273; z-index: 3; }
+    .monitoring-online, .monitoring-offline { transition: opacity 800ms ease; }
+    .monitoring-signal {
+      position: absolute;
+      z-index: 4;
+      left: var(--signal-x, 46%);
+      top: var(--signal-y, 47%);
+      width: 12%;
+      aspect-ratio: 1.7;
+      transform: translate(-50%, -50%);
+      color: #5770c8;
+      pointer-events: none;
+      transition: color 700ms ease;
+    }
+    .monitoring-node .monitoring-signal { width: 150%; }
+    .monitoring-signal::before, .monitoring-signal::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      filter: blur(.45px);
+      opacity: 0;
+      animation: monitoring-signal 6s ease-out infinite;
+      animation-delay: var(--signal-delay, 0s);
+      animation-play-state: paused;
+    }
+    .monitoring-signal::after { animation-delay: calc(var(--signal-delay, 0s) - 3s); }
+    .monitoring-visual[data-visible="true"] .monitoring-signal::before,
+    .monitoring-visual[data-visible="true"] .monitoring-signal::after { animation-play-state: running; }
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost { color: #b96943; }
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost::before,
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost::after {
+      animation-name: monitoring-signal-loss;
+      animation-duration: 2.2s;
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards;
+      animation-delay: 0s;
+    }
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost::before { border-width: 1.5px; }
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost::after { animation: none; opacity: 0; }
+    .monitoring-loss-label {
+      position: absolute;
+      z-index: 5;
+      right: 3%;
+      top: -26px;
+      padding: 7px 11px;
+      border-radius: 4px;
+      color: #8b3f21;
+      background: #fff0e6;
+      font: 550 12px/1.4 var(--font-system);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .monitoring-visual[data-state="offline"] .monitoring-loss-label {
+      animation: monitoring-loss-notice 3.8s ease-out both;
+      animation-play-state: paused;
+    }
+    .monitoring-visual[data-state="offline"][data-visible="true"] .monitoring-loss-label { animation-play-state: running; }
+    .monitoring-visual[data-state="offline"] :is(.monitoring-online, .monitoring-offline) { transition-duration: 350ms; }
+    @keyframes monitoring-signal {
+      0% { transform: scale(.25); opacity: 0; }
+      16% { opacity: .14; }
+      78%, 100% { transform: scale(1.75); opacity: 0; }
+    }
+    @keyframes monitoring-signal-loss {
+      0% { transform: scale(.35); opacity: 0; }
+      16%, 32% { opacity: .55; }
+      100% { transform: scale(1.9); opacity: 0; }
+    }
+    @keyframes monitoring-loss-notice {
+      0% { opacity: 0; transform: translateY(5px); }
+      10%, 80% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .monitoring-signal::before, .monitoring-signal::after { animation: none !important; opacity: 0; }
+      .monitoring-online, .monitoring-offline { transition: none; }
+      .monitoring-visual[data-state="offline"] .monitoring-loss-label { animation: none; opacity: 1; }
+    }
+
+    .monitoring-offline, .monitoring-visual[data-state="offline"] .monitoring-piece:has(.monitoring-offline) .monitoring-online { opacity: 0; }
+    .monitoring-visual[data-state="offline"] .monitoring-offline { opacity: 1; }
+    @media (max-width: 760px) {
+      :root { --screen-top: calc(var(--bar-h) + 58px); --screen-cap: min(31svh, 280px); }
+      .hero { padding-bottom: clamp(120px, 27vw, 220px); }
+      .screen-track > .screen-pin, .screen-track > .source-figure--screen {
+        z-index: 2;
+        padding: 10px 0;
+        background: white;
+      }
+      .split.screen-track { display: flex; flex-direction: column; gap: 18px; }
+      .split.screen-track > .screen-pin,
+      .split.screen-track > .source-figure--screen { order: -1; align-self: stretch; }
+      .screen-track .screenshot-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .screenshot-pair .source-figure + .source-figure { margin-top: 0; }
+      .screenshot-pair .source-figure img { max-height: var(--screen-cap); }
+      .asset-grid.screen-track { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .monitoring-online, .monitoring-offline, .progress span { transition: none; }
+    }
+    @media print {
+      .hero-visual, .screen-pin, .screen-track > .source-figure--screen { position: static; }
+      .hero, .screen-track { padding-bottom: 0; }
+    }
+    .guided-track {
+      display: grid;
+      isolation: isolate;
+      --stage-height: min(63svh, 660px);
+      --story-inset: calc(var(--stage-height) * .67);
+    }
+    .guided-track[data-enhanced] > * { grid-area: 1 / 1; min-width: 0; }
+    .guided-track[data-enhanced] .workflow-stage {
+      position: sticky;
+      top: max(var(--screen-top), calc((100svh - var(--stage-height)) / 2));
+      align-self: start;
+      z-index: 0;
+    }
+    .guided-story { margin: 0; padding: 0; }
+    .guided-track[data-enhanced] .guided-story {
+      position: relative;
+      z-index: 1;
+      padding: var(--story-inset) 0 min(34svh, 315px);
+      pointer-events: none;
+    }
+    .guided-beat { list-style: none; }
+    .guided-track[data-enhanced] .guided-beat { min-height: clamp(270px, 44svh, 450px); padding: 0 0 36px; }
+    .guided-card {
+      padding: 12px;
+      color: var(--augury-blue);
+      background: transparent;
+    }
+    .guided-card :is(.type-reading, .type-caption, .type-support) { color: inherit; }
+    .workflow-step .guided-card > :is(h3, p) { line-height: 2; }
+    .workflow-step .guided-card > h3 { margin-bottom: 12px; }
+    .task-line {
+      padding: 6px 12px;
+      border-radius: 3px;
+      -webkit-box-decoration-break: clone;
+      box-decoration-break: clone;
+      transition: background-color 300ms ease, color 260ms ease, box-shadow 300ms ease;
+    }
+    .workflow-step[aria-current="step"] .task-line {
+      color: white;
+      background: var(--augury-blue);
+      box-shadow: 0 3px 8px rgb(9 14 30 / .16);
+    }
+    .guided-track[data-enhanced] .guided-card { pointer-events: auto; }
+    .guided-card p + p { margin-top: 12px; }
+    .monitoring-track {
+      --monitoring-scale: clamp(442px, 76svh, 750px);
+      --monitoring-height: calc(var(--monitoring-scale) - 70px);
+      --machine-width: min(80%, calc(var(--monitoring-scale) * .77));
+      /* Offset only the transparent padding in the source PNGs, including room for their shadows. */
+      --machine-side-inset: calc(-.14 * var(--machine-width));
+      --machine-bottom-inset: calc(-.08 * var(--machine-width));
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    }
+    .monitoring-step { grid-column: 1; width: min(126%, 390px); z-index: 1; }
+    .monitoring-intro { grid-row: 1; min-height: clamp(400px, 58svh, 640px); padding-bottom: 72px; }
+    /* Matching the second row to the figure height releases it as the problem reaches the pin line. */
+    .monitoring-problem { grid-row: 2; min-height: var(--monitoring-height); }
+    .monitoring-step .type-section { width: min(140%, 510px); margin-bottom: 18px; font-size: clamp(34px, 3.8vw, 52px); }
+    .monitoring-step .type-summary { font-size: clamp(24px, 3vw, 40px); }
+    .monitoring-visual { grid-area: 1 / 2 / 3; align-self: start; position: sticky; top: var(--screen-top); height: var(--monitoring-height); }
+    .monitoring-art { position: relative; isolation: isolate; height: 100%; margin-inline: auto; overflow: clip; }
+    .monitoring-machine { width: var(--machine-width); }
+    .monitoring-machine--right { right: var(--machine-side-inset); top: 12%; z-index: 0; }
+    .monitoring-machine--left { left: var(--machine-side-inset); top: 27%; z-index: 1; }
+    .monitoring-machine--front { left: 28%; bottom: var(--machine-bottom-inset); z-index: 2; }
+    .monitoring-node { width: min(11%, calc(var(--monitoring-scale) * .098)); }
+    .monitoring-node--left { left: 29%; top: 4%; }
+    .monitoring-node--right { left: 73%; top: 0; }
+    #planned-maintenance { overflow-x: clip; }
+    .workflow-track {
+      --workflow-motion: 560ms cubic-bezier(.22, .61, .36, 1);
+      --frame-shadow-clearance: 44px;
+      --frame-edge: calc(var(--frame-shadow-clearance) - var(--section-gutter));
+      margin-top: clamp(24px, 5vw, 56px);
+    }
+    .workflow-display { position: relative; }
+    .workflow-track[data-enhanced] .workflow-display { height: var(--stage-height); }
+    .workflow-frame { box-shadow: var(--screenshot-shadow); }
+    .workflow-viewport { position: relative; }
+    .workflow-surface { position: relative; }
+    .workflow-surface > a { display: block; cursor: zoom-in; }
+    .workflow-surface img { display: block; width: 100%; height: auto; }
+    .workflow-track[data-enhanced] .workflow-frame {
+      --base-frame-width: min(96%, 1180px);
+      --max-frame-width: calc(100% - 2 * var(--frame-edge));
+      --preferred-frame-width: var(--frame-width, var(--base-frame-width));
+      --available-zoom: calc(var(--base-frame-width) + (var(--max-frame-width) - var(--base-frame-width)) * var(--frame-zoom, 1));
+      --fitted-frame-width: min(var(--preferred-frame-width), var(--available-zoom));
+      --preferred-frame-left: calc(50% - var(--fitted-frame-width) * var(--focus-x, .5));
+      position: absolute;
+      width: var(--fitted-frame-width);
+      height: var(--frame-height, min(84%, 530px));
+      left: clamp(var(--frame-edge), var(--preferred-frame-left), calc(100% - var(--frame-edge) - var(--fitted-frame-width)));
+      top: 50%;
+      transform: translateY(-50%);
+      transition: width var(--workflow-motion), height var(--workflow-motion), left var(--workflow-motion);
+    }
+    .workflow-track[data-enhanced] .workflow-viewport { height: 100%; overflow: clip; }
+    .workflow-track[data-enhanced] .workflow-surface {
+      position: absolute;
+      top: var(--view-y, 0%);
+      width: 100%;
+      transform: translateY(calc(-1 * var(--source-y, 0%)));
+      transition: top var(--workflow-motion), transform var(--workflow-motion);
+    }
+    .workflow-track[data-focus="overview"] { --view-y: 41%; --source-y: 23%; }
+    .workflow-track[data-focus="routers"] { --view-y: 28%; --source-y: 42.5%; }
+    .workflow-track:is([data-focus="device"], [data-focus="impact"], [data-focus="details"], [data-focus="guidance"], [data-focus="outside"]) {
+      --view-y: 50%;
+      --source-y: 43.6%;
+    }
+    /* Close-ups resize and pan the complete frame, including its shadow. */
+    .workflow-track[data-enhanced]:is([data-focus="device"], [data-focus="impact"], [data-focus="details"], [data-focus="guidance"]) .workflow-frame {
+      --fitted-frame-width: var(--frame-width);
+      left: var(--preferred-frame-left);
+    }
+    .workflow-track[data-focus="device"] {
+      --frame-width: 165%;
+      --frame-height: min(92%, 600px);
+      --focus-x: .345;
+    }
+    .workflow-track[data-focus="impact"] {
+      --frame-width: 185%;
+      --frame-height: min(96%, 630px);
+      --focus-x: .245;
+    }
+    .workflow-track[data-focus="details"] {
+      --frame-width: 165%;
+      --frame-height: min(96%, 630px);
+      --focus-x: .73;
+    }
+    .workflow-track[data-focus="guidance"] {
+      --frame-width: 205%;
+      --frame-height: min(100%, 660px);
+      --focus-x: .544;
+    }
+    .workflow-annotations, .workflow-spotlight {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .workflow-spotlight::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgb(255 255 255 / .56);
+      clip-path: var(--focus-mask);
+    }
+    .workflow-focus {
+      position: absolute;
+      border: 2px solid #283982;
+      border-radius: 4px;
+    }
+    .workflow-guidance { max-width: 306px; margin-top: 12px; }
+    .workflow-track[data-enhanced] .workflow-guidance {
+      position: absolute;
+      top: calc(100% * 563 / 1316);
+      left: calc(100% * 566 / 1040);
+      z-index: 2;
+      width: calc(100% * 134 / 1040);
+      margin: 0;
+      transform: translate(-50%, -100%);
+    }
+    .workflow-number { font-weight: 650; margin-bottom: 6px; }
+    .workflow-step .guided-card { max-width: min(37%, 375px); margin-inline: 16px auto; }
+    .workflow-track[data-enhanced] .workflow-step:last-child { min-height: 0; }
+    @media (max-width: 760px) {
+      .guided-track { --stage-height: min(46svh, 450px); --story-inset: calc(var(--stage-height) * .68); }
+      .guided-track[data-enhanced] .guided-story { padding-bottom: max(190px, 25svh); }
+      .monitoring-track {
+        --monitoring-height: clamp(159px, calc(32svh - 51px), 224px);
+        --monitoring-offset: clamp(240px, 35svh, 300px);
+        --machine-width: min(58%, 210px, calc(var(--monitoring-height) * 1.31));
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .monitoring-step { width: auto; }
+      .workflow-step .guided-card { max-width: min(93%, 380px); margin-inline: 8px auto; }
+      .monitoring-step .type-section { width: auto; font-size: 34px; }
+      .monitoring-intro { min-height: calc(var(--monitoring-height) + var(--monitoring-offset) + 96px); }
+      .monitoring-problem { min-height: calc(var(--monitoring-height) + var(--monitoring-offset)); }
+      .monitoring-visual {
+        grid-area: 1 / 1 / 3;
+        top: calc(var(--screen-top) + var(--monitoring-offset));
+        z-index: 2;
+        margin-top: var(--monitoring-offset);
+        background: var(--surface-canvas);
+      }
+      .monitoring-art { width: 75%; }
+      .monitoring-node { width: min(12%, 38px); }
+      .monitoring-machine--left { top: 31%; }
+      .monitoring-machine--right { top: 19%; }
+      .monitoring-machine--front { left: 23%; }
+      .workflow-track[data-enhanced] .workflow-frame {
+        --fitted-frame-width: var(--frame-width, 100%);
+        left: var(--preferred-frame-left);
+      }
+      .workflow-track[data-focus="routers"] { --focus-x: .54; }
+      .workflow-track[data-focus="device"] { --frame-width: min(max(100%, 700px), calc((100vw - 30px) / .49)); --focus-x: .35; }
+      .workflow-track[data-focus="impact"] { --frame-width: max(100%, 900px); --focus-x: .27; }
+      .workflow-track[data-focus="details"] { --frame-width: min(max(100%, 720px), calc((100vw - 30px) / .49)); --focus-x: .73; }
+      .workflow-track[data-focus="guidance"] { --frame-width: max(100%, 1200px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .guided-card, .task-line,
+      .workflow-track[data-enhanced] :is(.workflow-frame, .workflow-surface, .workflow-guidance) { transition: none; }
+    }
+    @media print {
+      .guided-track[data-enhanced] { display: block; }
+      .guided-track[data-enhanced] .workflow-stage { position: static; }
+      .workflow-track[data-enhanced] :is(.workflow-pane, .workflow-frame, .workflow-surface) { position: relative; inset: auto; width: auto; height: auto; transform: none; }
+      .workflow-track[data-enhanced] :is(.workflow-display, .workflow-viewport) { height: auto; }
+      .workflow-annotations { display: none; }
+      .guided-track[data-enhanced] .guided-story { padding: 12px 0; }
+      .guided-track[data-enhanced] .guided-beat { min-height: 0; padding: 8px 0; }
+      .monitoring-track { --monitoring-height: 340px; }
+      .monitoring-visual { position: static; margin-top: 0; }
+      .monitoring-intro, .monitoring-problem { min-height: 0; }
+    }
+
+
+    /* The original walkthrough cards also present the six-step model. */
+    .sequence-connections { display: none; }
+    .workflow-step[data-sequence-number] .workflow-number .task-line {
+      display: grid; place-items: center; width: 28px; height: 28px;
+      padding: 0; border: 1px solid var(--hairline); border-radius: 50%;
+      background: white; color: var(--text-secondary); box-shadow: none;
+    }
+    .workflow-step[data-sequence-number][aria-current="step"] .workflow-number .task-line {
+      background: var(--augury-blue); border-color: var(--augury-blue); color: white;
+    }
+    .workflow-track[data-sequence] [data-sequence-number] { position: relative; }
+    .workflow-track[data-sequence] .discovery-model {
+      position: absolute; inset: 0 0 auto; min-height: 100%;
+      margin: 0; padding: 24px 0 0; border: 0; pointer-events: none;
+    }
+    .workflow-track[data-sequence] .discovery-model .section-heading { margin-bottom: 0; }
+    .workflow-track[data-sequence] .journey {
+      display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px;
+      margin: 44px 0 0; visibility: hidden;
+    }
+    .workflow-track[data-sequence] .journey li { display: block; padding: 0; }
+    .workflow-track[data-sequence] .journey li::after { display: none; }
+    .workflow-track[data-sequence] .journey li::before { margin-bottom: 12px; }
+    .workflow-track[data-sequence] .sequence-connections {
+      display: block; position: absolute; inset: 0; width: 100%; height: 100%;
+      max-width: none; overflow: visible; pointer-events: none;
+    }
+    .sequence-connections path { fill: none; stroke: #aab5c9; stroke-width: 1; stroke-dasharray: 1; }
+    .workflow-track:is([data-sequence-phase="model"], [data-sequence-phase="handoff"]) [data-sequence-number] .guided-card > h3 {
+      font-size: var(--sequence-font); line-height: calc(1.5 + .5 * var(--sequence-fold));
+      margin-bottom: calc(12px * var(--sequence-fold));
+    }
+    .workflow-track:is([data-sequence-phase="model"], [data-sequence-phase="handoff"]) [data-sequence-number] h3 .task-line {
+      padding: calc(6px * var(--sequence-fold)) calc(12px * var(--sequence-fold));
+    }
+    .workflow-track:is([data-sequence-phase="model"], [data-sequence-phase="handoff"]) [data-sequence-number] .workflow-number {
+      margin-bottom: calc(12px - 6px * var(--sequence-fold));
+    }
+    .workflow-track:is([data-sequence-phase="model"], [data-sequence-phase="handoff"]) [data-sequence-number] .workflow-number .task-line {
+      width: calc(22px + 6px * var(--sequence-fold)); height: calc(22px + 6px * var(--sequence-fold));
+    }
+    .workflow-track[data-sequence-phase="model"] [data-sequence-number] h3 .task-line {
+      background: transparent; color: var(--augury-blue); box-shadow: none;
+    }
+    .workflow-track[data-sequence] [data-sequence-number] .guided-card > :not(h3):not(.workflow-number) { opacity: var(--sequence-fold); }
+    @media (max-width: 760px) {
+      .workflow-track[data-sequence] .discovery-model { padding-top: 0; }
+      .workflow-track[data-sequence] .discovery-model .section-heading { font-size: 28px; }
+      .workflow-track[data-sequence] .journey { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 16px; margin-top: 32px; }
+      .workflow-track[data-sequence] .journey strong { font-size: 12px; }
+    }
+    @media print {
+      .workflow-track[data-sequence] .discovery-model { position: relative; min-height: 0; }
+      .workflow-track[data-sequence] .discovery-model .section-heading { opacity: 1 !important; transform: none !important; }
+      .workflow-track[data-sequence] .journey { visibility: visible; }
+      .workflow-track[data-sequence] .workflow-display { transform: none !important; }
+      .workflow-track[data-sequence] .guided-card { position: static !important; width: auto !important; opacity: 1 !important; visibility: visible !important; }
+      .workflow-track[data-sequence] .sequence-connections { display: none; }
+      .workflow-track[data-sequence] .guided-beat { min-height: 0 !important; }
+    }
+
+    /* Consistent hierarchy for research, people, tasks, and measures. */
+    .eyebrow { font: 550 11px/1.5 var(--font-system); letter-spacing: .09em; text-transform: uppercase; color: var(--text-secondary); }
+    .chapter .section-heading { font: 450 clamp(29px, 3vw, 40px)/1.15 var(--font-editorial); letter-spacing: -.025em; margin-bottom: 28px; }
+    .measurement-plan { margin-top: 64px; }
+    .measurement-rows { border-top: 1px solid var(--hairline); }
+    .measurement-row { display: grid; grid-template-columns: 1.15fr 1fr; border-bottom: 1px solid var(--hairline); }
+    .measurement-row section { padding: 28px 32px; }
+    .measurement-goal { padding-left: 0 !important; }
+    .measurement-metric { background: #f4f6f9; }
+    .measurement-row .eyebrow { margin-bottom: 12px; }
+    .measurement-row h4 { font: 600 17px/1.4 var(--font-system); margin-bottom: 12px; }
+    .measurement-row .type-reading { font: 400 15px/1.7 var(--font-system); color: var(--text-support); }
+    .measurement-row ul { padding-left: 18px; margin: 0; }
+    .measurement-row li + li { margin-top: 7px; }
+    .discovery-block { margin-top: clamp(52px, 6vw, 88px); }
+    #discovery .research-figure { margin-bottom: 0; }
+    #discovery .research-figure > a { background: none; border: 0; box-shadow: none; }
+    #discovery figcaption { font: 400 12px/1.6 var(--font-system); color: var(--text-secondary); margin-top: 12px; max-width: 60ch; }
+    .persona-profile { border-block: 1px solid var(--hairline); padding-block: 32px; }
+    .persona-intro { display: grid; grid-template-columns: 1fr minmax(180px, 29%); align-items: center; gap: 32px; }
+    .persona-intro .eyebrow { margin-bottom: 14px; }
+    .persona-intro h3 { font: 450 clamp(34px, 3.8vw, 54px)/1.08 var(--font-editorial); letter-spacing: -.03em; max-width: 17ch; }
+    .persona-intro figcaption { display: none; }
+    .persona-details { display: grid; grid-template-columns: 1.1fr 1.1fr 1fr; gap: 32px; margin-top: 32px; }
+    .persona-details h4 { font-size: 14px; font-weight: 650; }
+    .persona-details ul { padding: 0; margin: 0; list-style: none; font: 400 14px/1.7 var(--font-system); color: var(--text-support); }
+    .persona-details li + li { margin-top: 10px; }
+    .persona-details strong { display: block; font-weight: 550; color: var(--text-primary); }
+    .jobs-section > .eyebrow { margin-bottom: 14px; }
+    .primary-jobs { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .primary-jobs article { border-top: 2px solid var(--accent); padding: 24px; background: var(--surface-terminal); }
+    .primary-jobs h4 { font: 450 clamp(23px, 2.3vw, 31px)/1.25 var(--font-editorial); letter-spacing: -.015em; margin-bottom: 14px; }
+    .primary-jobs p { font: 400 14px/1.65 var(--font-system); color: var(--text-support); }
+    .secondary-jobs { margin-top: 30px; }
+    .secondary-jobs h4 { font-size: 14px; font-weight: 650; margin-bottom: 16px; }
+    .secondary-jobs ul { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 36px; padding-left: 18px; margin: 0; font: 400 14px/1.7 var(--font-system); color: var(--text-support); }
+    .secondary-jobs li { padding-left: 3px; }
+    .field-images { display: grid; grid-template-columns: 2.49fr 1fr; gap: 24px; align-items: start; }
+    .field-images img { width: 100%; height: auto; }
+    .discovery-model { padding-top: 32px; border-top: 1px solid var(--hairline); }
+    .workflow-start { position: relative; padding-bottom: 28px; }
+    .workflow-start::after { content: ''; position: absolute; left: 42px; bottom: -24px; height: 52px; border-left: 1px solid var(--hairline); }
+    .workflow-start .guided-card { width: min(100%, 405px); max-width: none; margin: 0; }
+    .workflow-start h3 { font-size: 21px; line-height: 1.35; }
+    @media (max-width: 1050px) {
+      .persona-details { gap: 22px; }
+      .measurement-row section { padding: 24px; }
+    }
+    @media (max-width: 760px) {
+      .measurement-row { grid-template-columns: 1fr; padding-block: 24px; gap: 18px; }
+      .measurement-row section { padding: 20px; }
+      .measurement-row .measurement-goal { padding: 0 !important; }
+      .persona-intro { grid-template-columns: 1fr; gap: 20px; }
+      .persona-intro .source-figure { max-width: 260px; }
+      .persona-details { grid-template-columns: 1fr; gap: 24px; }
+      .persona-details section + section { padding-top: 20px; border-top: 1px solid var(--hairline); }
+      .primary-jobs, .secondary-jobs ul { grid-template-columns: 1fr; }
+      .field-images { grid-template-columns: 1fr; gap: 28px; }
+      .field-images .source-figure:last-child { width: 70%; }
+      .workflow-start .guided-card { margin: 0; max-width: none; }
+    }
+  </style>
+</head>
+<body><div class="case-loading" role="status" aria-live="polite"><div class="case-loading-inner"><div class="case-loading-mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="case-loading-title">Opening case study</div><div class="case-loading-note">Getting the details ready…</div></div></div><script>(()=>{const overlay=document.querySelector('.case-loading'),started=performance.now();let finished=false;function reveal(){if(finished)return;finished=true;const remaining=Math.max(0,400-(performance.now()-started));setTimeout(()=>{overlay.classList.add('is-ready');setTimeout(()=>overlay.remove(),350)},remaining)}setTimeout(reveal,5000);document.addEventListener('DOMContentLoaded',()=>{const visible=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.width&&r.height&&r.bottom>0&&r.top<innerHeight*1.1}).slice(0,8);const loadImage=img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})});Promise.all(visible.map(loadImage)).then(reveal,reveal)},{once:true})})();</script>
+  <a class="skip" href="#main">Skip to case study</a>
+  <nav class="topbar" aria-label="Case-study navigation">
+    <a class="topbar-back" href="../index.html">← Custom fields case study</a>
+    <span class="case-name">IoT maintenance management</span>
+    <span class="topbar-meta">Tom Bar-Gal · Selected work</span>
+  </nav>
+  <div class="case-shell">
+    <div class="progress" aria-hidden="true"><span></span></div>
+    <aside class="rail" aria-label="Case-study index">
+      <nav class="rail-main" aria-label="Chapters">
+        <a href="#opening" aria-current="location">Overview</a>
+        <a href="#context">Context</a>
+        <a href="#discovery">Discovery</a>
+        <a href="#planned-maintenance">Solution</a>
+        <span class="rail-label">Design Process</span>
+        <a href="#phase-one">Phase 1</a>
+        <a href="#phase-two">Phase 2</a>
+        <a href="#phase-three">Phase 3</a>
+        <span class="rail-label">Reflection</span>
+        <a href="#outcomes">Summary</a>
+      </nav>
+      <div class="rail-foot">Augury · 2021–2022</div>
+    </aside>
+    <main id="main">
+      <section class="chapter hero" id="opening" data-chapter>
+<p class="type-label">Dec 2021 – August 2022 · Tom Bar-Gal</p><h1 class="type-display">IoT Maintenance management</h1>
+<figure class="hero-visual source-figure">
+          <div class="hero-composition">
+            <img class="hero-photo" src="../assets/iot-maintenance/9762a9fc4322320a7c22.png" width="1556" height="741" alt="A technician tending industrial equipment.">
+            <img class="hero-logo" src="../assets/iot-maintenance/9ca8dbaa3439128a83fb.png" width="133" height="66" alt="Augury">
+            <a class="hero-screen" href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge IoT Health overview"><img src="../assets/iot-maintenance/9342ebbeb8a999f11a9b.png" width="1800" height="1981" alt="Augury IoT Health overview with device counts, status tables, and battery alerts."></a>
+          </div>
+          <figcaption class="type-caption">Augury’s IoT Health overview</figcaption>
+        </figure>
+      </section>
+
+      <section class="chapter " id="context" data-chapter>
+<div class="monitoring-track">
+  <article class="monitoring-step monitoring-intro">
+    <h2 class="type-section">What is Augury?</h2>
+    <h3>Monitoring machine health status using sensors and AI</h3>
+    <p class="type-reading">Augury is using IoT technology and AI to monitor and display machine health status.</p>
+  </article>
+  <article class="monitoring-step monitoring-problem" id="monitoring-problem">
+    <h3>What problem did our users have?</h3>
+    <p class="type-summary">Users were not sure which IoT devices should be fixed and how</p>
+    <p class="type-reading">This was due to low visibility into the IoT status and information</p>
+  </article>
+  <figure class="monitoring-visual" id="monitoring-visual" data-state="online" aria-label="Machines with sensors and connectivity nodes online">
+  <span class="monitoring-loss-label" aria-hidden="true">Connection lost</span>
+  <div class="monitoring-art" aria-hidden="true">
+<div class="monitoring-piece monitoring-node monitoring-node--left"><img class="monitoring-online" src="../assets/iot-maintenance/4f1e7f40558d020b9712.png" alt=""><span class="monitoring-signal" style="--signal-delay: -1s"></span></div>
+<div class="monitoring-piece monitoring-node monitoring-node--right"><img class="monitoring-online" src="../assets/iot-maintenance/4f1e7f40558d020b9712.png" alt=""><img class="monitoring-offline" src="../assets/iot-maintenance/4c8ada49146d4e8fa74d.png" alt=""><span class="monitoring-signal monitoring-signal--lost" style="--signal-delay: -4s"></span></div>
+<div class="monitoring-piece monitoring-machine monitoring-machine--left"><img class="monitoring-online" src="../assets/iot-maintenance/c398374c3d2621648110.png" alt=""><span class="monitoring-signal" style="--signal-x: 35.3%; --signal-y: 31.2%; --signal-delay: -1.4s"></span><span class="monitoring-signal" style="--signal-x: 46.2%; --signal-y: 38.6%; --signal-delay: -2.1s"></span><span class="monitoring-signal" style="--signal-x: 47%; --signal-y: 44.5%; --signal-delay: -2.8s"></span><span class="monitoring-signal" style="--signal-x: 52.7%; --signal-y: 32.4%; --signal-delay: -3.5s"></span><span class="monitoring-signal" style="--signal-x: 55.2%; --signal-y: 19.6%; --signal-delay: -4.2s"></span><span class="monitoring-signal" style="--signal-x: 64%; --signal-y: 9.5%; --signal-delay: -4.9s"></span></div>
+<div class="monitoring-piece monitoring-machine monitoring-machine--right"><img class="monitoring-online" src="../assets/iot-maintenance/c398374c3d2621648110.png" alt=""><img class="monitoring-offline" src="../assets/iot-maintenance/2e55b8aa80c6b3642e80.png" alt=""><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 35.3%; --signal-y: 31.2%; --signal-delay: -1.4s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 46.2%; --signal-y: 38.6%; --signal-delay: -2.1s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 47%; --signal-y: 44.5%; --signal-delay: -2.8s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 52.7%; --signal-y: 32.4%; --signal-delay: -3.5s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 55.2%; --signal-y: 19.6%; --signal-delay: -4.2s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 64%; --signal-y: 9.5%; --signal-delay: -4.9s"></span></div>
+<div class="monitoring-piece monitoring-machine monitoring-machine--front"><img class="monitoring-online" src="../assets/iot-maintenance/c398374c3d2621648110.png" alt=""><img class="monitoring-offline" src="../assets/iot-maintenance/3af824c43c9cd5cbe375.png" alt=""><span class="monitoring-signal" style="--signal-x: 35.3%; --signal-y: 31.2%; --signal-delay: -1.4s"></span><span class="monitoring-signal" style="--signal-x: 46.2%; --signal-y: 38.6%; --signal-delay: -2.1s"></span><span class="monitoring-signal" style="--signal-x: 47%; --signal-y: 44.5%; --signal-delay: -2.8s"></span><span class="monitoring-signal" style="--signal-x: 52.7%; --signal-y: 32.4%; --signal-delay: -3.5s"></span><span class="monitoring-signal monitoring-signal--lost" style="--signal-x: 55.2%; --signal-y: 19.6%; --signal-delay: -4.2s"></span><span class="monitoring-signal" style="--signal-x: 64%; --signal-y: 9.5%; --signal-delay: -4.9s"></span></div>
+  </div>
+</figure>
+</div>
+        <section class="chapter-body measurement-plan" id="goals" aria-labelledby="measurement-heading">
+          <h3 class="section-heading" id="measurement-heading">Goals &amp; success metrics</h3>
+          <div class="measurement-rows"><div class="measurement-row"><section class="measurement-goal"><p class="eyebrow">Goal</p>
+              <h4>Visibility and coverage</h4>
+              <ul class="type-reading" role="list">
+                <li>Allow users to have visibility into the status of their IoT infrastructure</li>
+                <li>To allow users to understand the status of their coverage</li>
+                <li>Improve monitoring coverage</li>
+              </ul></section><section class="measurement-metric"><p class="eyebrow">Success metric</p>
+              <h4>Time to restore monitoring</h4>
+              <ul class="type-reading" role="list">
+                <li>Average time it takes an inoperative device to return to operational status</li>
+                <li>Average time it takes an unmonitored machine to return to an acceptable monitoring level</li>
+              </ul></section></div><div class="measurement-row"><section class="measurement-goal"><p class="eyebrow">Goal</p>
+              <h4>Self-service maintenance</h4>
+              <ul class="type-reading" role="list">
+                <li>To allow users to perform self-maintenance and reduce maintenance costs for Augury</li>
+                <li>To allow users to make material shipment requests</li>
+              </ul></section><section class="measurement-metric"><p class="eyebrow">Success metric</p>
+              <h4>Support demand</h4>
+              <p class="type-reading">Frequency of calls for support</p></section></div><div class="measurement-row"><section class="measurement-goal"><p class="eyebrow">Goal</p>
+              <h4>Customer experience</h4>
+              <p class="type-reading">Improve customer satisfaction</p></section><section class="measurement-metric"><p class="eyebrow">Success metric</p>
+              <h4>Customer satisfaction</h4>
+              <p class="type-reading">CSAT and NPS</p></section></div></div>
+        </section>
+        <div class="statement" id="solution-statement"><h3>Solution</h3><p class="type-summary">Give our users visibility into the health of their IoT infrastructure</p></div>
+      </section>
+
+      <section class="chapter " id="discovery" data-chapter>
+<h2 class='type-section'>Discovery</h2>
+<figure class="source-figure research-figure">
+  <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge Research and early design explorations"><img src="../assets/iot-maintenance/20cb9e74e80230a2ecc5.png" width="1492" height="1150" loading="lazy" alt="Research artifacts showing workshop notes, process maps, and early interface explorations."></a>
+  <figcaption class="type-caption">Research and early design explorations</figcaption>
+</figure>
+<section class="discovery-block persona-profile" aria-labelledby="persona-heading">
+  <div class="persona-intro">
+    <div><p class="eyebrow">Main persona</p><h3 id="persona-heading">Facility Reliability Manager</h3></div>
+    <figure class="source-figure">
+  <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge Facility reliability manager"><img src="../assets/iot-maintenance/395f9b66819f089fdb68.png" width="522" height="449" loading="lazy" alt="A facility worker wearing a hard hat and high-visibility vest, looking at a device."></a>
+  <figcaption class="type-caption">Facility reliability manager</figcaption>
+</figure>
+  </div>
+  <div class="persona-details">
+    <section><h4>Role &amp; responsibility</h4><ul><li>Prevent machine failures</li><li>Plan and oversee production line maintenance</li><li>Plan and oversee IoT maintenance to ensure monitoring quality</li></ul></section>
+    <section><h4>Routine</h4><ul><li><strong>Daily</strong>Checks e-mails for Augury Machine Health and IoT updates</li><li><strong>Weekly / bi-weekly</strong>Looks at Augury’s IoT status to plan IoT maintenance</li></ul></section>
+    <section><h4>Culture &amp; demography</h4><ul><li>Educated and hardworking</li><li>Leadership position</li><li>Organized and task-oriented</li><li>Blue-collar industrial environment</li></ul></section>
+  </div>
+</section>
+<section class="discovery-block jobs-section" aria-labelledby="jobs-heading">
+  <h3 class="section-heading" id="jobs-heading">Jobs to be done</h3>
+  <p class="eyebrow">Main jobs · IoT context</p>
+  <div class="primary-jobs">
+    <article><h4>Understand which devices need to be fixed immediately</h4><p>Because they are not operating properly</p></article>
+    <article><h4>Understand how to fix each device</h4><p>Understand the root cause for each device</p></article>
+  </div>
+  <div class="secondary-jobs"><h4>Secondary jobs</h4><ul><li>Prioritize issues by their impact and plan work orders</li><li>Understand which devices should be fixed in the near future</li><li>Assess the integrity of the IoT network</li><li>Understand the operational status of a device</li><li>View their inventory of all their IoT devices</li><li>Analyze and create reports</li></ul></div>
+</section>
+<div class="discovery-block field-context">
+  <h3 class="section-heading">Maintenance in the field</h3>
+  <div class="field-images"><figure class="source-figure">
+  <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge Industrial maintenance in the field"><img src="../assets/iot-maintenance/e7f6a7e183316f5e39c9.png" width="752" height="403" loading="lazy" alt="Maintenance team working beside industrial equipment."></a>
+  <figcaption class="type-caption">Technicians going through the maintenance plan to find what sensors they need to fix</figcaption>
+</figure>
+<figure class="source-figure">
+  <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge Work on the factory floor"><img src="../assets/iot-maintenance/7a28eaa761d37df20bb0.png" width="1038" height="1384" loading="lazy" alt="People working beside machinery on the factory floor."></a>
+  <figcaption class="type-caption">Work on the factory floor</figcaption>
+</figure></div>
+</div>
+<div class="discovery-block discovery-model"><h3 class="section-heading">Maintenance flow model</h3><ol class="journey" aria-label="Maintenance flow model"><li><strong>Assess the severity and scale of IoT issues and coverage</strong></li><li><strong>Look at the main connectivity devices</strong></li><li><strong>What is the device’s operational status?</strong></li><li><strong>What is the impact of the device’s operational status?</strong></li><li><strong>What device details can help understand the source of the issue?</strong></li><li><strong>How to deal with the issue</strong></li></ol></div>
+
+      </section>
+
+      <section class="chapter" id="planned-maintenance" data-chapter>
+        <p class="type-label">Solution</p>
+        <h2 class="type-section">Planned maintenance flow</h2>
+        <div class="chapter-body workflow-start workflow-step" data-focus="start">
+          <div class="guided-card">
+            <p class="workflow-number type-caption"><span class="task-line">Start</span></p>
+            <h3><span class="task-line">Let’s plan IoT maintenance</span></h3>
+            <p class="type-support"><span class="task-line">Log in to Augury and go to the desired facility.</span></p>
+          </div>
+        </div>
+        <div class="workflow-track guided-track" id="workflow-track">
+          <div class="workflow-stage">
+            <div class="workflow-display">
+              <figure class="workflow-pane workflow-frame source-figure" data-reference-width="1040" data-reference-height="1316">
+                <div class="workflow-viewport">
+                  <div class="workflow-surface">
+                    <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge IoT Health"><img src="../assets/iot-maintenance/0e3e0b6c94912172ca72.png" width="3120" height="3948" loading="lazy" alt="IoT Health dashboard with an overview above the router, node, and endpoint tables."></a>
+                    <div class="workflow-annotations" aria-hidden="true"></div>
+                    <div class="workflow-guidance" data-workflow-guidance hidden>
+                      <img src="../assets/iot-maintenance/cfc68e1279cfd476f3da.png" width="306" height="239" alt="Router is not sending data. Verify that the router is connected to power. Reset the router. If the issue persists, contact support.">
+                    </div>
+                  </div>
+                </div>
+              </figure>
+            </div>
+          </div>
+          <ol class="workflow-story guided-story" aria-label="Planned maintenance steps">
+            <li class="workflow-step guided-beat" data-focus="iot-tab">
+              <div class="guided-card">
+                <h3><span class="task-line">Navigate to IoT Health</span></h3>
+              </div>
+            </li>
+            <li class="workflow-step guided-beat" data-focus="overview">
+              <div class="guided-card">
+                <p class="workflow-number type-caption"><span class="task-line">1</span></p>
+                <h3><span class="task-line">Assess the severity and scale of IoT issues and coverage</span></h3>
+              </div>
+            </li>
+            <li class="workflow-step guided-beat" data-focus="routers">
+              <div class="guided-card">
+                <p class="workflow-number type-caption"><span class="task-line">2</span></p>
+                <h3><span class="task-line">Look at the main connectivity devices</span></h3>
+              </div>
+            </li>
+            <li class="workflow-step guided-beat" data-focus="device">
+              <div class="guided-card">
+                <p class="workflow-number type-caption"><span class="task-line">3</span></p>
+                <h3><span class="task-line">What is the device’s operational status?</span></h3>
+              </div>
+            </li>
+            <li class="workflow-step guided-beat" data-focus="impact">
+              <div class="guided-card">
+                <p class="workflow-number type-caption"><span class="task-line">4</span></p>
+                <h3><span class="task-line">What is the impact of the device’s operational status?</span></h3>
+              </div>
+            </li>
+            <li class="workflow-step guided-beat" data-focus="details">
+              <div class="guided-card">
+                <p class="workflow-number type-caption"><span class="task-line">5</span></p>
+                <h3><span class="task-line">What device details can help understand the source of the issue?</span></h3>
+              </div>
+            </li>
+            <li class="workflow-step guided-beat" data-focus="guidance">
+              <div class="guided-card">
+                <p class="workflow-number type-caption"><span class="task-line">6</span></p>
+                <h3><span class="task-line">How to deal with the issue</span></h3>
+                <p class="type-reading"><span class="task-line">Hover over “Not sending data”.</span></p>
+              </div>
+            </li>
+            <li class="workflow-step guided-beat" data-focus="outside">
+              <div class="guided-card">
+                <p class="workflow-number type-caption"><span class="task-line">Outside system</span></p>
+                <h3><span class="task-line">Add to work order</span></h3>
+                <p class="type-caption"><span class="task-line">Next device</span></p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="chapter " id="phase-one" data-chapter>
+<p class="type-label">Design Process</p><h2 class='type-section'>Phase 1</h2><div class="chapter-body"><div class="split screen-track"><div><h3>From data and alerts to UI and device status</h3><p class="type-reading">To allow users to only fix devices that require fixing, in Phase 1 we only showed faulty devices.</p><p class="type-reading">To allow users to estimate the root cause of the device malfunction, we’ve only selected helpful information to display at the top level.</p>
+<div class="copy-block"><p class="type-reading">Based on interviews, users’ conceptual model of IoT data consumption was an understanding that the data represents a device’s current status.</p><p class="type-reading">The system’s data model was based on Alerts / Snapshots. The design of the UI was meant to bridge that gap.</p></div></div><div class="screen-pin screenshot-pair"><figure class="source-figure source-figure--data">
+  <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge IoT alert export"><img src="../assets/iot-maintenance/333dbd1ae333d8629d79.png" width="2048" height="285" loading="lazy" alt="An IoT export with one row per recorded device issue."></a>
+  <figcaption class="type-caption">IoT alert export</figcaption>
+</figure><figure class="source-figure source-figure--data">
+  <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge The first device status table"><img src="../assets/iot-maintenance/263f1a13c19263088e87.png" width="1040" height="234" loading="lazy" alt="Early device table showing battery states, machine location, and the last time data was sent."></a>
+  <figcaption class="type-caption">The first device status table</figcaption>
+</figure></div></div>
+<div class="chapter-body split screen-track"><div><h3>External IA</h3><p class="type-reading">To maintain the existing IA model, we’ve added the IoT Health view as an additional view of any selected hierarchy entity:</p><ul class="source-list type-reading"><li>Building<ul><li>Machines to Notice</li><li>Building Breakdown</li><li>IoT Health (new)</li></ul></li></ul><p class="type-reading">That allows users to stumble into it organically without needing to remember to check it whenever they are in the system.</p><div class="copy-block"><h3>Internal IA</h3><p class="type-reading">Separating device types by impact on monitoring - main connectivity devices first, then secondary, then local sensors.</p><ul class="source-list type-reading"><li>IoT Health Tab<ul><li>Routers</li><li>Nodes</li><li>Sensors</li></ul></li></ul></div></div><figure class="source-figure source-figure--screen">
+  <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge Phase 1 · Device status"><img src="../assets/iot-maintenance/a58dd7326b8267eb8383.png" width="675" height="610" loading="lazy" alt="IoT Health tab in the building hierarchy, with routers, nodes, and endpoints in separate tables."></a>
+  <figcaption class="type-caption">Phase 1 · Device status</figcaption>
+</figure></div>
+<div class="feedback"><p class="feedback-label">Feedback from users and usability testing:</p><div class="split feedback-grid"><div class="feedback-result feedback-result--improve"><h3><span class="feedback-icon" aria-hidden="true">!</span>Improvement required:</h3><ul class="source-list type-reading"><li>Last BLE strength doesn’t help root cause analysis and is confusing since it will appear as “good” even if the device is disconnected</li><li>Battery &amp; BLE icons are not accessible to color-blind users</li><li>The table is too long to scroll</li><li>It’s very difficult to make a material shipment request</li><li>I’m not sure what “low battery” and “drained battery” mean / I’m replacing too many batteries</li></ul></div><div class="feedback-result feedback-result--success"><h3><span class="feedback-icon" aria-hidden="true">✓</span>Success:</h3><ul class="source-list type-reading"><li>IoT Health information is accessible and much more reliable</li><li>Root cause analysis is much easier than before</li></ul></div></div></div></div>
+      </section>
+
+      <section class="chapter " id="phase-two" data-chapter>
+<h2 class='type-section'>Phase 2</h2><div class="chapter-body"><div class="split screen-track"><div><div class="copy-block"><h3>Toggle all devices</h3><p class="type-reading">To allow users to get an overview of their inventory, we’ve added the ability to see not just devices with alerts, but all their devices</p></div><div class="copy-block"><h3>KPIs / Overview</h3><p class="type-reading">To allow users to get a sense of the scale of their IoT issues and how much work they need to plan for, we’ve added an overview with a summary of IoT issues.</p><p class="type-reading">This summary also enables users to know how many batteries they need to order.</p></div><div class="copy-block"><h3>Icons update</h3><p class="type-reading">Icons previously had two issues:</p><ol class="source-list type-reading"><li>Only using color to differentiate between states is not aligned with accessibility guidelines. We’ve made a different icon to represent different battery levels.</li><li>The use of 3 colors was causing confusion. It was unclear which devices they needed to replace and when. We’ve reduced the color palette to 2 colors to encourage replacing all batteries when possible.</li></ol></div><div class="copy-block"><h3>Pagination and search</h3><p class="type-reading">To reduce loading times of facilities with hundreds of devices, we’ve added pagination. Because users sometimes had to find a single device on a paginated list, we’ve added a “search” function.</p></div></div><figure class="source-figure source-figure--screen">
+  <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge Phase 2 · Inventory and overview"><img src="../assets/iot-maintenance/76d8c2645448796074d4.png" width="781" height="969" loading="lazy" alt="IoT Health with overview counts, an alerts-only toggle, battery icons, search, and pagination."></a>
+  <figcaption class="type-caption">Phase 2 · Inventory and overview</figcaption>
+</figure></div>
+<section class="open-section split screen-track"><div><h3>Battery time left (not implemented)</h3>
+<p class="type-reading">Customers complained that they replace batteries too often.</p><p class="type-reading">To increase the time between battery replacements, we’ve considered providing an estimation of how much time is left for the battery to function.</p><p class="type-reading">That way, if there are planned shutdowns of the machines, they are able to replace them closer to their time of depletion.</p></div><figure class="source-figure source-figure--compact source-figure--screen">
+  <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge Battery life estimate explored in Phase 2"><img src="../assets/iot-maintenance/bee5a3f4da2b382fb558.png" width="230" height="103" loading="lazy" alt="Unimplemented low-battery indicator showing an estimated five weeks remaining."></a>
+  <figcaption class="type-caption">Battery life estimate explored in Phase 2</figcaption>
+</figure>
+</section>
+<div class="feedback"><p class="feedback-label">Feedback from users and usability testing:</p><div class="split feedback-grid"><div class="feedback-result feedback-result--improve"><h3><span class="feedback-icon" aria-hidden="true">!</span>Improvement required:</h3><ul class="source-list type-reading"><li>There are sensors that fell off the machines but appear as online</li><li>There are sensors that are sending invalid data but appear as online</li><li>Users are not 100% sure what to do with a device that isn’t working</li></ul></div><div class="feedback-result feedback-result--success"><h3><span class="feedback-icon" aria-hidden="true">✓</span>Success:</h3><ul class="source-list type-reading"><li>It’s much clearer what device requires maintenance</li><li>The scale and scope of IoT issues are very clear</li><li>It’s great to be able to see my device inventory</li><li>The page loads faster</li></ul></div></div></div></div>
+      </section>
+
+      <section class="chapter " id="phase-three" data-chapter>
+<h2 class='type-section'>Phase 3 (and final)</h2><p class="type-summary">Usability improvements</p><div class="chapter-body"><div class="split screen-track"><div><div class="copy-block"><h3>Creating coherency and scalability within the alerts</h3><p class="type-reading">Adding additional alerts required us to rethink the alert structure.</p><p class="type-reading">Users cared most about two things:</p><ul class="source-list type-reading"><li>Is my device operating normally?</li><li>Should I replace a battery?</li></ul><p class="type-reading">So we’ve divided the alerts into two types of alerts:</p><ol class="source-list type-reading"><li>Operational alerts: If they exist, the device is not considered as operating. Each device can have multiple alerts of that type (e.g., fallen, not sending data, invalid data...)</li><li>Non-operational alerts, such as battery alerts. These alerts are not necessarily indications of the operational status of the device.</li></ol></div><div class="copy-block"><h3>Instructional tooltips</h3><p class="type-reading">Displaying Operational Alerts as chips allows us to frame the area that will react to mouse hover events.</p><p class="type-reading">For each Operational Alert there are common actions to take in order to resolve that alert. For the MVP, we’ve decided to show all alerts, because creating a single playbook for all alert combinations would have taken a long time.</p></div><div class="copy-block"><h3>“FIX THIS” icon</h3><p class="type-reading">To help users focus on devices that are faulty and require maintenance (in opposition to devices that are not functional due to a parent device), we’ve added an ⚠️ icon to focus their attention on those devices.</p></div><div class="copy-block"><h3>Responsive + more visually balanced layout</h3><p class="type-reading">To promote visual balance we’ve separated the columns so that there is one flexible column in the middle. This allowed the “last valid data” column to be consistently on the right and balance the visual layout inside the table.</p></div></div><figure class="source-figure source-figure--screen">
+  <a href="#image-viewer" target="_blank" rel="noopener" aria-label="Enlarge Phase 3 · Device alerts and maintenance guidance"><img src="../assets/iot-maintenance/fb6fca526088002bc330.png" width="1040" height="1142" loading="lazy" alt="Final iteration with device status chips, separate battery alerts, warning icons, and last valid data."></a>
+  <figcaption class="type-caption">Phase 3 · Device alerts and maintenance guidance</figcaption>
+</figure></div>
+<div class="feedback"><p class="feedback-label">Feedback from users and usability testing:</p><div class="split feedback-grid"><div class="feedback-result feedback-result--improve"><h3><span class="feedback-icon" aria-hidden="true">!</span>Improvement required:</h3><ul class="source-list type-reading"><li>The ⚠️ icon is unclear. Users didn’t understand its meaning</li><li>It’s unclear which machine is still monitored and which is below threshold</li><li>It’s unclear when a device is not operational due to a technical problem and when it is due to an external factor</li></ul></div><div class="feedback-result feedback-result--success"><h3><span class="feedback-icon" aria-hidden="true">✓</span>Success:</h3><ul class="source-list type-reading"><li>It’s much clearer what device requires maintenance</li><li>The scale and scope of IoT issues is very clear</li><li>It’s great to be able to see my device inventory</li></ul></div></div></div></div>
+      </section>
+
+      <section class="chapter outcome" id="outcomes" data-chapter>
+<h2 class='type-section'>Summary</h2><div class="chapter-body"><h3>Project impact</h3><div class="split "><div><p class="type-reading">Users felt empowered that they had a place to assess the status of their IoT infrastructure.</p><p class="type-caption contributing-factors">Contributing factors to success:</p><ul class="source-list type-reading"><li>Strong navigation choices reflecting the users' mental model and hierarchy of needs, informed by research on IoT health interest and frequency.</li><li>The device-level representation was meaningful to users, trusting their capability to handle large amounts of raw data, which provided value.</li></ul></div><div><p class="type-reading">Users were confused due to differences between data in the IoT Health tab and other sources in the system.</p><p class="type-caption contributing-factors">Contributing factors to this issue:</p><ul class="source-list type-reading"><li>Insufficient early user-journey analysis and unconscious assumptions made us miss the fact that users consume both data points in the same sessions, leading to visible discrepancies.</li><li>Domain-focused development, design, and planning that avoided engagement with other areas.</li></ul></div></div>
+<div class="chapter-body"><h3>UX Review</h3><div class="split "><div><h4 class="review-success">Where the design succeeded:</h4><ul class="source-list type-reading"><li>Clarity of device status was achieved after a few iterations.</li><li>Functionality covered a variety of use cases.</li><li>Good visual balance and content organization.</li></ul></div><div><h4 class="review-improvement">Where the design missed:</h4><ul class="source-list type-reading"><li>Difficulty in understanding which devices should and should not be addressed.</li><li>Gaps in the process caused internal misalignment.</li></ul></div></div></div>
+<div class="chapter-body"><h3>Key takeaways</h3><ul class="lessons"><li><h4>Data consistency</h4><p class="type-reading">It's crucial to identify and comprehend the presence of similar data or entities throughout the system and evaluate the effects of product changes on the users.</p></li><li><h4>Understanding and mapping possible scenarios</h4><p class="type-reading">It's crucial to research the monitored technology thoroughly to plan and account for the range of possible scenarios.</p></li><li><h4>Assist and empower users</h4><p class="type-reading">There should be a subtle balance between the display of raw and manipulated data.</p></li></ul></div>
+<div class="future"><h3>Plans for the future</h3><ul class="source-list type-reading"><li>Improving “which device to fix” communication</li><li>A group-by-machine view to allow users to better understand the impact</li><li>Grouping by connectivity (or network topology chart) to help users better analyze the root causes of connectivity issues</li><li>Encouraging engagement through weekly emails and alerts</li><li>Aligning data throughout the system</li></ul></div></div>
+      </section>
+
+      <footer class="footer"><a class="next-case" href="custom-fields.html"><p class="type-label">Another case study ↗</p><p class="type-summary">Custom data management across account and project levels.</p></a><div class="footer-bottom"><span>© Tom Bar-Gal · 2023</span><a href="mailto:tom.bar.gal@gmail.com">tom.bar.gal@gmail.com</a><a href="#opening">Back to top ↑</a></div></footer>
+    </main>
+  </div>
+  <dialog id="image-viewer" class="image-viewer" aria-label="Original project screen">
+    <form method="dialog"><button aria-label="Close full-size screen">Close ×</button></form>
+    <img alt="">
+  </dialog>
+  <script type="module">
+    import { createMaintenanceSequence } from '../files/case-study-iot-sequence.js?v=integrated-20261117';
+    (() => {
+      const chapters = [...document.querySelectorAll('[data-chapter]')];
+      const links = [...document.querySelectorAll('.rail-main a')];
+      const progress = document.querySelector('.progress span');
+      const rail = document.querySelector('.rail');
+      const monitoringVisual = document.getElementById('monitoring-visual');
+      const monitoringProblem = document.getElementById('monitoring-problem');
+      const workflow = document.getElementById('workflow-track');
+      const workflowStage = workflow.querySelector('.workflow-stage');
+      const workflowBeats = [...document.querySelectorAll('#planned-maintenance .workflow-step')];
+      const workflowScreen = workflow.querySelector('.workflow-pane');
+      const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+      const workflowGuidance = workflow.querySelector('[data-workflow-guidance]');
+      // Each rectangle is [left, top, right, bottom] in the original screenshot's pixels.
+      const routerStatus = [507, 561, 606, 586];
+      const workflowRegions = {
+        'iot-tab': [[353, 150, 422, 185]],
+        overview: [[103, 229, 1027, 374]],
+        routers: [[103, 441, 1027, 854]],
+        device: [[113, 558, 175, 589], routerStatus],
+        impact: [[213, 558, 295, 590]],
+        details: [routerStatus, [943, 558, 1007, 589]],
+        guidance: [routerStatus]
+      };
+      let currentWorkflowBeat;
+      workflow.dataset.enhanced = '';
+      const workflowSequence = createMaintenanceSequence({
+        model: document.querySelector('.discovery-model'), workflow, beats: workflowBeats, reduceMotion,
+      });
+
+      function activeWorkflowStep() {
+        const modelStep = workflowSequence.getActiveStep();
+        if (modelStep) return modelStep;
+        const bounds = workflowStage.getBoundingClientRect();
+        const line = Math.min(innerHeight * .83, bounds.top + bounds.height * .72);
+        let active = workflowBeats[0];
+        for (const beat of workflowBeats) {
+          if (beat.getBoundingClientRect().top <= line) active = beat;
+        }
+        return active;
+      }
+
+      function updateMonitoringScene() {
+        const visual = monitoringVisual.getBoundingClientRect();
+        const visible = String(visual.bottom > 0 && visual.top < innerHeight);
+        if (monitoringVisual.dataset.visible !== visible) monitoringVisual.dataset.visible = visible;
+        const compact = matchMedia('(max-width: 760px)').matches;
+        const focusLine = Math.min(innerHeight * .72, visual.top + (compact ? -12 : visual.height * .52));
+        const state = monitoringProblem.getBoundingClientRect().top <= focusLine ? 'offline' : 'online';
+        if (monitoringVisual.dataset.state === state) return;
+        monitoringVisual.dataset.state = state;
+        monitoringVisual.setAttribute('aria-label', state === 'offline'
+          ? 'Machines with some monitoring devices offline'
+          : 'Machines with sensors and connectivity nodes online');
+      }
+
+      function updateWorkflowScene() {
+        const beat = activeWorkflowStep();
+        if (currentWorkflowBeat !== beat) {
+          currentWorkflowBeat?.removeAttribute('aria-current');
+          beat.setAttribute('aria-current', 'step');
+          currentWorkflowBeat = beat;
+        }
+
+        const focus = workflowSequence.getScreenFocus() ?? beat.dataset.focus;
+        if (workflow.dataset.focus === focus) return;
+        workflow.dataset.focus = focus;
+
+        const showGuidance = focus === 'guidance';
+        if (showGuidance) {
+          workflowGuidance.hidden = false;
+          if (!reduceMotion.matches) workflowGuidance.animate([{opacity: 0}, {opacity: 1}], {duration: 320, easing: 'ease-out'});
+        } else {
+          workflowGuidance.hidden = true;
+        }
+
+        updateWorkflowAnnotations(workflowScreen, workflowRegions[focus] ?? [], !reduceMotion.matches);
+      }
+
+      function updateWorkflowAnnotations(figure, regions, animate) {
+        const layer = figure.querySelector('.workflow-annotations');
+        const sourceWidth = Number(figure.dataset.referenceWidth);
+        const sourceHeight = Number(figure.dataset.referenceHeight);
+        const holes = [];
+        const outlines = regions.map(([left, top, right, bottom]) => {
+          const x1 = left / sourceWidth * 100;
+          const x2 = right / sourceWidth * 100;
+          const y1 = top / sourceHeight * 100;
+          const y2 = bottom / sourceHeight * 100;
+          holes.push(`${x1}% ${y1}%, ${x2}% ${y1}%, ${x2}% ${y2}%, ${x1}% ${y2}%, ${x1}% ${y1}%, 0 0`);
+          const outline = document.createElement('span');
+          outline.className = 'workflow-focus';
+          outline.style.inset = `${y1}% ${100 - x2}% ${100 - y2}% ${x1}%`;
+          return outline;
+        });
+        const frame = '0 0, 100% 0, 100% 100%, 0 100%, 0 0';
+        const spotlight = document.createElement('div');
+        spotlight.className = 'workflow-spotlight';
+        spotlight.style.setProperty('--focus-mask', `polygon(evenodd, ${[frame, ...holes].join(', ')})`);
+        spotlight.append(...outlines);
+        spotlight.hidden = !regions.length;
+        const previous = layer.lastElementChild;
+        layer.replaceChildren(spotlight);
+        if (!animate) return;
+        if (previous && !previous.hidden) {
+          layer.prepend(previous);
+          const fade = previous.animate([{opacity: getComputedStyle(previous).opacity}, {opacity: 0}], {duration: 220, easing: 'ease-out'});
+          fade.onfinish = () => previous.remove();
+        }
+        if (!spotlight.hidden) spotlight.animate([{opacity: 0}, {opacity: 1}], {duration: 360, easing: 'ease-out'});
+      }
+      let lastChapter = '';
+      let lastRailWidth = 0;
+      let scheduled = false;
+      const update = () => {
+        scheduled = false;
+        updateMonitoringScene();
+        workflowSequence.update();
+        updateWorkflowScene();
+        const offset = matchMedia('(max-width: 760px)').matches ? 150 : 120;
+        let current = chapters[0].id;
+        for (const chapter of chapters) {
+          if (chapter.getBoundingClientRect().top <= offset) current = chapter.id;
+        }
+        for (const link of links) {
+          if (link.hash === '#' + current) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        }
+        if (matchMedia('(max-width: 760px)').matches && (lastChapter !== current || lastRailWidth !== rail.clientWidth)) {
+          const activeLink = links.find(link => link.hash === '#' + current);
+          const box = activeLink.getBoundingClientRect();
+          rail.scrollLeft += box.left - rail.getBoundingClientRect().left - (rail.clientWidth - box.width) / 2;
+        }
+        lastChapter = current;
+        lastRailWidth = rail.clientWidth;
+        const total = document.documentElement.scrollHeight - innerHeight;
+        progress.style.setProperty('--progress', (total > 0 ? Math.min(100, Math.max(0, scrollY / total * 100)) : 100) + '%');
+      };
+      const schedule = () => { if (!scheduled) { scheduled = true; requestAnimationFrame(update); } };
+      addEventListener('scroll', schedule, {passive: true});
+      addEventListener('resize', schedule);
+      addEventListener('hashchange', schedule);
+      document.querySelectorAll('img').forEach(image => image.addEventListener('load', schedule));
+      reduceMotion.addEventListener('change', schedule);
+      if (document.fonts) document.fonts.ready.then(() => { workflowSequence.measure(); schedule(); });
+      const viewer = document.querySelector('.image-viewer');
+      const viewerImage = viewer.querySelector('img');
+      let returnFocus = null;
+      document.querySelectorAll('.source-figure a').forEach(link => link.addEventListener('click', event => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        returnFocus = link;
+        const image = link.querySelector('img');
+        viewerImage.src = image.src;
+        viewerImage.alt = image.alt;
+        viewer.showModal();
+        viewer.scrollTop = 0;
+        document.body.style.overflow = 'hidden';
+      }));
+      viewer.addEventListener('close', () => {
+        document.body.style.overflow = '';
+        if (returnFocus) returnFocus.focus({preventScroll:true});
+      });
+      viewer.addEventListener('click', event => { if (event.target === viewer) viewer.close(); });
+      update();
+    })();
+  </script>
+</body>
+</html>
