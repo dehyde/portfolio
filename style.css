@@ -2,9 +2,9 @@
 .masthead{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:34px 0;border-bottom:1px solid var(--line)}.name{font:500 32px/1.1 var(--serif);letter-spacing:-.7px}nav{display:flex;gap:30px;font-size:16px}nav a:hover,.about a:hover{text-decoration:underline;text-underline-offset:5px}
 .intro {
   display: grid;
-  grid-template-columns: minmax(0, 238px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 190px) minmax(0, 1fr);
   grid-template-areas: "headline headline" "portrait identity" "portrait background";
-  column-gap: clamp(32px, 5.4vw, 70px);
+  column-gap: 16px;
   row-gap: 16px;
   padding: 64px 0 62px;
 }
@@ -31,6 +31,9 @@
   height: 0;
   align-self: start;
   justify-self: center;
+}
+@media (min-width: 761px) {
+  .intro-portrait { width: 238px; justify-self: start; }
 }
 .intro-portrait img {
   width: 100%;
