@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tom Bar-Gal — Product design</title><meta name="description" content="Product design case studies by Tom Bar-Gal. Custom data management, construction planning and IoT maintenance."><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Recursive:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css?v=autodesk-portfolio-layout-20261117"></head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tom Bar-Gal — Product design</title><meta name="description" content="Product design case studies by Tom Bar-Gal. Custom data management, construction planning and IoT maintenance."><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Recursive:wght@400;500&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css?v=autodesk-persona-hover-20261117"></head>
 <body id="top"><a class="skip" href="#main">Skip to content</a><div class="page">
 <header class="masthead"><a class="name" href="#top">Tom Bar-Gal</a><nav aria-label="Main navigation"><a href="#work">Work</a><a href="#about">About</a><a href="mailto:tom.bar.gal@gmail.com">Contact</a></nav></header>
 <main id="main">
@@ -89,11 +89,35 @@
 </script><dialog class="password-dialog" aria-labelledby="password-title"><form id="workplan-gate"><h2 id="password-title">This case study is protected</h2><p id="gate-description">Enter the password to view this case study.</p><label for="workplan-password">Password</label><input id="workplan-password" type="password" autocomplete="current-password" required><p id="password-error" role="alert"></p><div class="gate-actions"><button type="button" id="gate-cancel">Cancel</button><button type="submit">View case study</button></div></form></dialog><script>(()=>{const dialog=document.querySelector('.password-dialog'),form=document.getElementById('workplan-gate'),field=document.getElementById('workplan-password'),error=document.getElementById('password-error'),links=document.querySelectorAll('[data-protected-case]'),description=document.getElementById('gate-description');let link;links.forEach(item=>item.addEventListener('click',e=>{e.preventDefault();link=item;description.textContent='Enter the password to view '+item.dataset.protectedCase+'.';field.value='';error.textContent='';dialog.showModal();field.focus()}));document.getElementById('gate-cancel').addEventListener('click',()=>dialog.close());form.addEventListener('submit',async e=>{e.preventDefault();try{const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(field.value));const value=Array.from(new Uint8Array(bytes),b=>b.toString(16).padStart(2,'0')).join('');if(value==='f470a6c1f258d7ebef965867277c70c338f497d433abba5ddd249348c03d4881'){dialog.close();window.open(link.href,'_blank','noopener')}else{error.textContent='Incorrect password. Please try again.';field.focus();field.select()}}catch{error.textContent='Password verification is unavailable in this browser.'}})})();</script>
 <script>
   document.querySelectorAll('.persona-avatar').forEach(avatar => {
-    avatar.addEventListener('pointerleave', () => avatar.removeAttribute('data-tip-dismissed'));
+    const tip = avatar.querySelector('.persona-tip');
+    const hide = () => avatar.removeAttribute('data-tip-visible');
+
+    function placeTooltip(event) {
+      const gap = 14;
+      const margin = 10;
+      const x = Math.max(margin, Math.min(event.clientX + gap, innerWidth - tip.offsetWidth - margin));
+      const below = event.clientY + gap;
+      const y = below + tip.offsetHeight + margin <= innerHeight
+        ? below
+        : Math.max(margin, event.clientY - tip.offsetHeight - gap);
+      tip.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }
+
+    avatar.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      placeTooltip(event);
+      avatar.setAttribute('data-tip-visible', '');
+    });
+    avatar.addEventListener('pointermove', event => {
+      if (avatar.hasAttribute('data-tip-visible')) placeTooltip(event);
+    });
+    avatar.addEventListener('pointerleave', hide);
+    avatar.addEventListener('pointercancel', hide);
   });
   document.addEventListener('keydown', event => {
-    if (event.key !== 'Escape') return;
-    document.querySelector('.persona-avatar:hover')?.setAttribute('data-tip-dismissed', '');
+    if (event.key === 'Escape') {
+      document.querySelector('.persona-avatar[data-tip-visible]')?.removeAttribute('data-tip-visible');
+    }
   });
 </script>
 </main><footer><span>Tom Bar-Gal</span><a href="#top">Back to top</a></footer></div><script>(()=> {

@@ -254,11 +254,12 @@
 .parakit-screen{border-radius:10px;box-shadow:0 16px 35px #0005,0 3px 8px #0003}.parakit-screen img{border-radius:10px}
 
 .persona-tip {
-  position: absolute;
-  z-index: 5;
-  bottom: 100%;
+  position: fixed;
+  z-index: 100;
+  top: 0;
   left: 0;
-  width: min(228px, calc(100vw - 88px));
+  width: min(228px, calc(100vw - 20px));
+  pointer-events: none;
   padding: 10px 12px;
   visibility: hidden;
   background: var(--ink);
@@ -267,8 +268,18 @@
   font: 400 13px/1.45 var(--sans);
 }
 .persona-tip strong { display: block; margin-bottom: 3px; font-weight: 500; }
-@media (hover: hover) {
-  .persona-avatar:hover:not([data-tip-dismissed]) .persona-tip { visibility: visible; }
+.persona-avatar[data-tip-visible] .persona-tip { visibility: visible; }
+@media (any-hover: hover) {
+  .persona-avatar img { transition: box-shadow 140ms ease, transform 140ms ease; }
+  .persona-avatar:hover { position: relative; z-index: 1; }
+  .persona-avatar:hover img {
+    box-shadow: 0 0 0 2px var(--ink);
+    transform: translateY(-2px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .persona-avatar img { transition: none; }
+  .persona-avatar:hover img { transform: none; }
 }
 @media (max-width: 375px) {
   .people { flex-wrap: wrap; }
