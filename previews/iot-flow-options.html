@@ -103,8 +103,9 @@
   const handoff=clamp((progress-5.4)/1.6),rise=ease(handoff),reflow=ease(clamp((handoff-.2)/.8));
   stage.className=`stage v${option}${applied?' applied':''}${scrubbing?' scrubbing':''}${handoff>0&&handoff<1?' transitioning':''}`;
   const modelHeading=document.querySelector('.heading--model'),prototypeHeading=document.querySelector('.heading--prototype');
-  Object.assign(modelHeading.style,{opacity:1-rise,transform:`translateY(${-30*rise}px)`});
-  Object.assign(prototypeHeading.style,{opacity:rise,transform:`translateY(${30*(1-rise)}px)`});
+  const headingOut=ease(clamp(handoff/.4)),headingIn=ease(clamp((handoff-.5)/.5));
+  Object.assign(modelHeading.style,{opacity:1-headingOut,transform:`translateY(${-30*headingOut}px)`});
+  Object.assign(prototypeHeading.style,{opacity:headingIn,transform:`translateY(${30*(1-headingIn)}px)`});
   modelHeading.setAttribute('aria-hidden',String(applied));prototypeHeading.setAttribute('aria-hidden',String(!applied));
   links.style.opacity=1-ease(clamp(handoff/.25));
   links.style.visibility=handoff>=.25?'hidden':'visible';
@@ -127,9 +128,11 @@
     if(option===4){width=mobile?inner*.55:inner/6-16;x=mobile?pad+(i-active)*(width+18):pad+i*(inner/6);y=105}
    }
    circlePositions.push({x:start.x,y:start.y});
-   x=mix(start.x,x,reflow);y=mix(start.y,y,reflow);width=mix(start.width,width,reflow);
+   const spread=option===1?ease(clamp((handoff-.18)/.55)):reflow;
+   const fold=option===1?ease(clamp((handoff-.52)/.48)):reflow;
+   x=mix(start.x,x,fold);y=mix(start.y,y,spread);width=mix(start.width,width,fold);
    const baseFont=mobile?12:15,targetFont=option<=2?(mobile?16:20):option===4?(mobile?11:12):baseFont;
-   el.querySelector('button').style.fontSize=`${mix(baseFont,targetFont,reflow)}px`;
+   el.querySelector('button').style.fontSize=`${mix(baseFont,targetFont,fold)}px`;
    const number=el.querySelector('.number'),numberSize=mix(23,option<=2?(mobile?28:32):option===3?34:24,reflow);
    number.style.width=`${numberSize}px`;number.style.height=`${numberSize}px`;
    el.style.transform=`translate(${x}px,${y}px)`;el.style.width=`${width}px`;
