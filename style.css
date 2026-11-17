@@ -44,8 +44,8 @@
   height: auto;
   aspect-ratio: 1;
   object-fit: contain;
-  transform: translate(-7%, -19%) scale(.92);
-  transform-origin: center top;
+  transform: translate(-7%, -23%) scale(.69);
+  transform-origin: center;
   mix-blend-mode: multiply;
   pointer-events: none;
 }
