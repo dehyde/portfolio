@@ -65,16 +65,15 @@ h2 { max-width: 16ch; font: 450 clamp(36px, 4vw, 58px)/1.06 var(--serif); font-v
 .problem-story { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 36px; }
 .problem-card { position: relative; display: flex; flex-direction: column; align-items: start; padding: 28px; border-radius: 10px; background: #f0f0f0; }
 .problem-card .story-label { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; color: var(--muted); font: 450 11px/1.4 var(--sans); }
-.problem-card .story-label::before { content: "−"; display: grid; place-items: center; width: 28px; height: 28px; flex: none; border-radius: 50%; background: #dedede; color: #444; font: 450 18px/1 var(--sans); }
-.opportunity-card .story-label::before { content: "↗"; background: var(--blue); color: white; font-size: 16px; }
-.barrier-card .story-label::before { content: "!"; font-size: 15px; }
-.problem-card:not(:last-child)::after { content: "→"; position: absolute; z-index: 1; right: -17px; top: 50%; width: 16px; color: #777; font: 400 17px/1 var(--sans); text-align: center; transform: translateY(-50%); }
+.story-icon { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 50%; background: #dedede; color: #555; }
+.story-icon svg { width: 17px; height: 17px; }
+.opportunity-card .story-icon { background: #e1ebe4; color: #4b6653; }
+.barrier-card .story-icon { background: #eddddd; color: #785353; }
 .problem-card h3 { margin-bottom: 28px; font: 450 clamp(28px, 2.6vw, 38px)/1.06 var(--serif); letter-spacing: -.025em; }
 .problem-card .story-detail { margin-top: auto; font: 400 19px/1.4 var(--serif); }
 
 @media (min-width: 651px) and (max-width: 1100px) {
   .problem-story { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .opportunity-card::after { display: none; }
   .barrier-card { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; }
   .barrier-card .story-label { grid-column: 1 / -1; }
   .barrier-card h3 { margin-bottom: 0; }
@@ -83,7 +82,6 @@ h2 { max-width: 16ch; font: 450 clamp(36px, 4vw, 58px)/1.06 var(--serif); font-v
 @media (max-width: 650px) {
   .problem-story { grid-template-columns: 1fr; gap: 14px; }
   .problem-card { padding: 25px; }
-  .problem-card:not(:last-child)::after { right: 50%; top: auto; bottom: -15px; transform: translateX(50%) rotate(90deg); }
   .problem-card .story-label { margin-bottom: 18px; }
   .problem-card h3 { max-width: 23ch; margin-bottom: 20px; font-size: 31px; }
 }
