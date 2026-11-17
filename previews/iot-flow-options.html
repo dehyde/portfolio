@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Maintenance model → prototype · Four motion studies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..500&family=Recursive:CASL,CRSV,MONO,slnt,wght@0..1,0..1,0..1,-15..0,300..900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#142b50;--blue:#101832;--muted:#526780;--line:#d9e1eb;--paper:#fff;--soft:#f4f6fa;--font:"Recursive",Arial,sans-serif;--motion:800ms cubic-bezier(.22,.61,.36,1)}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--paper);font:15px/1.5 var(--font);font-variation-settings:"CASL" .08,"CRSV" .5,"MONO" 0,"slnt" 0}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #657cc9;outline-offset:4px}button{color:inherit}a{color:inherit}h1,h2,p{margin:0}.review{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);padding:16px 32px}.review-top{display:flex;justify-content:space-between;gap:20px;align-items:baseline}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}h1{font:400 25px/1.1 Newsreader,Georgia,serif}.review a{font-size:12px}.options{display:flex;gap:8px;margin:14px 0 8px;flex-wrap:wrap}.options button{border:1px solid var(--line);border-radius:4px;background:transparent;padding:8px 14px;font-size:13px}.options button[aria-pressed=true]{background:var(--blue);color:#fff;border-color:var(--blue)}.description{font-size:13px;color:var(--muted);min-height:20px}.scroll-story{height:790svh;position:relative}.stage{position:sticky;top:var(--header,157px);height:calc(100svh - var(--header,157px) - 73px);min-height:470px;overflow:clip}.scene{position:relative;max-width:1240px;margin:auto;height:100%;padding:28px 36px}.heading{position:absolute;top:25px;left:36px;z-index:5}.heading h2{font:400 clamp(26px,3vw,38px)/1.15 Newsreader,Georgia,serif;letter-spacing:-.02em}.phase{font-size:11px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.09em}.model{position:absolute;inset:0;list-style:none;margin:0;padding:0;z-index:4;pointer-events:none}.step{position:absolute;left:0;top:0;transition:transform var(--motion),width var(--motion),opacity 450ms ease;pointer-events:auto;list-style:none}.step button{display:block;text-align:left;border:0;background:transparent;padding:0;width:100%;font-weight:540;font-size:15px;line-height:1.5;transition:font-size var(--motion),opacity var(--motion)}.number{display:grid;place-items:center;width:23px;height:23px;margin-bottom:13px;border:1px solid var(--line);border-radius:50%;font-size:11px;color:var(--muted);background:#fff;transition:all var(--motion);position:relative;z-index:2}.label{border-radius:3px;padding:0;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:color 400ms,background 400ms,padding 400ms}.connector{position:absolute;height:1px;background:#aab5c9;left:30px;top:11px;width:calc(100% - 42px);transition:opacity 350ms}.step:last-child .connector{display:none}.step.is-future{opacity:0;pointer-events:none}.step.is-future button{visibility:hidden}.step.active .number{border-color:var(--blue);color:var(--blue)}.applied .step.active .number{border-radius:3px;background:var(--blue);color:#fff;border-color:var(--blue)}.applied .step.active .label{background:var(--blue);color:#fff;padding:5px 8px}.applied .step.active button{line-height:1.9}.applied .step:not(.active){opacity:.53}.applied .step:hover{opacity:1}.screen{position:absolute;overflow:hidden;opacity:0;transform:translateY(40px);transition:left var(--motion),top var(--motion),width var(--motion),height var(--motion),opacity var(--motion),transform var(--motion);background:#f7f8fa;box-shadow:0 14px 35px #142b501a;border-radius:4px;z-index:1}.applied .screen{opacity:1;transform:none}.screen-surface{position:absolute;transform-origin:0 0;width:1040px;transition:transform var(--motion)}.screen img{display:block;width:1040px;height:1316px}.focus-box{position:absolute;border:2px solid #283982;border-radius:3px;box-shadow:0 0 0 2000px #ffffff80;transition:all var(--motion);pointer-events:none}.guidance{position:absolute;left:490px;top:340px;width:250px!important;height:auto!important;box-shadow:0 6px 20px #142b5022;opacity:0;transition:opacity 300ms}.screen[data-step="5"] .guidance{opacity:1}.crop{display:block;height:84px;overflow:hidden;border-radius:3px;margin-top:16px;opacity:0;transition:opacity var(--motion),height var(--motion);background:var(--soft);position:relative}.crop img{position:absolute;width:330%;height:auto;max-width:none;left:-13%}.lens-title{position:absolute;top:154px;left:36px;width:310px;font-size:24px;line-height:1.9;z-index:5;opacity:0;transition:opacity 400ms,transform var(--motion);transform:translateY(12px)}.lens-title span{padding:5px 10px;border-radius:3px;background:var(--blue);color:#fff;-webkit-box-decoration-break:clone;box-decoration-break:clone}.v3.applied .lens-title{opacity:1;transform:none}.v3.applied .step .label{opacity:0}.v3.applied .number{width:34px;height:34px}.v1.applied .step button{display:grid;grid-template-columns:30px 1fr;gap:7px;font-size:14px}.v1.applied .number{margin-top:4px;width:26px;height:26px}.v1.applied .connector{left:12px;top:37px;width:1px;height:30px}.v2.applied .step button{font-size:14px}.v2.applied .number{width:28px;height:28px}.v2.applied .connector{top:14px}.v4 .crop{opacity:1}.v4.applied .step button{font-size:12px}.v4.applied .step .crop{height:55px;margin-top:8px}.v4.applied .step .number{width:24px;height:24px;margin-bottom:8px}.v4.applied .step .label{line-height:1.6}.v4.applied .lens-title{opacity:1;transform:none;top:230px;width:280px;font-size:21px}.v4.applied .step .connector{display:none}.controls{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid var(--line);padding:13px 28px;display:flex;align-items:center;gap:16px}.controls button{border:1px solid var(--line);border-radius:4px;background:white;min-height:36px;padding:6px 12px;font-size:12px}.controls button:disabled{opacity:.35;cursor:default}.controls input{flex:1;min-width:60px;accent-color:var(--blue)}.position{width:165px;font-size:12px;color:var(--muted)}.scroll-note{position:absolute;left:36px;bottom:22px;font-size:12px;color:var(--muted);transition:opacity 300ms}.applied .scroll-note{opacity:0}.sr-only{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}.end-note{text-align:center;padding:24px 24px 110px;color:var(--muted)}
+@media(max-width:760px){.review{padding:12px 16px}.review-top{display:block}.review-top>a{display:none}h1{font-size:23px}.options{gap:5px;margin:10px 0 7px}.options button{font-size:11px;padding:6px 9px}.description{font-size:12px}.scene{padding:20px 18px}.heading{left:18px;top:20px}.heading h2{font-size:27px}.phase{font-size:10px}.stage{min-height:480px}.step button{font-size:12px}.number{margin-bottom:7px}.connector{width:calc(100% - 33px);left:29px}.controls{padding:10px 12px;gap:8px}.controls button{padding:6px 9px}.position{display:none}.lens-title{left:18px!important;top:150px!important;width:calc(100% - 36px)!important;font-size:18px!important;line-height:1.7}.v1.applied .step button{font-size:12px;grid-template-columns:24px 1fr;gap:6px}.v1.applied .number{width:22px;height:22px}.v2.applied .step button{font-size:12px}.v4.applied .step button{font-size:11px}.v4.applied .crop{height:38px!important}.v4.applied .lens-title{top:230px!important;font-size:16px!important}.scroll-note{left:18px;font-size:11px}.crop{height:54px;margin-top:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="review">
+ <div class="review-top"><div><p class="eyebrow">Augury · Design exploration</p><h1>One model. The same six steps in practice.</h1></div><a href="../cases/iot-maintenance.html#planned-maintenance">Current case study ↗</a></div>
+ <nav class="options" aria-label="Motion alternatives">
+  <button type="button" data-option="1" aria-pressed="true">1 · Fold into a rail</button><button type="button" data-option="2" aria-pressed="false">2 · Stay horizontal</button><button type="button" data-option="3" aria-pressed="false">3 · Follow the spotlight</button><button type="button" data-option="4" aria-pressed="false">4 · Unfold a storyboard</button>
+ </nav>
+ <p class="description" id="description">The six numbered steps fold into a vertical reading order; the active step takes on the existing dark treatment.</p>
+</header>
+<main>
+ <div class="scroll-story">
+  <section class="stage v1" aria-label="Model to planned maintenance transition preview">
+   <div class="scene">
+    <div class="heading"><p class="phase">Discovery · The mental model</p><h2>Maintenance flow model</h2></div>
+    <ol class="model" aria-label="Six maintenance steps"></ol>
+    <p class="lens-title" aria-hidden="true"><span></span></p>
+    <div class="screen" aria-label="Existing IoT Health prototype">
+     <div class="screen-surface"><img src="../assets/iot-maintenance/0e3e0b6c94912172ca72.png" alt="The existing Augury IoT Health dashboard, focused on the current maintenance step." width="3120" height="3948"><div class="focus-box"></div><img class="guidance" src="../assets/iot-maintenance/cfc68e1279cfd476f3da.png" alt="Router troubleshooting instructions" width="306" height="239"></div>
+    </div>
+    <p class="scroll-note">Scroll to reveal each step, then follow the model into the prototype.</p>
+   </div>
+  </section>
+ </div>
+ <p class="end-note">The same six steps, from understanding the model to planning maintenance.</p>
+</main>
+<footer class="controls" aria-label="Preview playback">
+ <button id="back" type="button" aria-label="Previous stage">←</button><button id="play" type="button">Play</button><button id="next" type="button" aria-label="Next stage">→</button>
+ <label for="timeline" class="sr-only">Preview stage</label><input id="timeline" type="range" min="0" max="12" step="1" value="0"><output class="position" for="timeline">Model · step 1 of 6</output>
+ <button id="restart" type="button">Restart</button>
+</footer>
+<script>
+(() => {
+ 'use strict';
+ const steps = [
+  'Assess the severity and scale of IoT issues and coverage',
+  'Look at the main connectivity devices',
+  'What is the device’s operational status?',
+  'What is the impact of the device’s operational status?',
+  'What device details can help understand the source of the issue?',
+  'How to deal with the issue'
+ ];
+ const descriptions = [
+  'The six numbered steps fold into a vertical reading order; the active step takes on the existing dark treatment.',
+  'The full model stays horizontal. Its active step changes treatment while the corresponding screen appears below.',
+  'The model becomes a compact numbered map. One step expands beside the screen, keeping the whole route in sight.',
+  'Each model step reveals a real screen crop. The storyboard docks above the prototype, connecting every question to its UI.'
+ ];
+ const regions = [[103,229,1027,374],[103,441,1027,854],[507,561,606,586],[213,558,295,590],[943,558,1007,589],[507,561,606,586]];
+ const viewports = [[0,100,1040,650],[55,420,985,870],[80,480,700,740],[160,490,640,750],[480,480,1040,740],[360,300,780,640]];
+ const stage=document.querySelector('.stage'),scene=document.querySelector('.scene'),story=document.querySelector('.scroll-story'),model=document.querySelector('.model'),screen=document.querySelector('.screen'),surface=document.querySelector('.screen-surface'),focus=document.querySelector('.focus-box'),range=document.querySelector('#timeline'),play=document.querySelector('#play'),back=document.querySelector('#back'),next=document.querySelector('#next'),output=document.querySelector('.position'),reduce=matchMedia('(prefers-reduced-motion: reduce)');
+ let option=1,position=0,timer=null,frame=0;
+ steps.forEach((title,i)=>{
+  const li=document.createElement('li');li.className='step';
+  const button=document.createElement('button');button.type='button';button.setAttribute('aria-label',`${i+1}. ${title}`);
+  const number=document.createElement('span');number.className='number';number.textContent=i+1;number.setAttribute('aria-hidden','true');
+  const label=document.createElement('span');label.className='label';label.textContent=title;
+  const connector=document.createElement('span');connector.className='connector';connector.setAttribute('aria-hidden','true');
+  const crop=document.createElement('span');crop.className='crop';crop.hidden=true;crop.setAttribute('aria-hidden','true');
+  const image=document.createElement('img');image.src='../assets/iot-maintenance/0e3e0b6c94912172ca72.png';image.alt='';image.style.top=`-${i===0?65:160}px`;crop.append(image);
+  button.append(number,label,crop);li.append(connector,button);model.append(li);
+  button.addEventListener('click',()=>{stop();go(position<6?i:i+7)});
+ });
+ const nodes=[...model.children];
+ function stop(){clearInterval(timer);timer=null;play.textContent='Play';play.setAttribute('aria-pressed','false')}
+ function render(){
+  const w=scene.clientWidth,h=scene.clientHeight,mobile=w<760,pad=mobile?18:36,inner=w-pad*2,applied=position>=6,active=position<6?position:Math.max(0,position-7);
+  stage.className=`stage v${option}${applied?' applied':''}`;
+  document.querySelector('.heading h2').textContent=applied?'Planned maintenance flow':'Maintenance flow model';
+  document.querySelector('.phase').textContent=applied?'Solution · The same model in practice':'Discovery · The mental model';
+  document.querySelector('.lens-title span').textContent=steps[active];
+  document.querySelector('.description').textContent=descriptions[option-1];
+  let sx=pad,sy=260,sw=inner,sh=Math.max(140,h-sy-25);
+  if(option===1){sx=mobile?pad:w*.36;sy=mobile?330:120;sw=mobile?inner:w-sx-pad;sh=Math.max(145,h-sy-25)}
+  if(option===3){sx=mobile?pad:w*.36;sy=mobile?265:120;sw=mobile?inner:w-sx-pad;sh=Math.max(140,h-sy-25)}
+  if(option===4){sx=mobile?pad:w*.32;sy=mobile?325:250;sw=mobile?inner:w-sx-pad;sh=Math.max(135,h-sy-25)}
+  if(option===2&&mobile){sy=260;sh=Math.max(140,h-sy-25)}
+  Object.assign(screen.style,{left:`${sx}px`,top:`${sy}px`,width:`${sw}px`,height:`${sh}px`});
+  nodes.forEach((el,i)=>{
+   let x=pad+i*(inner/6),y=Math.max(150,Math.min(h*.34,240)),width=inner/6-16;
+   if(mobile){width=(inner-24)/3;x=pad+(i%3)*(inner/3);y=145+Math.floor(i/3)*(option===4?195:150)}
+   if(applied){
+    if(option===1){width=mobile?inner:inner*.29;x=pad;y=mobile?108+i*34:120+i*Math.min(78,(h-145)/6)}
+    if(option===2){y=110;if(mobile){width=inner*.68;x=pad+(i-active)*(width+24);y=110}}
+    if(option===3){width=34;x=pad+i*(mobile?45:48);y=102}
+    if(option===4){width=mobile?inner*.55:inner/6-16;x=mobile?pad+(i-active)*(width+18):pad+i*(inner/6);y=105}
+   }
+   el.style.transform=`translate(${x}px,${y}px)`;el.style.width=`${width}px`;
+   el.classList.toggle('is-future',!applied&&i>position);el.classList.toggle('active',i===active);
+   el.querySelector('.crop').hidden=option!==4;
+   const crop=el.querySelector('.crop'),thumb=crop.querySelector('img'),region=regions[i];
+   const thumbScale=width / Math.max(180,region[2]-region[0]+90);
+   const thumbHeight=applied?(mobile?38:55):(mobile?54:84);
+   Object.assign(thumb.style,{width:`${1040*thumbScale}px`,left:`${width/2-(region[0]+region[2])/2*thumbScale}px`,top:`${thumbHeight/2-(region[1]+region[3])/2*thumbScale}px`});
+   el.querySelector('button').tabIndex=!applied&&i>position?-1:0;
+   el.querySelector('button').setAttribute('aria-current',i===active?'step':'false');
+   if(applied&&mobile&&option===1){el.querySelector('.label').style.cssText=i===active?'white-space:normal;display:block':'visibility:hidden';el.querySelector('button').title=steps[i]}else{el.querySelector('.label').removeAttribute('style');el.querySelector('button').removeAttribute('title')}
+  });
+  const [x1,y1,x2,y2]=viewports[active],scale=Math.min(sw/(x2-x1),sh/(y2-y1));
+  surface.style.transform=`translate(${(sw-(x2-x1)*scale)/2-x1*scale}px,${(sh-(y2-y1)*scale)/2-y1*scale}px) scale(${scale})`;
+  const r=regions[active];Object.assign(focus.style,{left:`${r[0]}px`,top:`${r[1]}px`,width:`${r[2]-r[0]}px`,height:`${r[3]-r[1]}px`});
+  screen.dataset.step=active;
+  range.value=position;output.textContent=position<6?`Model · step ${position+1} of 6`:position===6?'Model → prototype':`Prototype · step ${active+1} of 6`;
+  range.setAttribute('aria-valuetext',output.textContent);back.disabled=position===0;next.disabled=position===12;
+ }
+ function go(value){
+  position=Math.max(0,Math.min(12,Math.round(Number(value)||0)));render();
+  const header=document.querySelector('.review').offsetHeight;
+  const start=story.offsetTop-header,total=story.offsetHeight-stage.offsetHeight;
+  window.scrollTo({top:start+total*position/12,behavior:'instant'});
+ }
+ function onScroll(){
+  if(frame)return;frame=requestAnimationFrame(()=>{frame=0;const header=document.querySelector('.review').offsetHeight;const total=story.offsetHeight-stage.offsetHeight;const p=Math.round(Math.max(0,Math.min(1,(scrollY-story.offsetTop+header)/total))*12);if(p!==position){position=p;render()}});
+ }
+ document.querySelectorAll('[data-option]').forEach(button=>button.addEventListener('click',()=>{option=Number(button.dataset.option);document.querySelectorAll('[data-option]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));render()}));
+ back.addEventListener('click',()=>{stop();go(position-1)});next.addEventListener('click',()=>{stop();go(position+1)});range.addEventListener('input',()=>{stop();go(range.value)});document.querySelector('#restart').addEventListener('click',()=>{stop();go(0)});
+ play.addEventListener('click',()=>{if(timer){stop();return}if(position===12)go(0);play.textContent='Pause';play.setAttribute('aria-pressed','true');timer=setInterval(()=>{if(position===12){stop();return}go(position+1)},2200)});
+ window.addEventListener('wheel',stop,{passive:true});window.addEventListener('touchstart',stop,{passive:true});window.addEventListener('scroll',onScroll,{passive:true});
+ function resize(){document.documentElement.style.setProperty('--header',`${document.querySelector('.review').offsetHeight}px`);render()}
+ window.addEventListener('resize',resize);reduce.addEventListener('change',()=>{stop();render()});document.addEventListener('visibilitychange',()=>{if(document.hidden)stop()});resize();
+})();
+</script>
+</body>
+</html>

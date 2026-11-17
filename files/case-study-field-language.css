@@ -52,7 +52,7 @@
   z-index: calc(4 + var(--depth) * 2);
   transform: translateY(calc(var(--parallax) * var(--travel) * var(--travel-scale))) scale(calc(1 + var(--depth) * .14));
   transform-origin: left center;
-  filter: blur(calc(var(--distance) * 1.25px));
+  filter: blur(calc(var(--distance) * .65px));
   opacity: calc(1 - var(--distance) * .12);
 }
 .cf-collage-chip .cf-definition { font-size: 18px; }
