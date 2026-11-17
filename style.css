@@ -221,9 +221,7 @@
   display: grid;
   grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr);
   gap: clamp(24px, 4vw, 56px);
-  margin-top: clamp(24px, 3vw, 36px);
-  padding: clamp(24px, 3vw, 42px);
-  background: #f6f6f3;
+  margin-top: clamp(36px, 5vw, 64px);
 }
 .autodesk-practice h3 {
   max-width: 15ch;
