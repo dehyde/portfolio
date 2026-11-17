@@ -639,6 +639,68 @@
       .monitoring-intro, .monitoring-problem { min-height: 0; }
     }
 
+
+    /* The original walkthrough cards also present the six-step model. */
+    .sequence-connections { display: none; }
+    .workflow-step[data-sequence-number] .workflow-number .task-line {
+      display: grid; place-items: center; width: 28px; height: 28px;
+      padding: 0; border: 1px solid var(--hairline); border-radius: 50%;
+      background: white; color: var(--text-secondary); box-shadow: none;
+    }
+    .workflow-step[data-sequence-number][aria-current="step"] .workflow-number .task-line {
+      background: var(--augury-blue); border-color: var(--augury-blue); color: white;
+    }
+    .workflow-track[data-sequence] [data-sequence-number] { position: relative; }
+    .workflow-track[data-sequence] .discovery-model {
+      position: absolute; inset: 0 0 auto; min-height: 100%;
+      margin: 0; padding: 24px 0 0; border: 0; pointer-events: none;
+    }
+    .workflow-track[data-sequence] .discovery-model .section-heading { margin-bottom: 0; }
+    .workflow-track[data-sequence] .journey {
+      display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px;
+      margin: 44px 0 0; visibility: hidden;
+    }
+    .workflow-track[data-sequence] .journey li { display: block; padding: 0; }
+    .workflow-track[data-sequence] .journey li::after { display: none; }
+    .workflow-track[data-sequence] .journey li::before { margin-bottom: 12px; }
+    .workflow-track[data-sequence] .sequence-connections {
+      display: block; position: absolute; inset: 0; width: 100%; height: 100%;
+      max-width: none; overflow: visible; pointer-events: none;
+    }
+    .sequence-connections path { fill: none; stroke: #aab5c9; stroke-width: 1; stroke-dasharray: 1; }
+    .workflow-track:is([data-sequence-phase="model"], [data-sequence-phase="handoff"]) [data-sequence-number] .guided-card > h3 {
+      font-size: var(--sequence-font); line-height: calc(1.5 + .5 * var(--sequence-fold));
+      margin-bottom: calc(12px * var(--sequence-fold));
+    }
+    .workflow-track:is([data-sequence-phase="model"], [data-sequence-phase="handoff"]) [data-sequence-number] h3 .task-line {
+      padding: calc(6px * var(--sequence-fold)) calc(12px * var(--sequence-fold));
+    }
+    .workflow-track:is([data-sequence-phase="model"], [data-sequence-phase="handoff"]) [data-sequence-number] .workflow-number {
+      margin-bottom: calc(12px - 6px * var(--sequence-fold));
+    }
+    .workflow-track:is([data-sequence-phase="model"], [data-sequence-phase="handoff"]) [data-sequence-number] .workflow-number .task-line {
+      width: calc(22px + 6px * var(--sequence-fold)); height: calc(22px + 6px * var(--sequence-fold));
+    }
+    .workflow-track[data-sequence-phase="model"] [data-sequence-number] h3 .task-line {
+      background: transparent; color: var(--augury-blue); box-shadow: none;
+    }
+    .workflow-track[data-sequence] [data-sequence-number] .guided-card > :not(h3):not(.workflow-number) { opacity: var(--sequence-fold); }
+    @media (max-width: 760px) {
+      .workflow-track[data-sequence] .discovery-model { padding-top: 0; }
+      .workflow-track[data-sequence] .discovery-model .section-heading { font-size: 28px; }
+      .workflow-track[data-sequence] .journey { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 16px; margin-top: 32px; }
+      .workflow-track[data-sequence] .journey strong { font-size: 12px; }
+    }
+    @media print {
+      .workflow-track[data-sequence] .discovery-model { position: relative; min-height: 0; }
+      .workflow-track[data-sequence] .discovery-model .section-heading { opacity: 1 !important; transform: none !important; }
+      .workflow-track[data-sequence] .journey { visibility: visible; }
+      .workflow-track[data-sequence] .workflow-display { transform: none !important; }
+      .workflow-track[data-sequence] .guided-card { position: static !important; width: auto !important; opacity: 1 !important; visibility: visible !important; }
+      .workflow-track[data-sequence] .sequence-connections { display: none; }
+      .workflow-track[data-sequence] .guided-beat { min-height: 0 !important; }
+    }
+
     /* Consistent hierarchy for research, people, tasks, and measures. */
     .eyebrow { font: 550 11px/1.5 var(--font-system); letter-spacing: .09em; text-transform: uppercase; color: var(--text-secondary); }
     .chapter .section-heading { font: 450 clamp(29px, 3vw, 40px)/1.15 var(--font-editorial); letter-spacing: -.025em; margin-bottom: 28px; }
@@ -967,7 +1029,8 @@
     <form method="dialog"><button aria-label="Close full-size screen">Close ×</button></form>
     <img alt="">
   </dialog>
-  <script>
+  <script type="module">
+    import { createMaintenanceSequence } from '../files/case-study-iot-sequence.js?v=pinned-20261117';
     (() => {
       const chapters = [...document.querySelectorAll('[data-chapter]')];
       const links = [...document.querySelectorAll('.rail-main a')];
@@ -994,8 +1057,13 @@
       };
       let currentWorkflowBeat;
       workflow.dataset.enhanced = '';
+      const workflowSequence = createMaintenanceSequence({
+        model: document.querySelector('.discovery-model'), workflow, beats: workflowBeats, reduceMotion,
+      });
 
       function activeWorkflowStep() {
+        const modelStep = workflowSequence.getActiveStep();
+        if (modelStep) return modelStep;
         const bounds = workflowStage.getBoundingClientRect();
         const line = Math.min(innerHeight * .83, bounds.top + bounds.height * .72);
         let active = workflowBeats[0];
@@ -1021,12 +1089,13 @@
 
       function updateWorkflowScene() {
         const beat = activeWorkflowStep();
-        if (currentWorkflowBeat === beat) return;
-        currentWorkflowBeat?.removeAttribute('aria-current');
-        beat.setAttribute('aria-current', 'step');
-        currentWorkflowBeat = beat;
+        if (currentWorkflowBeat !== beat) {
+          currentWorkflowBeat?.removeAttribute('aria-current');
+          beat.setAttribute('aria-current', 'step');
+          currentWorkflowBeat = beat;
+        }
 
-        const { focus } = beat.dataset;
+        const focus = workflowSequence.getScreenFocus() ?? beat.dataset.focus;
         if (workflow.dataset.focus === focus) return;
         workflow.dataset.focus = focus;
 
@@ -1079,6 +1148,7 @@
       const update = () => {
         scheduled = false;
         updateMonitoringScene();
+        workflowSequence.update();
         updateWorkflowScene();
         const offset = matchMedia('(max-width: 760px)').matches ? 150 : 120;
         let current = chapters[0].id;
@@ -1104,7 +1174,8 @@
       addEventListener('resize', schedule);
       addEventListener('hashchange', schedule);
       document.querySelectorAll('img').forEach(image => image.addEventListener('load', schedule));
-      if (document.fonts) document.fonts.ready.then(schedule);
+      reduceMotion.addEventListener('change', schedule);
+      if (document.fonts) document.fonts.ready.then(() => { workflowSequence.measure(); schedule(); });
       const viewer = document.querySelector('.image-viewer');
       const viewerImage = viewer.querySelector('img');
       let returnFocus = null;
