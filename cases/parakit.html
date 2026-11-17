@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A UX case study on helping Autodesk designers work more efficiently in their team’s repository, with less technical friction.">
+<meta name="theme-color" content="#1c1c1c">
+<title>Parakit — Tom Bar-Gal</title>
+<style id="case-loading-style">
+.case-loading{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#202020;color:#fff;opacity:1;transition:opacity .32s ease}
+.case-loading.is-ready{opacity:0;pointer-events:none}
+.case-loading-inner{text-align:center;padding:24px}
+.case-loading-mark{display:flex;align-items:center;justify-content:center;gap:6px;height:24px;margin-bottom:25px}
+.case-loading-mark i{width:7px;height:7px;background:var(--loading-accent,#0000ff);border-radius:50%;animation:case-loading-bounce 1s ease-in-out infinite}
+.case-loading-mark i:nth-child(2){animation-delay:.13s}.case-loading-mark i:nth-child(3){animation-delay:.26s}
+.case-loading-title{font:400 25px/1.2 Georgia,serif;letter-spacing:-.3px}
+.case-loading-note{margin-top:10px;color:#b4bbb2;font:14px/1.4 Arial,sans-serif}
+@keyframes case-loading-bounce{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-7px);opacity:1}}
+@media(prefers-reduced-motion:reduce){.case-loading,.case-loading-mark i{transition:none;animation:none}.case-loading-mark i{opacity:1}}
+</style><noscript><style>.case-loading{display:none!important}</style></noscript>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&amp;family=Recursive:CASL,CRSV,MONO,slnt,wght@0..1,0..1,0..1,-15..0,300..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../files/parakit.css">
+<script src="../files/parakit-controls.js" defer></script>
+<script src="../files/parakit-video.js" defer></script>
+<script src="../files/parakit-reading.js" defer></script>
+<script src="../files/parakit-workflows.js" defer></script>
+</head>
+<body>
+<div class="case-loading" role="status" aria-live="polite"><div class="case-loading-inner"><div class="case-loading-mark" aria-hidden="true"><i></i><i></i><i></i></div><div class="case-loading-title">Opening case study</div><div class="case-loading-note">Getting the details ready…</div></div></div><script id="case-loading-script">(()=>{const overlay=document.querySelector('.case-loading'),started=performance.now();let finished=false;function reveal(){if(finished)return;finished=true;const remaining=Math.max(0,400-(performance.now()-started));setTimeout(()=>{overlay.classList.add('is-ready');setTimeout(()=>overlay.remove(),350)},remaining)}setTimeout(reveal,5000);document.addEventListener('DOMContentLoaded',()=>{const visible=[...document.images].filter(img=>{const r=img.getBoundingClientRect();return r.width&&r.height&&r.bottom>0&&r.top<innerHeight*1.1}).slice(0,8);const loadImage=img=>img.complete?Promise.resolve():new Promise(resolve=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',resolve,{once:true})});Promise.all(visible.map(loadImage)).then(reveal,reveal)},{once:true})})();</script>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><a href="../index.html#work">← All projects</a><span>Parakit</span><span class="topbar-meta">Product design &amp; development</span></header>
+<div class="progress" aria-hidden="true"><span></span></div>
+<div class="shell"><nav class="rail" aria-label="Case study sections">
+  <span class="rail-title">PARAKIT</span>
+  <a href="#overview" aria-current="location">Overview</a>
+  <div class="rail-section" role="group" aria-labelledby="rail-problem"><span id="rail-problem">Problem space</span><a href="#problem">Problem &amp; people</a><a href="#workflows">Workflow comparisons</a></div>
+  <div class="rail-section" role="group" aria-labelledby="rail-solution"><span id="rail-solution">Solution</span><a href="#setup">Project setup</a><a href="#versions">Branch protection</a><a href="#design">Visual editing</a><a href="#skills">Reusable workflows</a></div>
+  <div class="rail-section" role="group" aria-labelledby="rail-reflection"><span id="rail-reflection">Outcome &amp; reflection</span><a href="#outcome">What I built</a><a href="#learnings">Learnings</a></div>
+</nav>
+<main id="main">
+<section class="chapter hero" id="overview"><p class="eyebrow">PARAKIT / PRODUCT DESIGN &amp; DEVELOPMENT</p><h1>Designing closer to the real product</h1><p class="standfirst">I designed and built a VS Code fork to help Autodesk designers get started in their team’s repository, work more efficiently and spend less time on setup and Git.</p><dl class="meta"><div><dt>My role</dt><dd>Product design &amp; development</dd></div><div><dt>Collaboration</dt><dd>Engineering support for technical work</dd></div><div><dt>Designed for</dt><dd>Designers at Autodesk</dd></div></dl><figure class="hero-media"><div class="media-canvas"><img width="1440" height="900" src="../assets/parakit/preview.jpg" alt="Parakit workspace with an AI assistant alongside a live preview of the Lumen demo project"></div><figcaption>The Lumen demo project running in Parakit, with the app preview beside Claude Code.</figcaption></figure></section>
+<section class="chapter" id="problem" aria-labelledby="problem-title">
+  <p class="eyebrow">The opportunity and the problem</p>
+  <h2 class="problem-title" id="problem-title">Designers should focus on design</h2>
+  <div class="problem-story">
+    <article class="problem-card prototype-card">
+      <p class="story-label">01 / The old way</p>
+      <h3>A replica is never the real experience</h3>
+      <p class="story-detail">Figma prototypes and replicas require extra work to recreate existing behavior, while details and ongoing changes get missed.</p>
+    </article>
+    <article class="problem-card opportunity-card">
+      <p class="story-label">02 / The opportunity</p>
+      <h3>Working in code can save design time</h3>
+      <p class="story-detail">Use the real product, build with engineers and automate recurring work to make designers more efficient.</p>
+    </article>
+    <article class="problem-card barrier-card">
+      <p class="story-label">03 / The barrier</p>
+      <h3>Engineering work pulls focus from design</h3>
+      <p class="story-detail">Git, local environments and terminals add friction before designers can explore and refine the experience.</p>
+    </article>
+  </div>
+  <h3 class="personas-title" id="personas-title">Two designer personas</h3>
+  <div class="personas" aria-labelledby="personas-title">
+    <article class="persona">
+      <img src="../assets/parakit/persona-code.png" width="1254" height="1254" alt="Illustrative portrait of a confident woman designer at her laptop" loading="lazy">
+      <div><h4>Comfortable with code</h4><p>Enjoys code and the terminal. Wants to spend less time on setup and more time exploring ideas.</p></div>
+    </article>
+    <article class="persona">
+      <img src="../assets/parakit/persona-visual.png" width="1254" height="1254" alt="Illustrative portrait of a man designer looking frustrated by a technical workflow" loading="lazy">
+      <div><h4>Unsure of the workflow</h4><p>Finds Git and terminal commands confusing. Needs familiar actions and clarity about where changes go.</p></div>
+    </article>
+  </div>
+</section>
+<section class="chapter workflow-chapter" id="workflows" aria-labelledby="workflows-title">
+  <div class="chapter-head">
+    <div><p class="eyebrow">Problem → design response</p><h2 id="workflows-title">Common designer workflows</h2></div>
+    <div class="chapter-copy"><p>Four jobs to be done, with the current path and the Parakit path. Scroll to follow them, or select a job.</p></div>
+  </div>
+  <p class="flow-scroll-hint">Scroll each diagram to follow both paths →</p>
+  <figure class="workflow-comparison" id="flow-open" aria-labelledby="flow-open-title">
+    <h3 id="flow-open-title"><span>01</span>Open a project</h3>
+    <div class="flow-diagram" tabindex="0" role="region" aria-label="Open a project: goal, two paths and outcome">
+      <div class="flow-route">
+        <div class="flow-origin"><span class="flow-end-label">Goal</span><p>Continue working on an existing project</p></div>
+        <div class="flow-lanes">
+          <div class="flow-lane flow-current"><p class="flow-label">Current workflow</p><ol aria-label="Current actions">
+            <li><span>Recall branch name<small>Remember the name</small></span></li>
+            <li><span>Ask Claude to open it<small>Type, then wait</small></span></li>
+            <li><span>Install dependencies<small>Setup time &amp; tokens</small></span></li>
+            <li><span>Ask for live preview<small>Another prompt &amp; wait</small></span></li>
+          </ol></div>
+          <div class="flow-lane flow-parakit"><p class="flow-label">With Parakit</p><ol aria-label="Parakit actions">
+            <li><span>Find &amp; select branch<small>Recognize or search</small></span></li>
+            <li><span>Automatic setup<small>Dependencies handled</small></span></li>
+            <li><span>Preview opens</span></li>
+          </ol></div>
+        </div>
+        <div class="flow-outcome"><span class="flow-end-label">Outcome</span><p>Right version running</p></div>
+      </div>
+    </div>
+    <figcaption>Current setup can be manual or agent-assisted, adding time and tokens.</figcaption>
+  </figure>
+  <figure class="workflow-comparison" id="flow-start" aria-labelledby="flow-start-title">
+    <h3 id="flow-start-title"><span>02</span>Start an exploration</h3>
+    <div class="flow-diagram" tabindex="0" role="region" aria-label="Start an exploration: goal, two paths and outcome">
+      <div class="flow-route">
+        <div class="flow-origin"><span class="flow-end-label">Goal</span><p>Start a new design draft</p></div>
+        <div class="flow-lanes">
+          <div class="flow-lane flow-current"><p class="flow-label">Current workflow</p><ol aria-label="Current actions">
+            <li><span>Request a branch or worktree<small>Think in Git terms</small></span></li>
+            <li><span>Wait for setup</span></li>
+            <li><span>Ask for live preview<small>Another prompt &amp; wait</small></span></li>
+          </ol></div>
+          <div class="flow-lane flow-parakit"><p class="flow-label">With Parakit</p><ol aria-label="Parakit actions">
+            <li><span>Name a design branch</span></li>
+            <li><span>Create it<small>Separate from shared work</small></span></li>
+            <li><span>Preview restarts</span></li>
+          </ol></div>
+        </div>
+        <div class="flow-outcome"><span class="flow-end-label">Outcome</span><p>Separate version ready</p></div>
+      </div>
+    </div>
+    <figcaption>A new exploration within an existing repository.</figcaption>
+  </figure>
+  <figure class="workflow-comparison" id="flow-edit" aria-labelledby="flow-edit-title">
+    <h3 id="flow-edit-title"><span>03</span>Edit and check the work</h3>
+    <div class="flow-diagram" tabindex="0" role="region" aria-label="Edit and check the work: goal, two paths and outcome">
+      <div class="flow-route">
+        <div class="flow-origin"><span class="flow-end-label">Goal</span><p>Refine and save my changes</p></div>
+        <div class="flow-lanes">
+          <div class="flow-lane flow-current"><p class="flow-label">Current workflow</p><ol aria-label="Current actions">
+            <li><span>Describe element &amp; edit<small>Explain what you see</small></span></li>
+            <li><span>Wait for Claude</span></li>
+            <li><span>Inspect result &amp; states<small>Recreate states manually</small></span></li>
+            <li><span>Manually commit &amp; push</span></li>
+          </ol></div>
+          <div class="flow-lane flow-parakit"><p class="flow-label">With Parakit</p><ol aria-label="Parakit actions">
+            <li><span>Select &amp; edit visually<small>Point directly</small></span></li>
+            <li><span>Inspect edits &amp; states<small>Staged preview &amp; variants</small></span></li>
+            <li><span>Apply with Claude<small>Source update still takes time</small></span></li>
+            <li><span>Autosave<small>Design branches only</small></span></li>
+          </ol></div>
+        </div>
+        <div class="flow-outcome"><span class="flow-end-label">Outcome</span><p>Changes checked and saved</p></div>
+      </div>
+    </div>
+    <figcaption>Edits are staged; applying them still takes Claude. Autosave is limited to design branches; variants need setup.</figcaption>
+  </figure>
+  <figure class="workflow-comparison" id="flow-share" aria-labelledby="flow-share-title">
+    <h3 id="flow-share-title"><span>04</span>Share and hand off</h3>
+    <div class="flow-diagram" tabindex="0" role="region" aria-label="Share and hand off: goal, two paths and outcome">
+      <div class="flow-route">
+        <div class="flow-origin"><span class="flow-end-label">Goal</span><p>Hand off work to engineers or stakeholders</p></div>
+        <div class="flow-lanes">
+          <div class="flow-lane flow-current"><p class="flow-label">Current workflow</p><ol aria-label="Current actions">
+            <li><span>Describe the document</span></li>
+            <li><span>Explain the format<small>Repeat instructions</small></span></li>
+            <li><span>Wait for Claude</span></li>
+            <li><span>Review &amp; share</span></li>
+          </ol></div>
+          <div class="flow-lane flow-parakit"><p class="flow-label">With Parakit</p><ol aria-label="Parakit actions">
+            <li><span>Choose a spec or flow skill</span></li>
+            <li><span>Review &amp; send prompt<small>Ready-made instructions</small></span></li>
+            <li><span>Wait for Claude</span></li>
+            <li><span>Review &amp; share</span></li>
+          </ol></div>
+        </div>
+        <div class="flow-outcome"><span class="flow-end-label">Outcome</span><p>Work shared with context</p></div>
+      </div>
+    </div>
+  </figure>
+</section>
+<section class="chapter" id="setup"><div class="chapter-head"><div><p class="eyebrow">Project setup</p><h2>Opening a project</h2><p class="solution-workflows"><span>Supports</span><a href="#flow-open">01 Open a project ↗</a><a href="#flow-start">02 Start an exploration ↗</a></p></div><div class="chapter-copy"><p>I moved setup into the opening flow. Parakit installs dependencies and starts the preview, with progress visible along the way.</p></div></div><figure class="media"><div class="media-canvas"><div class="video-player"><video width="2368" height="1568" controls loop muted preload="metadata" playsinline><source src="../assets/parakit/parakit-setup-of-local-preview.mp4" type="video/mp4">Your browser does not support video.</video></div></div><figcaption>Automatic setup on the Lumen demo project. Waits are sped up.</figcaption></figure></section>
+<section class="chapter" id="versions"><div class="chapter-head"><div><p class="eyebrow">Branch protection</p><h2>Balancing autosave and branch protection</h2><p class="solution-workflows"><span>Supports</span><a href="#flow-open">01 Open ↗</a><a href="#flow-start">02 Start ↗</a><a href="#flow-edit">03 Edit &amp; save ↗</a></p></div><div class="chapter-copy"><p>Designers need to experiment and have their work saved automatically. Engineers need shared branches kept clear of unreviewed design changes.</p><p>I made design branches the place for exploration, with automatic commits and pushes. On other branches, Parakit keeps edits local and offers a way to move them into a design branch.</p></div></div><div class="media-grid"><figure class="media"><div class="media-canvas"><div class="video-player"><video width="2368" height="1568" controls loop muted preload="metadata" playsinline><source src="../assets/parakit/parakit-branch-picker-states.mp4" type="video/mp4">Your browser does not support video.</video></div></div><figcaption>Design branches are visible first; search and a toggle reveal the rest.</figcaption></figure><figure class="media"><div class="media-canvas"><div class="video-player"><video width="2368" height="1568" controls loop muted preload="metadata" playsinline><source src="../assets/parakit/parakit-protect-non-design-branch.mp4" type="video/mp4">Your browser does not support video.</video></div></div><figcaption>Shared branches receive no automatic commits or pushes. Edits can be moved to a design branch.</figcaption></figure></div></section>
+<section class="chapter" id="design"><div class="chapter-head"><div><p class="eyebrow">Visual editing</p><h2>Editing what you see</h2><p class="solution-workflows"><span>Supports</span><a href="#flow-edit">03 Edit &amp; check ↗</a></p></div><div class="chapter-copy"><p>Selection connects a request to an element in the running app. Designers can adjust properties, move elements or ask Claude for a change.</p><p>Edits are staged so the designer can inspect and undo them. Sending them to Claude applies the changes to the source.</p></div></div><figure class="media"><div class="media-canvas"><div class="video-player"><video width="1440" height="900" controls loop muted preload="metadata" playsinline><source src="../assets/parakit/parakit-direct-select-manual-edit-full.mp4" type="video/mp4">Your browser does not support video.</video></div></div><figcaption>Spacing adjusted in the preview, then applied to the source. AI processing is sped up.</figcaption></figure><div class="reading"><h3>Previewing different states</h3><p>The Variants menu makes loading, empty, error and role-specific states available in the preview, once Claude has set them up.</p></div><figure class="media"><div class="media-canvas"><div class="video-player"><video width="2368" height="1568" controls loop muted preload="metadata" playsinline><source src="../assets/parakit/parakit-variants.mp4" type="video/mp4">Your browser does not support video.</video></div></div><figcaption>The Variants menu switches between states in the running demo project after Claude sets them up.</figcaption></figure></section>
+<section class="chapter" id="skills"><div class="chapter-head"><div><p class="eyebrow">Reusable workflows</p><h2>Finding the right skill</h2><p class="solution-workflows"><span>Supports</span><a href="#flow-edit">03 Review the work ↗</a><a href="#flow-share">04 Hand off ↗</a></p></div><div class="chapter-copy"><p>I made common skills visible beside the AI assistant, including reviewing flows, checking edge cases and generating specs.</p><p>Each action prepares a prompt for review. Ready-made skills give designers a starting point, and they can add their own.</p></div></div><figure class="media"><div class="media-canvas"><div class="video-player"><video width="2368" height="1568" controls loop muted preload="metadata" playsinline><source src="../assets/parakit/parakit-skill-visual-user-flows.mp4" type="video/mp4">Your browser does not support video.</video></div></div><figcaption>Generating a visual flow from the running project. The recording is sped up during AI processing.</figcaption></figure></section>
+<section class="chapter" id="outcome"><div class="chapter-head"><div><p class="eyebrow">What I built</p><h2>A working VS Code fork</h2></div><div class="chapter-copy"><p>I designed and built the experience, with engineering help on technical work. The recordings show it running on the Lumen demo project.</p></div></div></section>
+<section class="chapter" id="learnings">
+  <div class="chapter-head">
+    <div><p class="eyebrow">Reflection</p><h2>What I learned</h2></div>
+    <div class="chapter-copy learnings">
+      <div><h3>A better tool still asks people to change</h3><p>People can be hesitant to replace tools and workflows they use every day. A more efficient approach on its own isn’t always enough to make that change worthwhile.</p></div>
+      <div><h3>Onboarding is part of the experience</h3><p>When getting a repository running had friction, even with Parakit helping, I saw how quickly frustration could stop people from getting started. The path to the first working preview matters as much as the work that follows.</p></div>
+      <div><h3>Know the limits of my technical understanding</h3><p>Building with AI let me take on more, but it didn’t remove the limits of what I understand. Even with the latest models, there are things I can’t yet build correctly on my own. I need to be cautious, humble and involve engineering expertise where it matters.</p></div>
+    </div>
+  </div>
+</section>
+<footer class="case-footer"><a href="../index.html#work">← Back to selected work</a><a href="#overview">Back to top ↑</a></footer>
+</main></div></body></html>
