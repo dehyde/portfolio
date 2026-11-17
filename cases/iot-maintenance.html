@@ -343,16 +343,36 @@
     .monitoring-signal::after { animation-delay: calc(var(--signal-delay, 0s) - 3s); }
     .monitoring-visual[data-visible="true"] .monitoring-signal::before,
     .monitoring-visual[data-visible="true"] .monitoring-signal::after { animation-play-state: running; }
-    .monitoring-visual[data-state="offline"] .monitoring-signal--lost { color: #ba795f; }
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost { color: #b96943; }
     .monitoring-visual[data-state="offline"] .monitoring-signal--lost::before,
     .monitoring-visual[data-state="offline"] .monitoring-signal--lost::after {
       animation-name: monitoring-signal-loss;
-      animation-duration: 2.8s;
+      animation-duration: 2.2s;
       animation-iteration-count: 1;
       animation-fill-mode: forwards;
       animation-delay: 0s;
     }
-    .monitoring-visual[data-state="offline"] .monitoring-signal--lost::after { animation-delay: .45s; }
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost::before { border-width: 1.5px; }
+    .monitoring-visual[data-state="offline"] .monitoring-signal--lost::after { animation: none; opacity: 0; }
+    .monitoring-loss-label {
+      position: absolute;
+      z-index: 5;
+      right: 3%;
+      top: -26px;
+      padding: 7px 11px;
+      border-radius: 4px;
+      color: #8b3f21;
+      background: #fff0e6;
+      font: 550 12px/1.4 var(--font-system);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .monitoring-visual[data-state="offline"] .monitoring-loss-label {
+      animation: monitoring-loss-notice 3.8s ease-out both;
+      animation-play-state: paused;
+    }
+    .monitoring-visual[data-state="offline"][data-visible="true"] .monitoring-loss-label { animation-play-state: running; }
+    .monitoring-visual[data-state="offline"] :is(.monitoring-online, .monitoring-offline) { transition-duration: 350ms; }
     @keyframes monitoring-signal {
       0% { transform: scale(.25); opacity: 0; }
       16% { opacity: .14; }
@@ -360,11 +380,18 @@
     }
     @keyframes monitoring-signal-loss {
       0% { transform: scale(.35); opacity: 0; }
-      22% { opacity: .17; }
+      16%, 32% { opacity: .55; }
       100% { transform: scale(1.9); opacity: 0; }
+    }
+    @keyframes monitoring-loss-notice {
+      0% { opacity: 0; transform: translateY(5px); }
+      10%, 80% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(0); }
     }
     @media (prefers-reduced-motion: reduce) {
       .monitoring-signal::before, .monitoring-signal::after { animation: none !important; opacity: 0; }
+      .monitoring-online, .monitoring-offline { transition: none; }
+      .monitoring-visual[data-state="offline"] .monitoring-loss-label { animation: none; opacity: 1; }
     }
 
     .monitoring-offline, .monitoring-visual[data-state="offline"] .monitoring-piece:has(.monitoring-offline) .monitoring-online { opacity: 0; }
@@ -725,6 +752,7 @@
     <p class="type-reading">This was due to low visibility into the IoT status and information</p>
   </article>
   <figure class="monitoring-visual" id="monitoring-visual" data-state="online" aria-label="Machines with sensors and connectivity nodes online">
+  <span class="monitoring-loss-label" aria-hidden="true">Connection lost</span>
   <div class="monitoring-art" aria-hidden="true">
 <div class="monitoring-piece monitoring-node monitoring-node--left"><img class="monitoring-online" src="../assets/iot-maintenance/4f1e7f40558d020b9712.png" alt=""><span class="monitoring-signal" style="--signal-delay: -1s"></span></div>
 <div class="monitoring-piece monitoring-node monitoring-node--right"><img class="monitoring-online" src="../assets/iot-maintenance/4f1e7f40558d020b9712.png" alt=""><img class="monitoring-offline" src="../assets/iot-maintenance/4c8ada49146d4e8fa74d.png" alt=""><span class="monitoring-signal monitoring-signal--lost" style="--signal-delay: -4s"></span></div>
