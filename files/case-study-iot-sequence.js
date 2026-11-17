@@ -20,7 +20,7 @@ export function getMaintenanceSequenceState(progress) {
   };
 }
 
-// Position the original walkthrough cards; their list items remain the scroll track.
+// Pin the original cards to the viewport; their list items remain the scroll track.
 export function createMaintenanceSequence({ model, workflow, beats, reduceMotion }) {
   const stage = workflow.querySelector('.workflow-stage');
   const display = workflow.querySelector('.workflow-display');
@@ -150,7 +150,8 @@ export function createMaintenanceSequence({ model, workflow, beats, reduceMotion
       const x = mix(source.left, beat.left + target.x, state.fold);
       const y = mix(source.top, beat.top + target.y, state.spread);
       Object.assign(card.style, {
-        position: 'absolute', left: `${x - beat.left}px`, top: `${y - beat.top}px`,
+        // Avoid counter-scrolling absolute cards: native scrolling can outrun rAF.
+        position: 'fixed', left: '0', top: '0', transform: `translate3d(${x}px, ${y}px, 0)`,
         width: `${mix(source.width, target.width, state.fold)}px`, maxWidth: 'none',
         margin: '0', padding: `${12 * state.fold}px`,
         opacity: index < state.visible ? '1' : '0',
