@@ -81,6 +81,33 @@ class HeroMotionTest(unittest.TestCase):
         draws, erases = zip(*(self.stroke_timing(path) for path in paths))
         return active_span(draws), active_span(erases)
 
+    def test_polished_preview_uses_the_same_six_scene_timelines(self):
+        page = ROOT / 'previews' / 'polished-hero.html'
+        preview = IntroAssets()
+        preview.feed(page.read_text())
+        animation = ET.parse(page.parent / urlsplit(preview.animation).path).getroot()
+        self.assertEqual(animation.attrib, self.animation.attrib)
+        scenes = animation.findall('{*}g')
+        self.assertEqual([g.get('id') for g in scenes], [g.get('id') for g in self.scenes])
+
+        def timeline(scene):
+            return [(e.tag, {k: v for k, v in e.attrib.items() if k != 'd'}) for e in scene.iter()]
+
+        for polished, original in zip(scenes, self.scenes):
+            with self.subTest(scene=polished.get('id')):
+                self.assertEqual(timeline(polished), timeline(original))
+                self.assertNotEqual([p.get('d') for p in polished.findall('.//{*}path')],
+                                    [p.get('d') for p in original.findall('.//{*}path')])
+
+        poster = ET.parse(page.parent / urlsplit(preview.poster['src']).path).getroot()
+        self.assertEqual(preview.poster.get('alt'), '')
+        self.assertFalse(any(e.tag.rsplit('}', 1)[-1].startswith('animate') for e in poster.iter()))
+        held = [(g.get('transform'), [p.get('d') for p in g.findall('{*}path')])
+                for g in scenes[0].findall('{*}g')]
+        still = [(g.get('transform'), [p.get('d') for p in g.findall('{*}path')])
+                 for g in poster.findall('./{*}g/{*}g')]
+        self.assertEqual(still, held)
+
     def test_the_hero_has_a_static_decorative_fallback(self):
         self.assertIsNotNone(self.hero.poster)
         self.assertEqual(self.hero.poster.get('alt'), '')

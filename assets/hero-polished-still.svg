@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Three interview remarks with two ideas alongside them">
+  <g opacity=".68">
+    <g transform="translate(85 2)">
+      <path d="M105 85H195A6 6 0 0 1 201 91V118A6 6 0 0 1 195 124H124L114 133V124H105A6 6 0 0 1 99 118V91A6 6 0 0 1 105 85Z" />
+      <path d="M113 104.5H155" />
+    </g>
+    <g transform="translate(-35 10)">
+      <path d="M250 131H349A6 6 0 0 1 355 137V165A6 6 0 0 1 349 171H342V180L332 171H250A6 6 0 0 1 244 165V137A6 6 0 0 1 250 131Z" />
+      <path d="M258 151H306" />
+    </g>
+    <g transform="translate(58 3)">
+      <path d="M139 191H225A6 6 0 0 1 231 197V224A6 6 0 0 1 225 230H157L147 239V230H139A6 6 0 0 1 133 224V197A6 6 0 0 1 139 191Z" />
+      <path d="M147 210.5H183" />
+    </g>
+    <g transform="translate(316 105)">
+      <path d="M0 -19A17 17 0 0 0 -17 -2C-17 2 -14 5 -9 9C-6 11.5 -5 14 -5 17H5C5 14 6 11.5 9 9C14 5 17 2 17 -2A17 17 0 0 0 0 -19Z" />
+      <path d="M0 16V10C0 6 -2 2 -5 0C-7 -1.5 -8 -.5 -7 1.5C-6 3.5 -3 4.5 0 3.5C2.5 2.5 4.5 1 6 -1" />
+      <path d="M-5 20H5V21A3 3 0 0 1 2 24H-2A3 3 0 0 1 -5 21Z" />
+    </g>
+    <g transform="translate(158 211)">
+      <path d="M0 -19A17 17 0 0 0 -17 -2C-17 2 -14 5 -9 9C-6 11.5 -5 14 -5 17H5C5 14 6 11.5 9 9C14 5 17 2 17 -2A17 17 0 0 0 0 -19Z" />
+      <path d="M0 16V10C0 6 -2 2 -5 0C-7 -1.5 -8 -.5 -7 1.5C-6 3.5 -3 4.5 0 3.5C2.5 2.5 4.5 1 6 -1" />
+      <path d="M-5 20H5V21A3 3 0 0 1 2 24H-2A3 3 0 0 1 -5 21Z" />
+    </g>
+  </g>
+</svg>
