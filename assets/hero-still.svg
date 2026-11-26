@@ -1,19 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M48 92Q91 90 155 91L198 91Q204 91 204 98L205 214Q205 221 199 221Q134 222 51 221Q44 221 44 215L43 100Q43 94 48 92Z" />
-  <path d="M61 112Q76 111 96 111" />
-  <path d="M45 126Q116 125 203 126" />
-  <path d="M63 140Q117 139 183 140Q188 140 188 145L188 166Q188 170 183 170Q124 171 63 170Q59 170 59 166L59 145Q59 141 63 140Z" />
-  <path d="M68 150Q73 149 80 150L80 161Q74 161 68 161Z" />
-  <path d="M91 155Q108 154 132 155" />
-  <path d="M68 191Q93 189 109 190" />
-  <path d="M279 96Q335 94 423 95Q430 95 431 102L431 216Q431 224 425 224Q353 225 282 224Q275 224 275 218L274 104Q274 97 279 96Z" />
-  <path d="M293 115Q307 114 326 115" />
-  <path d="M275 130Q342 129 430 130" />
-  <path d="M163 155L167 174L171 167L176 175L179 173L174 165L181 164Z" />
-  <path d="M70 155.5L73.4 158.5Q76 154 81 149" />
-  <path d="M210 155Q235 151 262 156" />
-  <path d="M255 150L263 156L255 160" />
-  <path d="M292 147Q309 146 328 147L328 155Q309 156 292 155Z" />
-  <path d="M319 170Q347 169 373 170L373 178Q346 179 319 178Z" />
-  <path d="M359 193Q385 192 410 193L410 201Q384 202 359 201Z" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="An interview becomes a pair of research notes">
+  <g opacity=".68">
+    <path d="M100 115Q123 106 152 113C172 118 181 137 176 153C172 169 148 178 123 173L102 187L106 169C86 163 81 149 84 136Q86 122 100 115Z" />
+    <path d="M103 144Q113 136 124 143T151 140" />
+    <path d="M190 150Q215 141 242 150" />
+    <path d="M237 143L244 150L235 154" />
+    <path d="M273 105Q288 102 310 101L321 110L325 147Q298 150 279 151Z" transform="translate(-12 24)" />
+    <path d="M310 101L311 112L321 110" transform="translate(-12 24)" />
+    <path d="M344 157Q362 155 384 157L393 166L391 205Q365 206 345 204Z" transform="translate(-20 -25)" />
+    <path d="M384 157L383 167L393 166" transform="translate(-20 -25)" />
+  </g>
 </svg>

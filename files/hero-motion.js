@@ -15,6 +15,7 @@
 
   function showPoster() {
     art.removeAttribute('data-ready');
+    art.setAttribute('data-fallback', '');
     toggle.hidden = true;
     timeline = null;
     player?.remove();
@@ -27,6 +28,7 @@
       return;
     }
     if (player) return;
+    art.removeAttribute('data-fallback');
 
     const object = document.createElement('object');
     player = object;
