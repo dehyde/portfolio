@@ -15,5 +15,7 @@ class TargetUsersTest(unittest.TestCase):
         self.assertEqual(cards.labels, 4)
         css = (root / 'style.css').read_text()
         self.assertNotIn('.card-bottom{margin-top:auto;border-top:', css)
+        self.assertRegex(css, r'\.persona-label\{[^}]*display:flex;[^}]*gap:12px;[^}]*color:rgba\(86,91,86,\.8\)')
+        self.assertRegex(css, r'\.persona-label::after\{[^}]*flex:1;[^}]*background:var\(--line\)')
 
 if __name__ == '__main__': unittest.main()
