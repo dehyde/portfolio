@@ -133,6 +133,23 @@ class HeroMotionTest(unittest.TestCase):
                 self.assertAlmostEqual(draw_end - draw_start, 5, delta=0.001)
                 self.assertAlmostEqual(erase_end - erase_start, 5, delta=0.001)
 
+    def test_interview_uses_the_workflow_pen_stagger_and_scene_fade(self):
+        def overlap(first, following):
+            (a, b), (c, d) = first, following
+            return (b - c) / min(b - a, d - c)
+
+        research = self.animation.find('{*}g[@id="research-synthesis"]')
+        workflow = self.animation.find('{*}g[@id="branching-flow"]')
+        reference = [self.stroke_timing(p)[0] for p in workflow.findall('{*}path')[:2]]
+        stagger = overlap(*reference)
+        for name, group in self.interview_objects(research).items():
+            with self.subTest(object=name):
+                self.assertEqual(group.findall('.//{*}animate[@attributeName="opacity"]'), [])
+                strokes = [self.stroke_timing(p) for p in group.findall('{*}path')]
+                for (draw, erase), (next_draw, next_erase) in zip(strokes, strokes[1:]):
+                    self.assertAlmostEqual(overlap(draw, next_draw), stagger, delta=.001)
+                    self.assertAlmostEqual(overlap(erase, next_erase), stagger, delta=.001)
+
     def test_interview_turns_generate_two_ideas_as_the_speakers_finish(self):
         scene = self.animation.find('{*}g[@id="research-synthesis"]')
         self.assertIsNotNone(scene)
