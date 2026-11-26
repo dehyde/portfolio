@@ -2,7 +2,7 @@
   <title id="art-title">A design process in six sketches</title>
   <desc id="art-description">An interview becomes research notes. A workflow branches. Selecting a row on one screen updates another. A spacebar toggles a switch. A field has a hand-lettered spacing measurement. A chart traces a rising metric.</desc>
   <g id="research-synthesis" opacity="0">
-    <animate attributeName="opacity" dur="59.552s" begin="0s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.12723334;0.18096789;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+    <animate attributeName="opacity" dur="59.552s" begin="0s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.12723334;0.18096789;1" calcMode="spline" keySplines=".28 .32 .62 1;0 0 1 1;.38 0 .72 .68;0 0 1 1" />
     <animateTransform attributeName="transform" dur="59.552s" begin="0s" repeatCount="indefinite" values="0 0;0 0;1 -1;1 -1" keyTimes="0;0.12723334;0.18096789;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
     <path id="research-speech" d="M100 115Q123 106 152 113C172 118 181 137 176 153C172 169 148 178 123 173L102 187L106 169C86 163 81 149 84 136Q86 122 100 115Z" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" visibility="hidden">
       <animate attributeName="stroke-dashoffset" dur="59.552s" begin="0s" repeatCount="indefinite" values="1;0;0;-1;-1" keyTimes="0;0.01528076;0.12723334;0.14773913;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
@@ -42,7 +42,7 @@
     </path>
   </g>
   <g id="branching-flow" opacity="0">
-    <animate attributeName="opacity" dur="59.552s" begin="9.297s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.1361835;0.18991805;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+    <animate attributeName="opacity" dur="59.552s" begin="9.297s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.1361835;0.18991805;1" calcMode="spline" keySplines=".28 .32 .62 1;0 0 1 1;.38 0 .72 .68;0 0 1 1" />
     <animateTransform attributeName="transform" dur="59.552s" begin="9.297s" repeatCount="indefinite" values="0 0;0 0;1 -1;1 -1" keyTimes="0;0.1361835;0.18991805;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
     <path id="flow-1" d="M68 136Q96 134 132 135Q138 135 138 142L137 175Q137 180 131 180L72 181Q65 181 65 175L64 142Q64 137 68 136Z" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" visibility="hidden">
       <animate attributeName="stroke-dashoffset" dur="59.552s" begin="9.297s" repeatCount="indefinite" values="1;0;0;-1;-1" keyTimes="0;0.01811862;0.1361835;0.15488665;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
@@ -74,7 +74,7 @@
     </path>
   </g>
   <g id="linked-screens" opacity="0">
-    <animate attributeName="opacity" dur="59.552s" begin="19.127s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.17460371;0.22833826;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+    <animate attributeName="opacity" dur="59.552s" begin="19.127s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.17460371;0.22833826;1" calcMode="spline" keySplines=".28 .32 .62 1;0 0 1 1;.38 0 .72 .68;0 0 1 1" />
     <animateTransform attributeName="transform" dur="59.552s" begin="19.127s" repeatCount="indefinite" values="0 0;0 0;1 -1;1 -1" keyTimes="0;0.17460371;0.22833826;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
     <path id="plan-frame" d="M48 92Q91 90 155 91L198 91Q204 91 204 98L205 214Q205 221 199 221Q134 222 51 221Q44 221 44 215L43 100Q43 94 48 92Z" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" visibility="hidden">
       <animate attributeName="stroke-dashoffset" dur="59.552s" begin="19.127s" repeatCount="indefinite" values="1;0;0;-1;-1" keyTimes="0;0.01855521;0.17460371;0.19090552;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
@@ -119,7 +119,7 @@
     </path>
   </g>
   <g id="keyboard-interaction" opacity="0">
-    <animate attributeName="opacity" dur="59.552s" begin="31.245s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.13727499;0.19100954;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+    <animate attributeName="opacity" dur="59.552s" begin="31.245s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.13727499;0.19100954;1" calcMode="spline" keySplines=".28 .32 .62 1;0 0 1 1;.38 0 .72 .68;0 0 1 1" />
     <animateTransform attributeName="transform" dur="59.552s" begin="31.245s" repeatCount="indefinite" values="0 0;0 0;1 -1;1 -1" keyTimes="0;0.13727499;0.19100954;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
     <path id="keyboard-space-cap" d="M101 132Q161 130 225 131Q231 131 232 137L237 166Q238 172 232 173Q161 176 90 175Q85 175 87 170L94 138Q95 133 101 132Z" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" visibility="hidden">
       <animate attributeName="stroke-dashoffset" dur="59.552s" begin="31.245s" repeatCount="indefinite" values="1;0;0;-1;-1" keyTimes="0;0.0192101;0.13727499;0.16092626;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
@@ -147,7 +147,7 @@
     </path>
   </g>
   <g id="shared-fields" opacity="0">
-    <animate attributeName="opacity" dur="59.552s" begin="41.14s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.13574691;0.18948146;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+    <animate attributeName="opacity" dur="59.552s" begin="41.14s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.13574691;0.18948146;1" calcMode="spline" keySplines=".28 .32 .62 1;0 0 1 1;.38 0 .72 .68;0 0 1 1" />
     <animateTransform attributeName="transform" dur="59.552s" begin="41.14s" repeatCount="indefinite" values="0 0;0 0;1 -1;1 -1" keyTimes="0;0.13574691;0.18948146;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
     <path id="quiet-shared-source-field" d="M79 139Q108 138 150 139Q155 139 155 144L155 159Q155 164 150 164Q115 165 78 164Q74 164 74 160L74 144Q74 140 79 139Z" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" visibility="hidden">
       <animate attributeName="stroke-dashoffset" dur="59.552s" begin="41.14s" repeatCount="indefinite" values="1;0;0;-1;-1" keyTimes="0;0.00873186;0.13574691;0.15000006;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
@@ -199,7 +199,7 @@
     </path>
   </g>
   <g id="metric-study" opacity="0">
-    <animate attributeName="opacity" dur="59.552s" begin="50.944s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.11566362;0.16939817;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+    <animate attributeName="opacity" dur="59.552s" begin="50.944s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.04785733;0.11566362;0.16939817;1" calcMode="spline" keySplines=".28 .32 .62 1;0 0 1 1;.38 0 .72 .68;0 0 1 1" />
     <animateTransform attributeName="transform" dur="59.552s" begin="50.944s" repeatCount="indefinite" values="0 0;0 0;1 -1;1 -1" keyTimes="0;0.11566362;0.16939817;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
     <path id="chart-3" d="M86 97Q86 147 84 209Q202 212 351 210" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1" visibility="hidden">
       <animate attributeName="stroke-dashoffset" dur="59.552s" begin="50.944s" repeatCount="indefinite" values="1;0;0;-1;-1" keyTimes="0;0.02837856;0.11566362;0.14314901;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
