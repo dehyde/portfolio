@@ -1,9 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="An idea emerging during an interview">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Three interview remarks with two ideas alongside them">
   <g opacity=".68">
-    <path d="M250 131Q294 130 349 131Q355 131 355 137L355 165Q355 171 349 171L341 171L342 180L332 171L250 171Q244 171 244 165L244 137Q244 131 250 131Z" />
-    <path d="M258 151Q279 150 306 151" />
-    <path d="M135 85Q141 80 150 80C162 80 171 87 171 98C171 104 168 107 162 112Q157 116 157 119L157 122L143 122L143 119Q143 116 138 112C132 107 129 104 129 98Q129 90 135 85Z" />
-    <path d="M143 103L150 117L157 103" />
-    <path d="M143 122L143 127Q143 130 146 130L154 130Q157 130 157 127L157 122" />
+    <g transform="translate(85 2)">
+      <path d="M105 85Q150 84 195 85Q201 85 201 91L201 118Q201 124 195 124L124 124L114 133L115 124L105 124Q99 124 99 118L99 91Q99 85 105 85Z" />
+      <path d="M113 105H155" />
+    </g>
+    <g transform="translate(-35 10)">
+      <path d="M250 131Q294 130 349 131Q355 131 355 137L355 165Q355 171 349 171L341 171L342 180L332 171L250 171Q244 171 244 165L244 137Q244 131 250 131Z" />
+      <path d="M258 151H306" />
+    </g>
+    <g transform="translate(58 3)">
+      <path d="M139 191Q180 190 225 191Q231 191 231 197L231 224Q231 230 225 230L157 230L147 239L148 230L139 230Q133 230 133 224L133 197Q133 191 139 191Z" />
+      <path d="M147 211H183" />
+    </g>
+    <g transform="translate(316 105)">
+      <path d="M-4 -18C-12 -18 -17 -12 -17 -5C-18 2 -13 6 -9 10C-6 13 -6 16 -5 17Q0 18 6 16C6 11 10 8 13 4C18 -2 17 -9 13 -14C9 -19 2 -20 -4 -18" />
+      <path d="M0 16C1 11 1 7 -2 3C-4 0 -7 -1 -7 1C-7 4 -2 5 1 3Q4 2 6 -1" />
+      <path d="M-5 20Q0 22 5 19C4 23 0 25 -3 23" />
+    </g>
+    <g transform="translate(158 211)">
+      <path d="M-4 -18C-12 -18 -17 -12 -17 -5C-18 2 -13 6 -9 10C-6 13 -6 16 -5 17Q0 18 6 16C6 11 10 8 13 4C18 -2 17 -9 13 -14C9 -19 2 -20 -4 -18" />
+      <path d="M0 16C1 11 1 7 -2 3C-4 0 -7 -1 -7 1C-7 4 -2 5 1 3Q4 2 6 -1" />
+      <path d="M-5 20Q0 22 5 19C4 23 0 25 -3 23" />
+    </g>
   </g>
 </svg>

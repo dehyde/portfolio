@@ -1,6 +1,7 @@
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
+import re
 import unittest
 import xml.etree.ElementTree as ET
 
@@ -80,15 +81,6 @@ class HeroMotionTest(unittest.TestCase):
         draws, erases = zip(*(self.stroke_timing(path) for path in paths))
         return active_span(draws), active_span(erases)
 
-    def chapter_timing(self, scene):
-        draw, exit_erase = self.object_timing(scene)
-        if scene.get('id') == 'research-synthesis':
-            # The speech bubbles clear during the conversation; only the ideas
-            # remain to take part in the transition to the following chapter.
-            objects = self.interview_objects(scene)
-            exit_erase = active_span(self.object_timing(objects[n])[1] for n in ('idea-a', 'idea-b'))
-        return draw, exit_erase
-
     def test_the_hero_has_a_static_decorative_fallback(self):
         self.assertIsNotNone(self.hero.poster)
         self.assertEqual(self.hero.poster.get('alt'), '')
@@ -113,23 +105,20 @@ class HeroMotionTest(unittest.TestCase):
 
     def test_strokes_overlap_in_the_same_order_during_drawing_and_erasing(self):
         for scene in self.scenes:
-            research = scene.get('id') == 'research-synthesis'
-            objects = self.interview_objects(scene).values() if research else (scene,)
-            for element in objects:
-                with self.subTest(element=element.get('id')):
-                    paths = element.findall('.//{*}path')
-                    self.assertGreaterEqual(len(paths), 1 if research else 2)
-                    strokes = sorted(self.stroke_timing(path) for path in paths)
-                    for (draw, erase), (next_draw, next_erase) in zip(strokes, strokes[1:]):
-                        self.assertTrue(draw[0] < next_draw[0] < draw[1],
-                                        f'Draw windows do not overlap in sequence: {draw}, {next_draw}')
-                        self.assertTrue(erase[0] < next_erase[0] < erase[1],
-                                        f'Erase windows do not overlap in sequence: {erase}, {next_erase}')
+            with self.subTest(scene=scene.get('id')):
+                paths = scene.findall('.//{*}path')
+                self.assertGreaterEqual(len(paths), 2)
+                strokes = sorted(self.stroke_timing(path) for path in paths)
+                for (draw, erase), (next_draw, next_erase) in zip(strokes, strokes[1:]):
+                    self.assertTrue(draw[0] < next_draw[0] < draw[1],
+                                    f'Draw windows do not overlap in sequence: {draw}, {next_draw}')
+                    self.assertTrue(erase[0] < next_erase[0] < erase[1],
+                                    f'Erase windows do not overlap in sequence: {erase}, {next_erase}')
 
     def test_each_scene_has_five_seconds_to_draw_and_five_to_exit(self):
         for scene in self.scenes:
             with self.subTest(scene=scene.get('id')):
-                (draw_start, draw_end), (erase_start, erase_end) = self.chapter_timing(scene)
+                (draw_start, draw_end), (erase_start, erase_end) = self.object_timing(scene)
                 self.assertAlmostEqual(draw_end - draw_start, 5, delta=0.001)
                 self.assertAlmostEqual(erase_end - erase_start, 5, delta=0.001)
 
@@ -142,49 +131,44 @@ class HeroMotionTest(unittest.TestCase):
         workflow = self.animation.find('{*}g[@id="branching-flow"]')
         reference = [self.stroke_timing(p)[0] for p in workflow.findall('{*}path')[:2]]
         stagger = overlap(*reference)
-        for name, group in self.interview_objects(research).items():
-            with self.subTest(object=name):
-                self.assertEqual(group.findall('.//{*}animate[@attributeName="opacity"]'), [])
-                strokes = [self.stroke_timing(p) for p in group.findall('{*}path')]
-                for (draw, erase), (next_draw, next_erase) in zip(strokes, strokes[1:]):
-                    self.assertAlmostEqual(overlap(draw, next_draw), stagger, delta=.001)
-                    self.assertAlmostEqual(overlap(erase, next_erase), stagger, delta=.001)
+        for group in self.interview_objects(research).values():
+            self.assertEqual(group.findall('.//{*}animate[@attributeName="opacity"]'), [])
+        strokes = sorted(self.stroke_timing(p) for p in research.findall('.//{*}path'))
+        for (draw, erase), (next_draw, next_erase) in zip(strokes, strokes[1:]):
+            self.assertAlmostEqual(overlap(draw, next_draw), stagger, delta=.001)
+            self.assertAlmostEqual(overlap(erase, next_erase), stagger, delta=.001)
 
-    def test_interview_turns_generate_two_ideas_as_the_speakers_finish(self):
+    def test_interview_ideas_follow_their_bubbles_and_every_object_holds(self):
         scene = self.animation.find('{*}g[@id="research-synthesis"]')
-        self.assertIsNotNone(scene)
         objects = self.interview_objects(scene)
         timings = {name: self.object_timing(group) for name, group in objects.items()}
-        bubbles = [timings[name] for name in ('interview-a', 'interview-b', 'interview-c')]
-        for (draw, erase), (next_draw, next_erase) in zip(bubbles, bubbles[1:]):
-            self.assertLess(draw[0], next_draw[0], 'Each speaker must begin in turn')
-            self.assertLess(erase[0], next_erase[0], 'Each bubble must start leaving in turn')
-            self.assertLess(erase[1], next_erase[1], 'Each bubble must finish leaving in turn')
+        start = min(draw[0] for draw, _ in timings.values())
+        for name, (draw, erase) in timings.items():
+            with self.subTest(object=name):
+                self.assertLessEqual(draw[1], start + 5.001)
+                self.assertGreaterEqual(erase[0], start + 6.999)
+        for bubble, idea in [('interview-a', 'idea-a'), ('interview-c', 'idea-b')]:
+            delay = timings[idea][0][0] - timings[bubble][0][0]
+            self.assertTrue(0 < delay <= 1.001, f'{idea} starts {delay:.3f}s after {bubble}')
 
-        for speaker, idea in [('interview-a', 'idea-a'), ('interview-c', 'idea-b')]:
-            with self.subTest(speaker=speaker, idea=idea):
-                erase_start, erase_end = timings[speaker][1]
-                idea_start = timings[idea][0][0]
-                self.assertLess(erase_start, idea_start)
-                self.assertLess(idea_start, erase_end)
-
-        b_draw, b_erase = timings['interview-b']
-        idea_draw, idea_erase = timings['idea-a']
-        self.assertLess(max(b_draw[0], idea_draw[0]), min(b_erase[1], idea_erase[1]),
-                        'The first idea should be visible during the second turn')
-        first_completion = min(erase[1] for _, erase in bubbles)
-        self.assertLess(first_completion, max(draw[1] for draw, _ in timings.values()),
-                        'An earlier bubble should be gone before every object has finished drawing')
-        (start, _), (exit_start, exit_end) = self.chapter_timing(scene)
-        self.assertAlmostEqual(exit_start - start, 7, delta=0.001)
+    def test_each_interview_bubble_has_one_straight_speech_line(self):
+        scene = self.animation.find('{*}g[@id="research-synthesis"]')
         for name in ('interview-a', 'interview-b', 'interview-c'):
-            for path in objects[name].findall('.//{*}path'):
-                dash = path.find('{*}animate[@attributeName="stroke-dashoffset"]')
-                for s, _, a, b in keyframe_intervals(dash):
-                    if s < exit_end and a < 0:
-                        self.assertLessEqual(b, a, f'{name} redraws after erasure has begun')
-        self.assertLessEqual(bubbles[-1][1][1], exit_start,
-                             'The conversation must clear before the final idea transition')
+            with self.subTest(bubble=name):
+                paths = scene.find(f'.//{{*}}g[@id="{name}"]').findall('.//{*}path')
+                self.assertEqual(len(paths), 2, 'Expected one outline and one remark')
+                straight = 0
+                for path in paths:
+                    d = path.get('d')
+                    commands = ''.join(re.findall(r'[MmLlHhVvCcSsQqTtAaZz]', d)).upper()
+                    coordinates = re.findall(r'[-+]?(?:\d*\.)?\d+(?:[eE][-+]?\d+)?', d)
+                    if ((commands in ('M', 'ML') and len(coordinates) == 4) or
+                            (commands in ('MH', 'MV') and len(coordinates) == 3)):
+                        straight += 1
+                self.assertEqual(straight, 1)
+        for element in scene.iter():
+            self.assertNotIn('rotate', element.get('transform', ''))
+            self.assertNotEqual(element.get('type'), 'rotate')
 
     def test_hover_select_then_drag_swaps_the_two_cards(self):
         def moves(element_id, transform):
@@ -214,7 +198,7 @@ class HeroMotionTest(unittest.TestCase):
         self.assertGreater(dy_a, 0)
         self.assertAlmostEqual(dy_a, -dy_b, places=3, msg='Both cards must trade vertical positions')
         scene = next(s for s in self.scenes if check in s.iter())
-        _, (exit_start, _) = self.chapter_timing(scene)
+        _, (exit_start, _) = self.object_timing(scene)
         self.assertLess(max(drop_end, card_b[-1][1]), exit_start)
 
         pointer = moves('reorder-pointer', 'translate')
@@ -229,7 +213,7 @@ class HeroMotionTest(unittest.TestCase):
             opacity = scene.find('{*}animate[@attributeName="opacity"]')
             periods.add(float(opacity.get('dur').removesuffix('s')))
             visible = active_span((s, e) for s, e, a, b in keyframe_intervals(opacity) if max(a, b) > 0)
-            (draw_start, _), (erase_start, erase_end) = self.chapter_timing(scene)
+            (draw_start, _), (erase_start, erase_end) = self.object_timing(scene)
             visible_draw = max(visible[0], draw_start)
             visible_windows.append((visible_draw, max(visible[0], erase_start), min(visible[1], erase_end)))
 
