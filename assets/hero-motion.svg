@@ -1,74 +1,78 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="art-title art-description">
   <title id="art-title">A design process in six sketches</title>
-  <desc id="art-description">Interview notes with a common theme group together. A decision branches into two outcomes. Selecting a row on one screen updates the timeline on another. A spacebar operates a focused switch. A shared field has a hand-lettered spacing measurement. A chart marks a change in a metric.</desc>
+  <desc id="art-description">Three interview bubbles take turns. As the conversation clears, two hand-drawn lightbulbs take shape in its place. A decision branches into two outcomes. Selecting a row on one screen updates the timeline on another. A pointer hovers over a card, selects it, and drags it past its neighbor to reorder the pair. A shared field has a hand-lettered spacing measurement. A chart marks a change in a metric.</desc>
   <g id="research-synthesis" opacity="0">
     <animate attributeName="opacity" dur="60s" begin="0s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.0475;0.11666667;0.2;1" calcMode="spline" keySplines=".28 .32 .62 1;0 0 1 1;.38 0 .72 .68;0 0 1 1" />
     <animateTransform attributeName="transform" dur="60s" begin="0s" repeatCount="indefinite" values="0 0;0 0;1 -1;1 -1" keyTimes="0;0.11666667;0.2;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    <path id="research-speech" d="M100 115Q123 106 152 113C172 118 181 137 176 153C172 169 148 178 123 173L102 187L106 169C86 163 81 149 84 136Q86 122 100 115Z" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;0;0;-1;-1" keyTimes="0;0.01472094;0.11666667;0.13138761;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="visible;hidden;hidden" keyTimes="0;0.13138761;1" calcMode="discrete" />
-    </path>
-    <path id="research-observation" d="M103 144Q113 136 124 143T151 140" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.01267281;0.01907322;0.12933948;0.13573989;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.01267281;0.13573989;1" calcMode="discrete" />
-    </path>
-    <path id="research-link" d="M190 150Q215 141 242 150" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.01702509;0.02406554;0.13369176;0.14073221;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.01702509;0.14073221;1" calcMode="discrete" />
-    </path>
-    <path id="research-link-tip" d="M237 143L244 150L235 154" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.02291859;0.02650282;0.13958525;0.14316948;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.02291859;0.14316948;1" calcMode="discrete" />
-    </path>
-    <path id="research-note-one" d="M273 105Q288 102 310 101L321 110L325 147Q298 150 279 151Z" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.02535586;0.03495648;0.14202253;0.15162314;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.02535586;0.15162314;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="0s" repeatCount="indefinite" values="0 0;0 0;-29 25;-29 25" keyTimes="0;0.04162314;0.05228981;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="research-note-one-fold" d="M310 101L311 112L321 110" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.03380952;0.03739375;0.15047619;0.15406042;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.03380952;0.15406042;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="0s" repeatCount="indefinite" values="0 0;0 0;-29 25;-29 25" keyTimes="0;0.04162314;0.05228981;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="research-note-one-mark" d="M283 129Q289 122 295 127T312 125" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.0362468;0.04162314;0.15291347;0.15828981;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.0362468;0.15828981;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="0s" repeatCount="indefinite" values="0 0;0 0;-29 25;-29 25" keyTimes="0;0.04162314;0.05228981;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="research-note-two" d="M344 157Q362 155 384 157L393 166L391 205Q365 206 345 204Z" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.03990271;0.04950333;0.15656938;0.16616999;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.03990271;0.16616999;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="0s" repeatCount="indefinite" values="0 0;0 0;-40 -25;-40 -25" keyTimes="0;0.05616999;0.06683666;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="research-note-two-fold" d="M384 157L383 167L393 166" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.04835637;0.0519406;0.16502304;0.16860727;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.04835637;0.16860727;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="0s" repeatCount="indefinite" values="0 0;0 0;-40 -25;-40 -25" keyTimes="0;0.05616999;0.06683666;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="research-note-two-mark" d="M353 181Q359 173 366 179T382 177" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.05079365;0.05616999;0.16746032;0.17283666;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.05079365;0.17283666;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="0s" repeatCount="indefinite" values="0 0;0 0;-40 -25;-40 -25" keyTimes="0;0.05616999;0.06683666;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="research-note-three" d="M378 100Q397 98 414 99L422 108L424 145Q399 149 379 147Z" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.05444956;0.06405018;0.17111623;0.18071685;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.05444956;0.18071685;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="0s" repeatCount="indefinite" values="0 0;0 0;-12 30;-12 30" keyTimes="0;0.07071685;0.08138351;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="research-note-three-fold" d="M414 99L414 110L422 108" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.06290323;0.06648746;0.17956989;0.18315412;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.06290323;0.18315412;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="0s" repeatCount="indefinite" values="0 0;0 0;-12 30;-12 30" keyTimes="0;0.07071685;0.08138351;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="research-note-three-mark" d="M388 124Q394 117 400 123T415 121" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.0653405;0.07071685;0.18200717;0.18738351;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.0653405;0.18738351;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="0s" repeatCount="indefinite" values="0 0;0 0;-12 30;-12 30" keyTimes="0;0.07071685;0.08138351;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="research-group" d="M244 184Q324 181 411 184" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.06899642;0.08333333;0.18566308;0.2;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.06899642;0.2;1" calcMode="discrete" />
-    </path>
+    <g id="interview-a">
+      <animate attributeName="opacity" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.034;0.05066667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" />
+      <path id="interview-a-outline" d="M118 80C140 76 174 77 191 83C205 87 209 96 207 107C204 120 192 126 175 128Q152 130 131 127Q119 138 106 139Q112 132 113 123C97 119 90 111 92 100Q93 86 118 80Z" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;0;0;-1;-1" keyTimes="0;0.01456;0.034;0.04933333;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="visible;hidden;hidden" keyTimes="0;0.04933333;1" calcMode="discrete" />
+      </path>
+      <path id="interview-a-remark" d="M114 105Q119 105 125 99Q122 108 130 104Q136 99 138 99Q136 106 143 103Q148 99 154 101Q159 104 165 101Q171 99 180 100" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.01045333;0.01866667;0.037;0.05066667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.01045333;0.05066667;1" calcMode="discrete" />
+      </path>
+    </g>
+    <g id="interview-b">
+      <animate attributeName="opacity" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.05466667;0.07166667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" />
+      <path id="interview-b-outline" d="M265 126C287 121 324 121 345 128C359 132 366 140 365 151Q365 163 352 170Q352 177 360 184Q346 183 336 174C316 179 285 178 265 174C246 170 237 163 237 152C235 139 247 130 265 126Z" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.01483333;0.02692333;0.05466667;0.07030667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.01483333;0.07030667;1" calcMode="discrete" />
+      </path>
+      <path id="interview-b-remark" d="M258 151Q266 151 272 145Q270 153 278 150Q283 147 288 148Q291 151 298 147Q302 145 305 146Q304 151 311 149Q318 146 326 148Q331 149 339 147" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.02351333;0.03033333;0.05772667;0.07166667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.02351333;0.07166667;1" calcMode="discrete" />
+      </path>
+    </g>
+    <g id="interview-c" transform="translate(95 10)">
+      <animate attributeName="opacity" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0" keyTimes="0;0.059;0.07916667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" />
+      <path id="interview-c-outline" d="M143 187C163 184 191 183 212 186C229 189 241 196 242 207C244 218 236 228 219 232Q187 239 159 233Q148 242 136 244Q142 237 142 229C128 226 121 219 121 209C120 199 128 191 143 187Z" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.02633333;0.03777333;0.059;0.07755333;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.02633333;0.07755333;1" calcMode="discrete" />
+      </path>
+      <path id="interview-c-remark" d="M142 209Q147 210 153 204Q151 213 159 209Q164 206 169 206Q172 210 179 207Q183 204 187 205Q190 208 197 206Q203 204 216 205" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.03454667;0.041;0.06263;0.07916667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.03454667;0.07916667;1" calcMode="discrete" />
+      </path>
+    </g>
+    <g id="idea-a">
+      <path id="interview-bulb-a-globe" d="M 147.2 121.2 C 145.3 114.4 136.8 113.6 131.9 106.6 C 122.7 95.6 126.1 81.3 138.1 76 C 149 70 161.7 74.8 165.7 86.2 C 170.8 97.2 164.6 105.1 160.4 112.5 Q 158.9 114.9 159.7 117.8" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.03633333;0.05363333;0.11666667;0.14566667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.03633333;0.14566667;1" calcMode="discrete" />
+      </path>
+      <path id="interview-bulb-a-filament" d="M 150.8 119.2 Q 148.2 109.5 143.5 103.5 L 149.3 106.1 Q 151.8 107.5 152.7 103.1 L 154.8 99.4 Q 154.5 109.9 155.6 117.9" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.04873167;0.05882333;0.13745;0.15436667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.04873167;0.15436667;1" calcMode="discrete" />
+      </path>
+      <path id="interview-bulb-a-cap" d="M 147.4 122.1 Q 153.5 121.5 160.7 117.5 L 161 122.6 Q 157.9 126.6 151.9 127.1 L 149.4 125.7 Q 154.2 124.4 160.5 120.7" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.05565167;0.06257167;0.14905;0.16065;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.05565167;0.16065;1" calcMode="discrete" />
+      </path>
+      <path id="interview-bulb-a-glint" d="M 132.9 95 Q 131.1 88.2 137.1 83.5" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.060265;0.06516667;0.15678333;0.165;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.060265;0.165;1" calcMode="discrete" />
+      </path>
+    </g>
+    <g id="idea-b" transform="translate(95 10)">
+      <path id="interview-bulb-b-globe" d="M 173.1 220 Q 174.3 215.2 170.4 210.1 C 165.1 202.6 167.2 193.9 171.6 188.8 Q 178.9 180.3 188.3 183.7 C 200 186.6 204.6 197 200.5 205.2 Q 197.8 211.8 189.3 216.9 Q 184.5 219.8 183.7 222.7" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.06133333;0.07453333;0.158;0.1832;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.06133333;0.1832;1" calcMode="discrete" />
+      </path>
+      <path id="interview-bulb-b-filament" d="M 176.9 221 Q 177.7 214 177.4 206.7 Q 179.4 211.3 181.3 211.8 Q 183.2 212.3 187.4 208.2 L 181.1 221" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.07079333;0.07849333;0.17606;0.19076;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.07079333;0.19076;1" calcMode="discrete" />
+      </path>
+      <path id="interview-bulb-b-cap" d="M 172.8 221 Q 177.4 223.2 184.7 222.9 L 182.5 227.6 Q 178.2 228.5 174.5 226.6 L 173.1 224.2 L 183 225.6" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.07607333;0.08135333;0.18614;0.19622;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.07607333;0.19622;1" calcMode="discrete" />
+      </path>
+      <path id="interview-bulb-b-spark" d="M 206.3 194.3 Q 209.7 193.1 212.1 191.6" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
+        <animate attributeName="stroke-dashoffset" dur="60s" begin="0s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.07959333;0.08333333;0.19286;0.2;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" dur="60s" begin="0s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.07959333;0.2;1" calcMode="discrete" />
+      </path>
+    </g>
   </g>
   <g id="branching-flow" opacity="0">
     <animate attributeName="opacity" dur="60s" begin="10s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.0475;0.11666667;0.2;1" calcMode="spline" keySplines=".28 .32 .62 1;0 0 1 1;.38 0 .72 .68;0 0 1 1" />
@@ -203,41 +207,66 @@
       <animate attributeName="visibility" dur="60s" begin="20s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.07797264;0.2;1" calcMode="discrete" />
     </path>
   </g>
-  <g id="keyboard-interaction" opacity="0">
+  <g id="mouse-reorder" opacity="0">
     <animate attributeName="opacity" dur="60s" begin="30s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.0475;0.11666667;0.2;1" calcMode="spline" keySplines=".28 .32 .62 1;0 0 1 1;.38 0 .72 .68;0 0 1 1" />
     <animateTransform attributeName="transform" dur="60s" begin="30s" repeatCount="indefinite" values="0 0;0 0;1 -1;1 -1" keyTimes="0;0.11666667;0.2;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    <path id="keyboard-space-cap" d="M101 132Q161 130 225 131Q231 131 232 137L237 166Q238 172 232 173Q161 176 90 175Q85 175 87 170L94 138Q95 133 101 132Z" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="30s" repeatCount="indefinite" values="1;0;0;-1;-1" keyTimes="0;0.0236608;0.11666667;0.14032747;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="30s" repeatCount="indefinite" values="visible;hidden;hidden" keyTimes="0;0.14032747;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="30s" repeatCount="indefinite" values="0 0;0 0;0 4;0 0;0 0" keyTimes="0;0.07089814;0.07489814;0.0805648;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="keyboard-space-edge" d="M87 172L87 179Q87 185 93 185Q159 187 230 184Q237 184 238 178L237 168" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="30s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.01933425;0.03285471;0.13600092;0.14952138;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="30s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.01933425;0.14952138;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="30s" repeatCount="indefinite" values="0 0;0 0;0 4;0 0;0 0" keyTimes="0;0.07089814;0.07489814;0.0805648;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="keyboard-space-mark" d="M139 148L138 154Q161 155 183 153L183 147" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="30s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.02988021;0.03917552;0.14654688;0.15584219;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="30s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.02988021;0.15584219;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="30s" repeatCount="indefinite" values="0 0;0 0;0 4;0 0;0 0" keyTimes="0;0.07089814;0.07489814;0.0805648;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="keyboard-switch-track" d="M310 136Q328 135 351 136C364 136 372 144 372 155C372 166 363 174 352 174L310 175C298 175 289 167 289 156C289 145 297 137 310 136Z" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="30s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.03620102;0.05445364;0.15286769;0.17112031;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="30s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.03620102;0.17112031;1" calcMode="discrete" />
-    </path>
-    <path id="keyboard-switch-knob" d="M308 143C315 142 322 147 322 155C322 163 315 169 308 167C300 166 297 161 297 155Q297 146 308 143Z" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="30s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.05023526;0.0634177;0.16690192;0.18008437;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="30s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.05023526;0.18008437;1" calcMode="discrete" />
-      <animateTransform attributeName="transform" dur="60s" begin="30s" repeatCount="indefinite" values="0 0;0 0;44 -1;44 -1" keyTimes="0;0.07489814;0.08333333;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1" type="translate" />
-    </path>
-    <path id="keyboard-focus-start" d="M281 149Q281 131 295 128L307 127" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="30s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.05919932;0.0735648;0.17586599;0.19023147;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="30s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.05919932;0.19023147;1" calcMode="discrete" />
-    </path>
-    <path id="keyboard-focus-end" d="M379 159Q378 177 366 181L354 182" pathLength="1" visibility="hidden" stroke-dasharray="1 1" stroke-dashoffset="1">
-      <animate attributeName="stroke-dashoffset" dur="60s" begin="30s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.06896785;0.08333333;0.18563452;0.2;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
-      <animate attributeName="visibility" dur="60s" begin="30s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.06896785;0.2;1" calcMode="discrete" />
-    </path>
+    <g id="card-b">
+      <animateTransform attributeName="transform" begin="30s" dur="60s" repeatCount="indefinite" type="translate" values="0 0;0 0;-15 -26;0 -65;0 -65" keyTimes="0;0.085666667;0.093666667;0.104333333;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;.42 0 .58 1;0 0 1 1" />
+      <path stroke-dasharray="1 1" stroke-dashoffset="1" id="reorder-b-frame" d="M157 164Q213 163 294 164Q301 164 301 171L302 203Q302 210 295 211Q224 212 157 211Q150 211 150 204L149 172Q149 166 157 164Z" pathLength="1" visibility="hidden">
+        <animate attributeName="stroke-dashoffset" begin="30s" dur="60s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.025;0.042666667;0.141666667;0.159333333;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" begin="30s" dur="60s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.025;0.159333333;1" calcMode="discrete" />
+      </path>
+      <path stroke-dasharray="1 1" stroke-dashoffset="1" id="reorder-b-diamond" d="M171 180Q174 184 179 188L171 195L164 188Z" pathLength="1" visibility="hidden">
+        <animate attributeName="stroke-dashoffset" begin="30s" dur="60s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.04;0.0475;0.156666667;0.164166667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" begin="30s" dur="60s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.04;0.164166667;1" calcMode="discrete" />
+      </path>
+      <path stroke-dasharray="1 1" stroke-dashoffset="1" id="reorder-b-mark" d="M191 188Q213 186 234 187" pathLength="1" visibility="hidden">
+        <animate attributeName="stroke-dashoffset" begin="30s" dur="60s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.0455;0.053666667;0.162166667;0.170333333;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" begin="30s" dur="60s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.0455;0.170333333;1" calcMode="discrete" />
+      </path>
+    </g>
+    <g id="card-a">
+      <animateTransform attributeName="transform" begin="30s" dur="60s" repeatCount="indefinite" type="translate" values="0 0;0 0;16 27;0 65;0 65" keyTimes="0;0.0845;0.0925;0.104333333;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;.42 0 .58 1;0 0 1 1" />
+      <g transform="translate(226 123)">
+        <g id="reorder-hover">
+          <animateTransform attributeName="transform" begin="30s" dur="60s" repeatCount="indefinite" type="scale" values="1;1;1.055;1.055;.988;1.034;1.034;1;1" keyTimes="0;0.063;0.070333333;0.072333333;0.074833333;0.078833333;0.099666667;0.104333333;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+          <g transform="translate(-226 -123)">
+            <path stroke-dasharray="1 1" stroke-dashoffset="1" id="reorder-a-frame" d="M157 100Q222 98 294 99Q301 99 302 106L302 137Q302 145 295 146Q218 147 157 146Q150 146 150 139L149 108Q149 102 157 100Z" pathLength="1" visibility="hidden" fill="white" fill-opacity="0">
+              <animate attributeName="stroke-dashoffset" begin="30s" dur="60s" repeatCount="indefinite" values="1;0;0;-1;-1" keyTimes="0;0.017;0.116666667;0.133666667;1" calcMode="spline" keySplines=".42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+              <animate attributeName="visibility" begin="30s" dur="60s" repeatCount="indefinite" values="visible;hidden;hidden" keyTimes="0;0.133666667;1" calcMode="discrete" />
+              <animate attributeName="fill-opacity" begin="30s" dur="60s" repeatCount="indefinite" values="0;0;1;1;0;0" keyTimes="0;0.081833333;0.084833333;0.101833333;0.106166667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+            </path>
+            <path stroke-dasharray="1 1" stroke-dashoffset="1" id="reorder-a-checkbox" d="M166 116Q171 115 177 116Q179 116 179 118L179 128Q179 131 177 131L166 131Q164 131 164 129L164 118Q164 116 166 116Z" pathLength="1" visibility="hidden">
+              <animate attributeName="stroke-dashoffset" begin="30s" dur="60s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.0135;0.022666667;0.130166667;0.139333333;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+              <animate attributeName="visibility" begin="30s" dur="60s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.0135;0.139333333;1" calcMode="discrete" />
+            </path>
+            <path stroke-dasharray="1 1" stroke-dashoffset="1" id="reorder-a-mark" d="M191 123Q216 121 244 122" pathLength="1" visibility="hidden">
+              <animate attributeName="stroke-dashoffset" begin="30s" dur="60s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.020333333;0.028333333;0.137;0.145;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+              <animate attributeName="visibility" begin="30s" dur="60s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.020333333;0.145;1" calcMode="discrete" />
+            </path>
+            <path stroke-dasharray="1 1" stroke-dashoffset="1" id="reorder-grip-one" d="M275 120Q280 119.5 285 120" pathLength="1" visibility="hidden">
+              <animate attributeName="stroke-dashoffset" begin="30s" dur="60s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.059833333;0.070333333;0.1765;0.187;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+              <animate attributeName="visibility" begin="30s" dur="60s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.059833333;0.187;1" calcMode="discrete" />
+            </path>
+            <path stroke-dasharray="1 1" stroke-dashoffset="1" id="reorder-grip-two" d="M275 126Q281 125.4 285 126" pathLength="1" visibility="hidden">
+              <animate attributeName="stroke-dashoffset" begin="30s" dur="60s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.068;0.078166667;0.184666667;0.194833333;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+              <animate attributeName="visibility" begin="30s" dur="60s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.068;0.194833333;1" calcMode="discrete" />
+            </path>
+            <path stroke-dasharray="1 1" stroke-dashoffset="1" id="reorder-check" d="M167 123L171 127Q174 122 180 117" pathLength="1" visibility="hidden">
+              <animate attributeName="stroke-dashoffset" begin="30s" dur="60s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.076666667;0.083333333;0.193333333;0.2;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+              <animate attributeName="visibility" begin="30s" dur="60s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.076666667;0.2;1" calcMode="discrete" />
+            </path>
+          </g>
+        </g>
+      </g>
+    </g>
+    <g id="reorder-pointer">
+      <animateTransform attributeName="transform" begin="30s" dur="60s" repeatCount="indefinite" type="translate" values="55 43;55 43;0 0;0 0;16 27;0 65;0 65;16 79;16 79" keyTimes="0;0.057833333;0.067666667;0.0845;0.0925;0.104333333;0.106166667;0.112666667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+      <path stroke-dasharray="1 1" stroke-dashoffset="1" id="reorder-pointer-outline" d="M268 123L272 144L277 137L282 146L286 144L280 135L288 134Z" pathLength="1" visibility="hidden">
+        <animate attributeName="stroke-dashoffset" begin="30s" dur="60s" repeatCount="indefinite" values="1;1;0;0;-1;-1" keyTimes="0;0.050333333;0.063;0.167;0.179666667;1" calcMode="spline" keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" />
+        <animate attributeName="visibility" begin="30s" dur="60s" repeatCount="indefinite" values="hidden;visible;hidden;hidden" keyTimes="0;0.050333333;0.179666667;1" calcMode="discrete" />
+      </path>
+    </g>
   </g>
   <g id="shared-fields" opacity="0">
     <animate attributeName="opacity" dur="60s" begin="40s" repeatCount="indefinite" values="0;.68;.68;0;0" keyTimes="0;0.0475;0.11666667;0.2;1" calcMode="spline" keySplines=".28 .32 .62 1;0 0 1 1;.38 0 .72 .68;0 0 1 1" />
