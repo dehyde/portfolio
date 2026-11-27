@@ -1,7 +1,6 @@
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
-import re
 import unittest
 import xml.etree.ElementTree as ET
 
@@ -66,22 +65,13 @@ class HeroMotionTest(unittest.TestCase):
         self.assertTrue(draw and erase, f'Missing draw or forward erase on {path.get("id")}')
         return active_span(draw), active_span(erase)
 
-    def interview_objects(self, scene):
-        names = ('interview-a', 'interview-b', 'interview-c', 'idea-a', 'idea-b')
-        groups = {}
-        for name in names:
-            group = scene.find(f'.//{{*}}g[@id="{name}"]')
-            self.assertIsNotNone(group, f'Missing interview object: {name}')
-            groups[name] = group
-        return groups
-
     def object_timing(self, element):
         paths = element.findall('.//{*}path')
         self.assertTrue(paths, element.get('id'))
         draws, erases = zip(*(self.stroke_timing(path) for path in paths))
         return active_span(draws), active_span(erases)
 
-    def test_polished_preview_uses_the_same_six_scene_timelines(self):
+    def test_polished_preview_uses_the_same_scene_timelines(self):
         page = ROOT / 'previews' / 'polished-hero.html'
         preview = IntroAssets()
         preview.feed(page.read_text())
@@ -99,27 +89,57 @@ class HeroMotionTest(unittest.TestCase):
                 self.assertNotEqual([p.get('d') for p in polished.findall('.//{*}path')],
                                     [p.get('d') for p in original.findall('.//{*}path')])
 
-        poster = ET.parse(page.parent / urlsplit(preview.poster['src']).path).getroot()
-        self.assertEqual(preview.poster.get('alt'), '')
-        self.assertFalse(any(e.tag.rsplit('}', 1)[-1].startswith('animate') for e in poster.iter()))
-        held = [(g.get('transform'), [p.get('d') for p in g.findall('{*}path')])
-                for g in scenes[0].findall('{*}g')]
-        still = [(g.get('transform'), [p.get('d') for p in g.findall('{*}path')])
-                 for g in poster.findall('./{*}g/{*}g')]
-        self.assertEqual(still, held)
+        self.assert_workflow_poster(page.parent, preview, animation)
 
-    def test_the_hero_has_a_static_decorative_fallback(self):
-        self.assertIsNotNone(self.hero.poster)
-        self.assertEqual(self.hero.poster.get('alt'), '')
-        poster = ET.parse(ROOT / urlsplit(self.hero.poster['src']).path).getroot()
-        self.assertEqual(poster.get('viewBox'), self.animation.get('viewBox'))
+    def assert_workflow_poster(self, directory, hero, animation):
+        self.assertIsNotNone(hero.poster)
+        self.assertEqual(hero.poster.get('alt'), '')
+        poster = ET.parse(directory / urlsplit(hero.poster['src']).path).getroot()
+        self.assertEqual(poster.get('viewBox'), animation.get('viewBox'))
         for element in poster.iter():
             tag = element.tag.rsplit('}', 1)[-1]
             self.assertNotIn(tag, {'animate', 'animateTransform', 'animateMotion', 'set', 'script'})
-        self.assertGreater(len(poster.findall('.//{*}path')), 0)
+
+        def artwork(element, hold_time=None, pose=()):
+            transform = element.get('transform')
+            track = element.find('{*}animateTransform')
+            if track is not None and hold_time is not None:
+                self.assertEqual(track.get('type'), 'translate')
+                before, after = next((a, b) for s, e, a, b in keyframe_intervals(track, str)
+                                     if s <= hold_time < e)
+                self.assertEqual(before, after, 'Workflow must be still during its hold')
+                transform = f'translate({before})'
+            if transform and transform not in ('translate(0 0)', 'translate(0,0)'):
+                pose += (transform,)
+            if element.tag.rsplit('}', 1)[-1] == 'path':
+                yield element.get('d'), pose
+            for child in element:
+                yield from artwork(child, hold_time, pose)
+
+        workflow = animation.find('{*}g[@id="branching-flow"]')
+        self.assertIsNotNone(workflow)
+        (_, drawn), (erasing, _) = self.object_timing(workflow)
+        paths = list(artwork(workflow, hold_time=(drawn + erasing) / 2))
+        self.assertTrue(paths)
+        self.assertEqual(list(artwork(poster)), paths)
+
+    def test_homepage_has_a_static_workflow_fallback(self):
+        self.assert_workflow_poster(ROOT, self.hero, self.animation)
+
+    def test_five_scenes_start_ten_seconds_apart_in_a_fifty_second_loop(self):
+        names = ['branching-flow', 'linked-screens', 'mouse-reorder', 'shared-fields', 'metric-study']
+        self.assertEqual([scene.get('id') for scene in self.scenes], names)
+        for index, scene in enumerate(self.scenes):
+            with self.subTest(scene=scene.get('id')):
+                start = index * 10
+                for track in scene.iter():
+                    if track.tag.rsplit('}', 1)[-1].startswith('animate'):
+                        self.assertEqual(float(track.get('begin', '0s').removesuffix('s')), start)
+                        self.assertEqual(float(track.get('dur').removesuffix('s')), 50)
+                (draw_start, _), _ = self.object_timing(scene)
+                self.assertAlmostEqual(draw_start, start, delta=.001)
 
     def test_every_scene_fades_in_and_out(self):
-        self.assertEqual(len(self.scenes), 6)
         for scene in self.scenes:
             with self.subTest(scene=scene.get('id')):
                 opacity = scene.find('{*}animate[@attributeName="opacity"]')
@@ -148,54 +168,6 @@ class HeroMotionTest(unittest.TestCase):
                 (draw_start, draw_end), (erase_start, erase_end) = self.object_timing(scene)
                 self.assertAlmostEqual(draw_end - draw_start, 5, delta=0.001)
                 self.assertAlmostEqual(erase_end - erase_start, 5, delta=0.001)
-
-    def test_interview_uses_the_workflow_pen_stagger_and_scene_fade(self):
-        def overlap(first, following):
-            (a, b), (c, d) = first, following
-            return (b - c) / min(b - a, d - c)
-
-        research = self.animation.find('{*}g[@id="research-synthesis"]')
-        workflow = self.animation.find('{*}g[@id="branching-flow"]')
-        reference = [self.stroke_timing(p)[0] for p in workflow.findall('{*}path')[:2]]
-        stagger = overlap(*reference)
-        for group in self.interview_objects(research).values():
-            self.assertEqual(group.findall('.//{*}animate[@attributeName="opacity"]'), [])
-        strokes = sorted(self.stroke_timing(p) for p in research.findall('.//{*}path'))
-        for (draw, erase), (next_draw, next_erase) in zip(strokes, strokes[1:]):
-            self.assertAlmostEqual(overlap(draw, next_draw), stagger, delta=.001)
-            self.assertAlmostEqual(overlap(erase, next_erase), stagger, delta=.001)
-
-    def test_interview_ideas_follow_their_bubbles_and_every_object_holds(self):
-        scene = self.animation.find('{*}g[@id="research-synthesis"]')
-        objects = self.interview_objects(scene)
-        timings = {name: self.object_timing(group) for name, group in objects.items()}
-        start = min(draw[0] for draw, _ in timings.values())
-        for name, (draw, erase) in timings.items():
-            with self.subTest(object=name):
-                self.assertLessEqual(draw[1], start + 5.001)
-                self.assertGreaterEqual(erase[0], start + 6.999)
-        for bubble, idea in [('interview-a', 'idea-a'), ('interview-c', 'idea-b')]:
-            delay = timings[idea][0][0] - timings[bubble][0][0]
-            self.assertTrue(0 < delay <= 1.001, f'{idea} starts {delay:.3f}s after {bubble}')
-
-    def test_each_interview_bubble_has_one_straight_speech_line(self):
-        scene = self.animation.find('{*}g[@id="research-synthesis"]')
-        for name in ('interview-a', 'interview-b', 'interview-c'):
-            with self.subTest(bubble=name):
-                paths = scene.find(f'.//{{*}}g[@id="{name}"]').findall('.//{*}path')
-                self.assertEqual(len(paths), 2, 'Expected one outline and one remark')
-                straight = 0
-                for path in paths:
-                    d = path.get('d')
-                    commands = ''.join(re.findall(r'[MmLlHhVvCcSsQqTtAaZz]', d)).upper()
-                    coordinates = re.findall(r'[-+]?(?:\d*\.)?\d+(?:[eE][-+]?\d+)?', d)
-                    if ((commands in ('M', 'ML') and len(coordinates) == 4) or
-                            (commands in ('MH', 'MV') and len(coordinates) == 3)):
-                        straight += 1
-                self.assertEqual(straight, 1)
-        for element in scene.iter():
-            self.assertNotIn('rotate', element.get('transform', ''))
-            self.assertNotEqual(element.get('type'), 'rotate')
 
     def test_hover_select_then_drag_swaps_the_two_cards(self):
         def moves(element_id, transform):

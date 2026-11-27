@@ -1,26 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Three interview remarks with two ideas alongside them">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 320" fill="none" stroke="#c4c4c4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="A workflow branching into two outcomes">
   <g opacity=".68">
-    <g transform="translate(85 2)">
-      <path d="M105 85Q150 84 195 85Q201 85 201 91L201 118Q201 124 195 124L124 124L114 133L115 124L105 124Q99 124 99 118L99 91Q99 85 105 85Z" />
-      <path d="M113 105H155" />
-    </g>
-    <g transform="translate(-35 10)">
-      <path d="M250 131Q294 130 349 131Q355 131 355 137L355 165Q355 171 349 171L341 171L342 180L332 171L250 171Q244 171 244 165L244 137Q244 131 250 131Z" />
-      <path d="M258 151H306" />
-    </g>
-    <g transform="translate(58 3)">
-      <path d="M139 191Q180 190 225 191Q231 191 231 197L231 224Q231 230 225 230L157 230L147 239L148 230L139 230Q133 230 133 224L133 197Q133 191 139 191Z" />
-      <path d="M147 211H183" />
-    </g>
-    <g transform="translate(316 105)">
-      <path d="M-4 -18C-12 -18 -17 -12 -17 -5C-18 2 -13 6 -9 10C-6 13 -6 16 -5 17Q0 18 6 16C6 11 10 8 13 4C18 -2 17 -9 13 -14C9 -19 2 -20 -4 -18" />
-      <path d="M0 16C1 11 1 7 -2 3C-4 0 -7 -1 -7 1C-7 4 -2 5 1 3Q4 2 6 -1" />
-      <path d="M-5 20Q0 22 5 19C4 23 0 25 -3 23" />
-    </g>
-    <g transform="translate(158 211)">
-      <path d="M-4 -18C-12 -18 -17 -12 -17 -5C-18 2 -13 6 -9 10C-6 13 -6 16 -5 17Q0 18 6 16C6 11 10 8 13 4C18 -2 17 -9 13 -14C9 -19 2 -20 -4 -18" />
-      <path d="M0 16C1 11 1 7 -2 3C-4 0 -7 -1 -7 1C-7 4 -2 5 1 3Q4 2 6 -1" />
-      <path d="M-5 20Q0 22 5 19C4 23 0 25 -3 23" />
-    </g>
+    <path d="M68 136Q96 134 132 135Q138 135 138 142L137 175Q137 180 131 180L72 181Q65 181 65 175L64 142Q64 137 68 136Z" />
+    <path d="M80 153Q91 151 110 152" />
+    <path d="M81 163Q97 161 119 162" />
+    <path d="M146 157Q165 154 185 155" />
+    <path d="M179 150L186 155L180 160" />
+    <path d="M196 155Q211 140 228 125Q245 137 263 154Q249 169 232 183Q212 170 196 155Z" />
+    <path d="M256 140Q274 134 281 118Q288 102 309 100" />
+    <path d="M302 96L309 100L304 106" />
+    <path d="M322 82Q345 80 380 82Q387 82 386 89L384 114Q383 119 377 119L325 120Q319 120 319 113L317 89Q317 84 322 82Z" />
+    <path d="M332 101Q346 98 365 100" />
+    <path d="M257 169Q271 174 283 192Q292 207 314 210" />
+    <path d="M307 205L315 210L308 215" />
+    <path d="M329 193Q346 192 379 191Q386 191 387 198L388 223Q388 229 381 230L330 231Q324 231 324 225L323 200Q323 194 329 193Z" />
+    <path d="M338 212Q351 209 368 211" />
   </g>
 </svg>
