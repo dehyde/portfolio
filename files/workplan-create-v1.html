@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Easy new task: Old design (15 Nov): [+] button (behavior replica)</title>
+<style>
+  :root { --ink:#1a1a1a; --muted:#5c5c66; --line:#dcdce0; --blue:#0696d7; --c200:#dadada; --c300:#c4c4c4; --c400:#a0a0a0; --c600:#5c5c5c; --w:79px; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; background:#fff; color:var(--ink); font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  .bar { display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; padding:10px 12px; border-bottom:1px solid var(--line); background:#fafafa; }
+  .ver { font-size:14px; }
+  .seg { display:inline-flex; border:1px solid #b9b9c0; border-radius:6px; overflow:hidden; }
+  .seg button { border:0; background:#fff; padding:6px 12px; font:inherit; cursor:pointer; }
+  .seg button + button { border-left:1px solid #b9b9c0; }
+  .seg button[aria-pressed="true"] { background:var(--blue); color:#fff; font-weight:600; }
+  .btn { border:1px solid #b9b9c0; background:#fff; border-radius:6px; padding:5px 10px; font:inherit; cursor:pointer; }
+  .btn:hover { border-color:var(--blue); }
+  .zoom { display:inline-flex; align-items:center; gap:6px; }
+  .zoom span { min-width:92px; text-align:center; color:var(--muted); }
+  .read { margin-left:auto; color:var(--muted); }
+  .read b { color:var(--ink); }
+  .note { padding:8px 12px; color:var(--muted); border-bottom:1px solid var(--line); }
+  .tl { display:flex; position:relative; }
+  .labels { width:132px; flex:none; border-right:1px solid var(--line); background:#fff; z-index:3; }
+  .labels .hd { height:52px; border-bottom:1px solid #b9b9c0; padding:8px 10px; color:var(--muted); font-weight:600; }
+  .labels .ln { height:65px; padding:8px 10px; border-bottom:1px dashed #c9c9cf; position:relative; }
+  .labels .ln i { position:absolute; right:0; top:0; bottom:0; width:4px; }
+  .sc { overflow-x:auto; overflow-y:hidden; flex:1; position:relative; }
+  .grid { position:relative; user-select:none; -webkit-user-select:none; }
+  .months { position:relative; height:24px; }
+  .months div { position:absolute; top:0; height:24px; padding:3px 8px; font-weight:600; border-left:1px solid var(--line); }
+  .daysrow { position:relative; height:28px; border-bottom:1px solid #b9b9c0; }
+  .dh { position:absolute; top:0; height:28px; text-align:center; line-height:28px; font-size:12px; color:#333; border-left:1px solid var(--line); overflow:hidden; white-space:nowrap; }
+  .dh.hlm { background:#cfe8f7; }
+  .dh.hle { background:#2b6fb5; color:#fff; font-weight:600; }
+  .lanes { position:relative; height:260px; }
+  .col { position:absolute; top:0; bottom:0; border-left:1px solid #ececef; }
+  .col.off { background:#efefef; }
+  .lane { position:absolute; left:0; right:0; height:65px; border-bottom:1px dashed #c9c9cf; }
+  .task { position:absolute; height:48px; background:#fff; border:1px solid #6a9fd8; border-radius:4px; overflow:hidden; font-size:12px; }
+  .task::before { content:''; position:absolute; left:0; right:0; top:0; height:5px; background:var(--lc); }
+  .task .nm { position:absolute; left:8px; top:10px; right:6px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .task.sel { outline:2px solid var(--blue); outline-offset:0; }
+  .task.editing { overflow:visible; z-index:8; }
+  .task input { position:absolute; left:4px; top:8px; width:max(calc(100% - 8px), 200px); height:32px; border:1px solid var(--blue); border-radius:4px; font:inherit; font-size:13px; font-weight:600; padding:0 10px; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.22); }
+  .rect { position:absolute; border:1px dashed #222; pointer-events:none; display:none; z-index:6; }
+  /* ghost */
+  #ghost { position:absolute; left:0; top:0; width:0; height:0; pointer-events:none; display:none; z-index:5; }
+  #ghost .box { position:absolute; border-radius:4px; border:1px dashed; }
+  #ghost .plus { position:absolute; width:16px; height:16px; display:none; }
+  #ghost .plus svg { position:absolute; inset:0; }
+  #ghost .plus .f { display:none; }
+  #ghost .gbtn { position:absolute; border-radius:4px; background:#fff; border:1px solid var(--c200); color:var(--c600); text-align:center; font-size:13px; display:none; }
+  /* new design colours */
+  #ghost.new { --fill:rgba(255,255,255,.3); --bd:rgba(92,92,92,.4); --edge:transparent; --edgeline:transparent; --circ:rgba(92,92,92,.65); }
+  #ghost.new[data-state="hover"] { --fill:rgba(6,150,215,.1); --bd:rgba(6,150,215,.55); --edge:rgba(6,150,215,.4); --edgeline:rgba(6,150,215,.35); --circ:rgba(6,150,215,.9); }
+  #ghost.new[data-state="active"], #ghost.new[data-state="menu"] { --fill:rgba(6,150,215,.16); --bd:rgba(6,150,215,.7); --edge:rgba(6,150,215,.55); --edgeline:rgba(6,150,215,.35); --circ:rgba(6,150,215,.9); }
+  #ghost.new .box { background-color:var(--fill); border-color:var(--bd);
+    background-origin:border-box;
+    background-image:linear-gradient(to right,var(--edge) 0,var(--edge) 7px,var(--edgeline) 7px,var(--edgeline) 8px,transparent 8px,transparent calc(100% - 8px),var(--edgeline) calc(100% - 8px),var(--edgeline) calc(100% - 7px),var(--edge) calc(100% - 7px),var(--edge) 100%); }
+  #ghost.new .plus { color:var(--circ); }
+  #ghost.new[data-circle="1"] .plus { display:block; }
+  #ghost.new[data-filled="1"] .plus .o { display:none; }
+  #ghost.new[data-filled="1"] .plus .f { display:block; }
+  /* old design */
+  #ghost.old .box { background:rgba(255,255,255,.5); border-color:var(--c300); opacity:0; transition:opacity .1s; }
+  #ghost.old[data-state="active"] .box, #ghost.old[data-state="menu"] .box { opacity:1; }
+  #ghost.old .gbtn { display:block; }
+  #ghost.old[data-over="1"] .gbtn { box-shadow:0 1px 3px rgba(0,0,0,.12); }
+  #ghost.old[data-state="active"] .gbtn, #ghost.old[data-state="menu"] .gbtn { background:var(--c200); border-color:var(--c400); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.12); }
+  /* menu + modal */
+  .menu { position:absolute; z-index:20; background:#fff; border-radius:6px; box-shadow:0 4px 16px rgba(0,0,0,.25); padding:6px 0; min-width:190px; }
+  .menu button { display:flex; gap:10px; align-items:center; width:100%; border:0; background:none; font:inherit; padding:7px 14px; text-align:left; cursor:pointer; }
+  .menu button:hover { background:#eef6fb; }
+  .menu .ic { width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; color:#444; }
+  .modal-bg { position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:30; display:none; align-items:center; justify-content:center; }
+  .modal { background:#fff; border-radius:8px; width:min(420px,92%); padding:16px 18px; box-shadow:0 8px 28px rgba(0,0,0,.3); }
+  .modal h4 { margin:0 0 8px; font-size:15px; }
+  .modal .mock { background:#fff3e0; color:#8a5300; border-radius:4px; padding:6px 10px; margin-bottom:10px; }
+  .modal label { display:block; padding:4px 0; }
+  .modal .row { display:flex; justify-content:flex-end; gap:8px; margin-top:12px; }
+  .modal .row .btn:disabled { opacity:.45; cursor:default; }
+  .help { padding:8px 12px 12px; color:var(--muted); font-size:12px; }
+.reset-float{position:absolute;right:14px;bottom:14px;z-index:20;background:#0696d7;color:#fff;border-color:#0696d7;font-weight:600;box-shadow:0 4px 14px #0003}.reset-float[hidden]{display:none} body{position:relative;min-height:330px}
+</style>
+</head>
+<body>
+<button class="btn reset-float" id="reset" hidden>Reset tasks</button>
+<div id="note" hidden></div>
+<div class="tl">
+  <div class="labels" id="labels"></div>
+  <div class="sc" id="sc"><div class="grid" id="grid"><div class="months" id="months"></div><div class="daysrow" id="daysrow"></div><div class="lanes" id="lanes"></div></div></div>
+</div>
+<div class="modal-bg" id="modalBg"><div class="modal"><h4>Insert plan template</h4><div class="mock">Mock: nothing is inserted yet.</div>
+  <label><input type="radio" name="tpl"> Foundation and slab</label><label><input type="radio" name="tpl"> Structural frame</label><label><input type="radio" name="tpl"> Interior fit-out</label>
+  <div class="row"><button class="btn" id="mCancel">Cancel</button><button class="btn" id="mInsert" disabled>Insert</button></div></div></div>
+
+<script>
+(() => {
+  const LANE_H = 65, TASK_H = 48, TASK_TOP = 8, MARGIN = 8, CIRCLE = 16, MIN_PLUS = 32, MIN_GHOST = 16, DRAG_DIST = 4, N = 21;
+  const STEPS = [20, 36, 54, 64, 79, 124];
+  const NAMES = ['M','T','W','T','F','S','S'];
+  const FULL = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const days = Array.from({ length: N }, (_, i) => { const d = new Date(2026, 10, 23 + i); const dow = (d.getDay() + 6) % 7; return { d, dow, work: dow < 5 }; });
+  const lanes = [
+    { n: '1 Schedule Company', c: '#2e8b3e' }, { n: '1 Submittals Test', c: '#36a8c9' },
+    { n: '2 Schedule Company', c: '#6a8fd0' }, { n: '3 Schedule Company', c: '#9a5be0' }
+  ];
+  const $ = (id) => document.getElementById(id);
+  const sc = $('sc'), grid = $('grid'), lanesEl = $('lanes'), daysrow = $('daysrow'), months = $('months');
+  let mode = 'old', stepIdx = 4, W = STEPS[stepIdx], nextId = 1;
+  let tasks = [];
+  const S = { hover: null, press: null, menu: null, editing: false, preview: new Set(), lastClient: null };
+
+  const ghost = document.createElement('div'); ghost.id = 'ghost';
+  const gBox = document.createElement('div'); gBox.className = 'box';
+  const gPlus = document.createElement('div'); gPlus.className = 'plus';
+  gPlus.innerHTML = '<svg class="o" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 4.6v6.8M4.6 8h6.8" stroke="currentColor" stroke-width="1.4" fill="none"/></svg><svg class="f" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7.5" fill="currentColor"/><path d="M8 4.4v7.2M4.4 8h7.2" stroke="#fff" stroke-width="1.6" fill="none"/></svg>';
+  const gBtn = document.createElement('div'); gBtn.className = 'gbtn'; gBtn.textContent = '+';
+  ghost.append(gBox, gPlus, gBtn);
+  const rectEl = document.createElement('div'); rectEl.className = 'rect';
+
+  const workTrim = (a, b) => {
+    const lo = Math.min(a, b), hi = Math.max(a, b); let s = null, e = null;
+    for (let i = lo; i <= hi; i++) if (days[i].work) { if (s === null) s = i; e = i; }
+    return s === null ? null : { s, e };
+  };
+  const btnWidth = () => (W <= 54 ? 20 : Math.min(30, 20 + (W - 54)));
+  const anySelected = () => tasks.some((t) => t.sel);
+  const canCreate = () => !S.menu && !S.editing && !anySelected() && $('modalBg').style.display !== 'flex';
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  function laneTop(l) { return l * LANE_H; }
+  function ghostGeom(lane, s, e) { // new-design ghost box
+    const left = s * W + MARGIN; const w = Math.max((e - s + 1) * W - 2 * MARGIN, MIN_GHOST);
+    return { left, top: laneTop(lane) + TASK_TOP, w, h: TASK_H };
+  }
+  function hitTest(lane, day, gx, gy) { // returns {over, onCircle, hasCircle}
+    if (mode === 'new') {
+      const g = ghostGeom(lane, day, day);
+      const over = gx >= g.left && gx <= g.left + g.w && gy >= g.top && gy <= g.top + g.h;
+      const hasCircle = g.w >= MIN_PLUS;
+      const onCircle = over && hasCircle && Math.hypot(gx - (g.left + g.w / 2), gy - (g.top + g.h / 2)) <= CIRCLE / 2;
+      return { over, onCircle, hasCircle };
+    }
+    const bw = btnWidth(), cx = day * W + W / 2, top = laneTop(lane) + TASK_TOP + (TASK_H - 30) / 2;
+    const over = gx >= cx - bw / 2 && gx <= cx + bw / 2 && gy >= top && gy <= top + 30;
+    return { over, onCircle: over, hasCircle: false };
+  }
+  const taskRect = (t) => ({ l: t.s * W + MARGIN, r: (t.e + 1) * W - MARGIN, t: laneTop(t.lane) + TASK_TOP, b: laneTop(t.lane) + TASK_TOP + TASK_H });
+  const overTask = (gx, gy) => tasks.some((t) => { const r = taskRect(t); return gx >= r.l && gx <= r.r && gy >= r.t && gy <= r.b; });
+
+  /* ---------- build ---------- */
+  function build() {
+    W = STEPS[stepIdx]; document.documentElement.style.setProperty('--w', W + 'px');
+    grid.style.width = N * W + 'px';
+    months.innerHTML = ''; daysrow.innerHTML = '';
+    let mStart = 0;
+    for (let i = 0; i <= N; i++) {
+      if (i === N || (i > 0 && days[i].d.getMonth() !== days[i - 1].d.getMonth())) {
+        const m = document.createElement('div'); m.style.left = mStart * W + 'px'; m.style.width = (i - mStart) * W + 'px';
+        m.textContent = days[mStart].d.toLocaleString('en', { month: 'short' }) + ' 2026'; months.appendChild(m); mStart = i;
+      }
+    }
+    days.forEach((dy, i) => {
+      const h = document.createElement('div'); h.className = 'dh'; h.style.left = i * W + 'px'; h.style.width = W + 'px'; h.dataset.i = i;
+      h.textContent = W >= 54 ? FULL[dy.dow] + ' ' + dy.d.getDate() : W >= 30 ? NAMES[dy.dow] + ' ' + dy.d.getDate() : String(dy.d.getDate());
+      daysrow.appendChild(h);
+    });
+    lanesEl.innerHTML = '';
+    days.forEach((dy, i) => { const c = document.createElement('div'); c.className = 'col' + (dy.work ? '' : ' off'); c.style.left = i * W + 'px'; c.style.width = W + 'px'; lanesEl.appendChild(c); });
+    lanes.forEach((_, i) => { const l = document.createElement('div'); l.className = 'lane'; l.style.top = i * LANE_H + 'px'; lanesEl.appendChild(l); });
+    lanesEl.append(ghost, rectEl);
+    renderTasks(); render();
+  }
+  function buildLabels() {
+    $('labels').innerHTML = '<div class="hd">Company</div>' + lanes.map((l) => `<div class="ln">${l.n}<i style="background:${l.c}"></i></div>`).join('');
+  }
+  function resetTasks() {
+    nextId = 1; S.editing = false; S.menu = null;
+    tasks = [{ id: nextId++, lane: 2, s: 3, e: 7, name: 'New task', sel: false }, { id: nextId++, lane: 3, s: 8, e: 11, name: 'New task', sel: false }];
+  }
+  function updateReset() {
+    const current = tasks.map(({ lane, s, e, name, ms }) => ({ lane, s, e, name, ms: !!ms }));
+    $('reset').hidden = JSON.stringify(current) === baseline;
+  }
+  let baseline = '';
+  function renderTasks() {
+    updateReset();
+    lanesEl.querySelectorAll('.task').forEach((n) => n.remove());
+    tasks.forEach((t) => {
+      const r = taskRect(t); const el = document.createElement('div');
+      el.className = 'task' + (t.ms ? ' ms' : '') + (t.editing ? ' editing' : ''); el.dataset.id = t.id; el.style.cssText = `left:${r.l}px;top:${r.t}px;width:${r.r - r.l}px;--lc:${lanes[t.lane].c}`;
+      if (t.editing) {
+        const inp = document.createElement('input'); inp.value = t.name; el.appendChild(inp);
+        const done = () => { if (!t.editing) return; t.editing = false; t.name = inp.value.trim() || (t.ms ? 'New milestone' : 'New task'); S.editing = false; renderTasks(); render(); };
+        inp.addEventListener('blur', done); inp.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === 'Escape') { e.stopPropagation(); done(); } });
+        setTimeout(() => { inp.focus(); inp.select(); }, 0);
+      } else { const nm = document.createElement('div'); nm.className = 'nm'; nm.textContent = (t.ms ? '◆ ' : '') + t.name; el.appendChild(nm); }
+      lanesEl.insertBefore(el, ghost);
+    });
+    paintSel();
+  }
+  function paintSel() { lanesEl.querySelectorAll('.task').forEach((el) => { const id = +el.dataset.id; const t = tasks.find((x) => x.id === id); el.classList.toggle('sel', !!(t && (t.sel || S.preview.has(id)))); }); }
+
+  /* ---------- render ghost, header, cursor ---------- */
+  function render() {
+    const p = S.press; let show = false, lane = 0, s = 0, e = 0, state = 'idle', over = false, onCircle = false, endDay = 0, hl = null, cur = 'default';
+    if (p && p.cancelled) { /* Escape: no ghost, nothing created */ }
+    else if (p && p.kind === 'create') {
+      lane = p.lane0; hl = { s: p.s, e: p.e };
+      if (!p.cross) { show = true; s = p.s; e = p.e; endDay = p.dragging ? p.curDay : p.day0; state = 'active'; }
+      cur = p.dragging ? 'ew-resize' : p.hoverCursor;
+    } else if (p && p.kind === 'select') {
+      if (p.hoverAtPress && canCreateAtPress(p)) { show = true; lane = p.hoverAtPress.lane; s = e = endDay = p.hoverAtPress.day; state = 'idle'; }
+    } else if (S.menu) {
+      show = true; lane = S.menu.lane; s = e = endDay = S.menu.day; state = 'menu';
+    } else if (S.hover && canCreate()) {
+      show = true; lane = S.hover.lane; s = e = endDay = S.hover.day; over = S.hover.over; onCircle = S.hover.onCircle; state = over ? 'hover' : 'idle';
+      if (over) hl = { s, e };
+      cur = over ? (mode === 'new' ? (onCircle && S.hover.hasCircle ? 'pointer' : 'ew-resize') : 'pointer') : 'default';
+    }
+    ghost.className = mode; ghost.dataset.state = state; ghost.dataset.over = over ? '1' : '0';
+    ghost.style.display = show ? 'block' : 'none';
+    if (show) {
+      if (mode === 'new') {
+        const g = state === 'active' ? ghostGeom(lane, s, e) : ghostGeom(lane, s, s);
+        Object.assign(gBox.style, { left: g.left + 'px', top: g.top + 'px', width: g.w + 'px', height: g.h + 'px' });
+        const circle = state !== 'active' && g.w >= MIN_PLUS;
+        ghost.dataset.circle = circle ? '1' : '0';
+        ghost.dataset.filled = (onCircle || state === 'menu' || (p && p.kind === 'create')) ? '1' : '0';
+        gPlus.style.left = g.left + g.w / 2 - CIRCLE / 2 + 'px'; gPlus.style.top = g.top + g.h / 2 - CIRCLE / 2 + 'px';
+      } else {
+        const lo = Math.min(s, e), hi = Math.max(s, e); const left = lo * W + MARGIN, w = (hi - lo + 1) * W - 2 * MARGIN;
+        Object.assign(gBox.style, { left: left + 'px', top: laneTop(lane) + TASK_TOP + 'px', width: Math.max(w, 4) + 'px', height: TASK_H + 'px' });
+        const bw = btnWidth(); const cx = (state === 'active' ? endDay : s) * W + W / 2;
+        Object.assign(gBtn.style, { left: cx - bw / 2 + 'px', top: laneTop(lane) + TASK_TOP + (TASK_H - 30) / 2 + 'px', width: bw + 'px', height: '30px', lineHeight: '28px' });
+      }
+    }
+    daysrow.querySelectorAll('.dh').forEach((h) => {
+      const i = +h.dataset.i; const on = hl && i >= hl.s && i <= hl.e;
+      h.classList.toggle('hle', !!(on && (i === hl.s || i === hl.e) && days[i].work));
+      h.classList.toggle('hlm', !!(on && !(i === hl.s || i === hl.e)));
+    });
+    // selection rectangle
+    const r = p && !p.cancelled && p.rect && (p.kind === 'select' || p.cross) ? p.rect : null;
+    rectEl.style.display = r ? 'block' : 'none';
+    if (r) Object.assign(rectEl.style, { left: r.l + 'px', top: r.t + 'px', width: r.r - r.l + 'px', height: r.b - r.t + 'px' });
+    grid.style.cursor = cur;
+  }
+  function canCreateAtPress() { return true; }
+
+  /* ---------- pointer handling ---------- */
+  function toGrid(ev) { const r = lanesEl.getBoundingClientRect(); return { gx: ev.clientX - r.left, gy: ev.clientY - r.top }; }
+  function insideLanes(gx, gy) { return gx >= 0 && gx < N * W && gy >= 0 && gy < lanes.length * LANE_H; }
+  function hoverAt(gx, gy) {
+    if (!insideLanes(gx, gy) || !canCreate()) return null;
+    const lane = Math.floor(gy / LANE_H), day = Math.floor(gx / W);
+    if (!days[day].work || overTask(gx, gy)) return null;
+    return Object.assign({ lane, day }, hitTest(lane, day, gx, gy));
+  }
+  function selectPreview(rc) {
+    S.preview = new Set(tasks.filter((t) => { const r = taskRect(t); return r.l < rc.r && r.r > rc.l && r.t < rc.b && r.b > rc.t; }).map((t) => t.id)); paintSel();
+  }
+  function pressMove(gx, gy) {
+    const p = S.press; if (!p || p.cancelled) return;
+    if (!p.moved && Math.hypot(gx - p.x0, gy - p.y0) >= DRAG_DIST) p.moved = true;
+    const lane = Math.floor(gy / LANE_H); const inLane = lane === p.lane0 && gy >= 0 && gy < lanes.length * LANE_H;
+    if (p.kind === 'create') {
+      if (p.moved) p.dragging = true;
+      if (p.moved && !inLane) { p.cross = true; p.blocked = true; } else if (inLane) p.cross = false;
+      if (inLane && p.dragging) { const day = clamp(Math.floor(gx / W), 0, N - 1); const r = workTrim(p.day0, day) || { s: p.day0, e: p.day0 }; p.s = r.s; p.e = r.e; p.curDay = clamp(day, r.s, r.e); }
+    }
+    if (p.kind === 'select' || p.cross) { p.rect = { l: Math.min(p.x0, gx), t: Math.min(p.y0, gy), r: Math.max(p.x0, gx), b: Math.max(p.y0, gy) }; selectPreview(p.rect); }
+    else { p.rect = null; if (S.preview.size) { S.preview = new Set(); paintSel(); } }
+    render();
+  }
+  document.addEventListener('mousemove', (ev) => {
+    S.lastClient = { x: ev.clientX, y: ev.clientY };
+    const { gx, gy } = toGrid(ev);
+    if (S.press) pressMove(gx, gy); else { S.hover = hoverAt(gx, gy); render(); }
+  });
+  grid.addEventListener('mouseleave', () => { if (!S.press) { S.hover = null; render(); } });
+  grid.addEventListener('mousedown', (ev) => {
+    if (ev.button !== 0 || ev.target.closest('.menu')) return;
+    const { gx, gy } = toGrid(ev); if (!insideLanes(gx, gy)) return;
+    if (S.menu) { closeMenu(); S.hover = null; render(); return; } // the click that closes a menu never creates
+    const tEl = ev.target.closest('.task');
+    if (tEl) { if (tEl.querySelector('input')) return; const id = +tEl.dataset.id; tasks.forEach((t) => { t.sel = t.id === id; }); S.hover = null; renderTasks(); render(); return; }
+    if (anySelected()) { tasks.forEach((t) => { t.sel = false; }); S.hover = null; renderTasks(); render(); return; } // first click only deselects
+    if (S.editing) return;
+    const lane = Math.floor(gy / LANE_H), day = Math.floor(gx / W);
+    const h = hoverAt(gx, gy); const startsCreate = h && (mode === 'new' ? h.over : h.over);
+    S.press = { kind: startsCreate ? 'create' : 'select', x0: gx, y0: gy, lane0: lane, day0: day, s: day, e: day, curDay: day, moved: false, dragging: false, cross: false, blocked: false, cancelled: false, onCircle: !!(h && h.onCircle), hasCircle: !!(h && h.hasCircle), hoverCursor: grid.style.cursor || 'default', hoverAtPress: h ? { lane, day } : null, rect: null };
+    ev.preventDefault(); render();
+  });
+  document.addEventListener('mouseup', (ev) => {
+    const p = S.press; if (!p) return; S.press = null; clearInterval(S.scrollTimer);
+    const { gx, gy } = toGrid(ev);
+    if (!p.cancelled) {
+      if (p.kind === 'create') {
+        if (p.blocked) { if (p.cross) applyPreview(); }
+        else if (!p.dragging) { if (mode === 'old' || p.onCircle || !p.hasCircle) openMenu(p.lane0, p.day0); }
+        else createTask(p.lane0, p.s, p.e);
+      } else applyPreview();
+    }
+    S.preview = new Set(); S.hover = p.cancelled || S.menu || S.editing ? null : hoverAt(gx, gy); paintSel(); render();
+  });
+  function applyPreview() { tasks.forEach((t) => { t.sel = S.preview.has(t.id); }); renderTasks(); }
+  grid.addEventListener('dblclick', (ev) => {
+    const { gx, gy } = toGrid(ev); if (!insideLanes(gx, gy) || ev.target.closest('.task') || ev.target.closest('.menu')) return;
+    const day = Math.floor(gx / W); if (!days[day].work) return; closeMenu();
+    createTask(Math.floor(gy / LANE_H), day, day);
+  });
+  // edge auto-scroll while dragging
+  document.addEventListener('mousedown', () => { clearInterval(S.scrollTimer); S.scrollTimer = setInterval(() => {
+    const p = S.press; if (!p || !p.moved || !S.lastClient) return;
+    const r = sc.getBoundingClientRect(); const x = S.lastClient.x; let d = 0;
+    if (x > r.right - 40) d = 14; else if (x < r.left + 40) d = -14;
+    if (d) { sc.scrollLeft += d; const gr = toGrid({ clientX: S.lastClient.x, clientY: S.lastClient.y }); pressMove(gr.gx, gr.gy); }
+  }, 16); }, true);
+  sc.addEventListener('scroll', () => { if (!S.press) { S.hover = null; render(); } });
+
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') {
+      if (S.press) { S.press.cancelled = true; S.preview = new Set(); paintSel(); render(); }
+      else if ($('modalBg').style.display === 'flex') closeModal();
+      else if (S.menu) { closeMenu(); render(); }
+    } else if ((ev.key === 'Delete' || ev.key === 'Backspace') && !S.editing) { tasks = tasks.filter((t) => !t.sel); renderTasks(); render(); }
+  });
+
+  /* ---------- create, menu, modal ---------- */
+  function createTask(lane, s, e, ms) {
+    const t = { id: nextId++, lane, s, e, name: ms ? 'New milestone' : 'New task', sel: false, editing: true, ms: !!ms };
+    tasks.push(t); S.editing = true; S.hover = null; S.menu = null; removeMenu(); renderTasks(); render();
+  }
+  function removeMenu() { lanesEl.querySelectorAll('.menu').forEach((m) => m.remove()); }
+  function closeMenu() { S.menu = null; removeMenu(); }
+  const CLIP = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="10" height="11.5" rx="1.5"/><path d="M6 3V2.2c0-.4.3-.7.7-.7h2.6c.4 0 .7.3.7.7V3"/><rect x="5.6" y="1.6" width="4.8" height="2.6" rx=".8" fill="#fff"/><path d="M5.8 7.5h4.4M5.8 10h4.4M5.8 12.3h2.6"/></svg>';
+  function openMenu(lane, day) {
+    S.menu = { lane, day }; removeMenu();
+    const m = document.createElement('div'); m.className = 'menu';
+    const items = [['+', 'New task', () => createTask(lane, day, day)]];
+    items.push(['◇', 'New milestone', () => createTask(lane, day, day, true)]);
+    items.push([CLIP, 'Insert plan template', () => { closeMenu(); render(); $('modalBg').style.display = 'flex'; }]);
+    items.forEach(([ic, label, fn]) => { const b = document.createElement('button'); b.innerHTML = `<span class="ic">${ic}</span>${label}`; b.addEventListener('mousedown', (e) => e.stopPropagation()); b.addEventListener('click', fn); m.appendChild(b); });
+    const top = laneTop(lane) + TASK_TOP + TASK_H / 2 + 10;
+    let left = day * W + W / 2 + 6;
+    m.style.left = left + 'px'; m.style.top = top + 'px'; lanesEl.appendChild(m);
+    const lr = lanesEl.getBoundingClientRect(), mr = m.getBoundingClientRect();
+    if (mr.bottom > window.innerHeight - 6) m.style.top = Math.max(0, top - mr.height - TASK_H) + 'px';
+    const vis = sc.getBoundingClientRect(); if (mr.right > vis.right) m.style.left = left - (mr.right - vis.right) - 8 + 'px';
+    render();
+  }
+  function closeModal() { $('modalBg').style.display = 'none'; document.querySelectorAll('input[name=tpl]').forEach((r) => { r.checked = false; }); $('mInsert').disabled = true; }
+  $('mCancel').onclick = closeModal; $('mInsert').onclick = closeModal;
+  document.querySelectorAll('input[name=tpl]').forEach((r) => r.addEventListener('change', () => { $('mInsert').disabled = false; }));
+
+  /* ---------- toolbar ---------- */
+  const NOTES = {
+    old: 'Old: only a small [+] button follows the pointer (hand over it). The dashed box shows only once the button is pressed, while dragging, or while the menu is open. A press must start on the button to create; anywhere else draws the selection rectangle. Button is 20 px wide up to a 54 px day, square 30 px from 64 px.',
+    new: 'New: a see-through ghost task follows the pointer; grey, then blue on it. A circled plus sits in the middle when the ghost is 32 px or wider (hand over the circle, resize arrows over the rest). Press anywhere on the ghost and drag to size. With no plus, the whole ghost is the click target.'
+  };
+  function setMode(m) { mode = m; $('note').textContent = NOTES[m]; S.hover = null; S.press = null; closeMenu(); render(); }
+  $('reset').onclick = () => { resetTasks(); renderTasks(); render(); };
+
+  buildLabels(); resetTasks(); baseline = JSON.stringify(tasks.map(({ lane, s, e, name, ms }) => ({ lane, s, e, name, ms: !!ms }))); build(); setMode('old');
+})();
+</script>
+</body>
+</html>
