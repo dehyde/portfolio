@@ -1,12 +1,12 @@
 <!doctype html><html lang="en" data-palette="journal-highlighter"><head><style id="case-loading-style">
-.case-loading{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#202320;color:#eff2ed;opacity:1;transition:opacity .32s ease}
+.case-loading{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fafbfc;color:#191815;opacity:1;transition:opacity .32s ease}
 .case-loading.is-ready{opacity:0;pointer-events:none}
 .case-loading-inner{text-align:center;padding:24px}
 .case-loading-mark{display:flex;align-items:center;justify-content:center;gap:6px;height:24px;margin-bottom:25px}
-.case-loading-mark i{width:7px;height:7px;background:var(--loading-accent,#d4c451);border-radius:50%;animation:case-loading-bounce 1s ease-in-out infinite}
+.case-loading-mark i{width:7px;height:7px;background:#605000;border-radius:50%;animation:case-loading-bounce 1s ease-in-out infinite}
 .case-loading-mark i:nth-child(2){animation-delay:.13s}.case-loading-mark i:nth-child(3){animation-delay:.26s}
-.case-loading-title{font:400 25px/1.2 Georgia,serif;letter-spacing:-.3px}
-.case-loading-note{margin-top:10px;color:#b4bbb2;font:14px/1.4 Arial,sans-serif}
+.case-loading-title{font:400 25px/1.2 "Newsreader",Georgia,serif;letter-spacing:-.3px}
+.case-loading-note{margin-top:10px;color:#565248;font:14px/1.4 "Recursive",Arial,sans-serif}
 @keyframes case-loading-bounce{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-7px);opacity:1}}
 @media(prefers-reduced-motion:reduce){.case-loading,.case-loading-mark i{transition:none;animation:none}.case-loading-mark i{opacity:1}}
 </style><noscript><style>.case-loading{display:none!important}</style></noscript><meta charset="utf-8"><link rel="icon" type="image/png" href="../assets/favicon.png"><link rel="icon" type="image/svg+xml" href="../assets/favicon-centered.svg"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Workplan UX improvements: task creation, plan discovery, readability, milestones, and adaptive dates. A product design case study by Tom Bar-Gal."><title>Workplan UX improvements — Tom Bar-Gal</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Recursive:CASL,CRSV,MONO,slnt,wght@0..1,0..1,0..1,-15..0,300..900&display=swap" rel="stylesheet"><style>:root{--font-editorial:"Newsreader",Georgia,serif;--font-system:"Recursive",Arial,sans-serif;--font-system-formal:"CASL" .08,"CRSV" .5,"MONO" 0,"slnt" 0;--surface-canvas:#202320;--surface-chrome:#191c19;--surface-terminal:#151815;--surface-interactive:#242824;--text-primary:#eff2ed;--text-summary:#d3dad2;--text-reading:#e2e7e1;--text-support:#bcc4bc;--text-muted:#a1aaa2;--accent:#d4c451;--hairline:rgba(239,242,237,.13);--bar-h:64px;--rail-w:clamp(190px,16vw,240px);--section-gutter:clamp(28px,6vw,108px)}

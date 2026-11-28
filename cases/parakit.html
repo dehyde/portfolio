@@ -7,14 +7,14 @@
 <meta name="theme-color" content="#1c1c1c">
 <title>Parakit — Tom Bar-Gal Arbiv</title>
 <style id="case-loading-style">
-.case-loading{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#202020;color:#fff;opacity:1;transition:opacity .32s ease}
+.case-loading{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#fff;color:#202020;opacity:1;transition:opacity .32s ease}
 .case-loading.is-ready{opacity:0;pointer-events:none}
 .case-loading-inner{text-align:center;padding:24px}
 .case-loading-mark{display:flex;align-items:center;justify-content:center;gap:6px;height:24px;margin-bottom:25px}
-.case-loading-mark i{width:7px;height:7px;background:var(--loading-accent,#0000ff);border-radius:50%;animation:case-loading-bounce 1s ease-in-out infinite}
+.case-loading-mark i{width:7px;height:7px;background:#0000ff;border-radius:50%;animation:case-loading-bounce 1s ease-in-out infinite}
 .case-loading-mark i:nth-child(2){animation-delay:.13s}.case-loading-mark i:nth-child(3){animation-delay:.26s}
-.case-loading-title{font:400 25px/1.2 Georgia,serif;letter-spacing:-.3px}
-.case-loading-note{margin-top:10px;color:#b4bbb2;font:14px/1.4 Arial,sans-serif}
+.case-loading-title{font:400 25px/1.2 "Newsreader",Georgia,serif;letter-spacing:-.3px}
+.case-loading-note{margin-top:10px;color:#686868;font:14px/1.4 "Recursive",Arial,sans-serif}
 @keyframes case-loading-bounce{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-7px);opacity:1}}
 @media(prefers-reduced-motion:reduce){.case-loading,.case-loading-mark i{transition:none;animation:none}.case-loading-mark i{opacity:1}}
 </style><noscript><style>.case-loading{display:none!important}</style></noscript>
